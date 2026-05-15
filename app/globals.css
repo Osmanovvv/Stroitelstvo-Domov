@@ -1379,12 +1379,12 @@ select:focus {
   }
 
   .choice-section {
-    padding-top: 0;
+    padding-top: 24px;
   }
 
   .choice-grid {
     gap: 10px;
-    transform: translateY(-22px);
+    transform: none;
   }
 
   .choice-item {
@@ -1569,7 +1569,7 @@ select:focus {
   }
 
   .choice-grid {
-    transform: translateY(-18px);
+    transform: none;
   }
 
   .choice-item,
