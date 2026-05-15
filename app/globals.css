@@ -1397,12 +1397,52 @@ select:focus {
     display: grid;
   }
 
+  .home-card {
+    box-shadow: 0 10px 24px rgba(29, 26, 21, 0.06);
+  }
+
+  .home-image-wrap {
+    aspect-ratio: 1.55;
+  }
+
+  .home-card-body {
+    padding: 18px;
+  }
+
+  .home-card-title {
+    gap: 8px;
+  }
+
+  .home-card-title h3 {
+    font-size: 19px;
+  }
+
+  .home-card-title strong {
+    font-size: 17px;
+  }
+
+  .location {
+    margin-top: 10px;
+    font-size: 13px;
+  }
+
   .building-meta {
     text-align: left;
   }
 
   .spec-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .spec-grid span {
+    min-height: 30px;
+    font-size: 13px;
+  }
+
+  .text-link {
+    padding-top: 14px;
   }
 
   .payment-card {
@@ -1480,10 +1520,6 @@ select:focus {
   .hero-panel span {
     font-size: 11px;
     line-height: 1.25;
-  }
-
-  .home-image-wrap {
-    aspect-ratio: 1.18;
   }
 
   .building-item,
