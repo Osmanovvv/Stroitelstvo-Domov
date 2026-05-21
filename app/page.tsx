@@ -1,12 +1,11 @@
 import Image from "next/image";
+import HouseQuiz from "./HouseQuiz";
 import {
   ArrowRight,
   BadgeCheck,
   Bath,
   BedDouble,
-  Calculator,
   Camera,
-  CheckCircle2,
   ClipboardCheck,
   Clock3,
   Hammer,
@@ -17,6 +16,7 @@ import {
   Phone,
   Ruler,
   ShieldCheck,
+  Star,
   Trees,
   WalletCards,
 } from "lucide-react";
@@ -58,6 +58,30 @@ const readyHomes = [
     image:
       "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1200&q=85",
   },
+  {
+    title: "Дом с террасой у зеленой зоны",
+    price: "от 11,6 млн ₽",
+    area: "120 м²",
+    land: "5,2 сот.",
+    rooms: "4 комнаты",
+    baths: "2 санузла",
+    location: "Краснодар +30 км",
+    status: "готов к сделке",
+    image:
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85",
+  },
+  {
+    title: "Семейный дом с просторной кухней",
+    price: "от 13,4 млн ₽",
+    area: "138 м²",
+    land: "6 сот.",
+    rooms: "5 комнат",
+    baths: "2 санузла",
+    location: "Краснодар, северное направление",
+    status: "ипотека возможна",
+    image:
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=85",
+  },
 ];
 
 const projects = [
@@ -89,6 +113,27 @@ const projects = [
     price: "от 9,6 млн ₽",
     time: "6 месяцев",
   },
+  {
+    name: "Практичный 92",
+    area: "92 м²",
+    floors: "1 этаж",
+    price: "от 6,4 млн ₽",
+    time: "4 месяца",
+  },
+  {
+    name: "Комфорт 118",
+    area: "118 м²",
+    floors: "1 этаж",
+    price: "от 8,1 млн ₽",
+    time: "5 месяцев",
+  },
+  {
+    name: "Простор 136",
+    area: "136 м²",
+    floors: "2 этажа",
+    price: "от 9,3 млн ₽",
+    time: "6 месяцев",
+  },
 ];
 
 const buildingHomes = [
@@ -110,6 +155,18 @@ const buildingHomes = [
     finish: "сдача в октябре",
     location: "пригород Краснодара",
   },
+  {
+    title: "Дом 124 м²",
+    stage: "кладка стен",
+    finish: "сдача в ноябре",
+    location: "Краснодар +35 км",
+  },
+  {
+    title: "Дом 140 м²",
+    stage: "инженерные работы",
+    finish: "сдача в декабре",
+    location: "южное направление",
+  },
 ];
 
 const plots = [
@@ -130,24 +187,6 @@ const plots = [
     area: "7 сот.",
     utilities: "коммуникации по границе",
     location: "южное направление",
-  },
-];
-
-const packages = [
-  {
-    name: "Теплый контур",
-    price: "от 48 000 ₽/м²",
-    items: ["фундамент", "кирпичные стены", "кровля", "окна", "входная дверь"],
-  },
-  {
-    name: "Предчистовая",
-    price: "от 62 000 ₽/м²",
-    items: ["теплый контур", "инженерия", "стяжка", "штукатурка", "разводка коммуникаций"],
-  },
-  {
-    name: "Под ключ",
-    price: "от 78 000 ₽/м²",
-    items: ["предчистовая", "чистовая отделка", "сантехника", "электрика", "подготовка к заселению"],
   },
 ];
 
@@ -188,27 +227,80 @@ const faq = [
   },
 ];
 
+const priceRows = [
+  {
+    work: "Фундамент",
+    warm: "монолитная плита",
+    pre: "монолитная плита",
+    full: "монолитная плита",
+  },
+  {
+    work: "Стены",
+    warm: "кирпич + утепление",
+    pre: "кирпич + утепление",
+    full: "кирпич + утепление",
+  },
+  {
+    work: "Кровля",
+    warm: "металлочерепица",
+    pre: "металлочерепица",
+    full: "металлочерепица",
+  },
+  {
+    work: "Окна и двери",
+    warm: "входная дверь, окна",
+    pre: "входная дверь, окна",
+    full: "входная дверь, окна",
+  },
+  {
+    work: "Инженерия",
+    warm: "по проекту",
+    pre: "электрика, вода, канализация",
+    full: "электрика, вода, отопление",
+  },
+  {
+    work: "Отделка",
+    warm: "не входит",
+    pre: "стяжка, штукатурка",
+    full: "чистовая отделка",
+  },
+  {
+    work: "Готовность",
+    warm: "под закрытый контур",
+    pre: "под финишную отделку",
+    full: "можно заезжать",
+  },
+];
+
+const banks = ["Сбер", "Альфа-Банк", "ВТБ", "Дом.РФ"];
+
 export default function Home() {
   return (
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="На главный экран">
-          <span className="brand-mark">КД</span>
+          <span className="brand-mark">СВМ</span>
           <span>
             <strong>Кирпичные дома</strong>
             <small>Краснодар +70 км</small>
           </span>
         </a>
+        <div className="header-proof" aria-label="Ключевая информация">
+          <span className="header-claim">Готовые дома и строительство под заказ</span>
+          <span className="header-rating">
+            <Star size={14} />
+            4,9 по отзывам
+          </span>
+        </div>
         <nav className="top-nav" aria-label="Основная навигация">
           <a href="#homes">Готовые дома</a>
           <a href="#projects">Проекты</a>
           <a href="#plots">Участки</a>
           <a href="#prices">Цены</a>
         </nav>
-        <a className="header-phone" href="tel:+79990000000">
-          <Phone size={18} />
-          +7 999 000-00-00
-        </a>
+        <div className="header-actions">
+          <a className="header-callback" href="#contacts">Перезвоните мне</a>
+        </div>
         <details className="mobile-menu">
           <summary aria-label="Открыть меню">
             <span />
@@ -243,7 +335,9 @@ export default function Home() {
         <div className="hero-content">
           <div className="hero-copy">
             <span className="eyebrow">Готовые дома и строительство под заказ</span>
-            <h1>Кирпичные дома в Краснодаре и радиусе 70 км</h1>
+            <h1>
+              Кирпичные дома <span className="text-accent">в Краснодаре</span> и радиусе 70 км
+            </h1>
             <p>
               Подберем готовый дом, объект в строительстве или типовой проект под ваш участок,
               бюджет и срок переезда.
@@ -255,11 +349,11 @@ export default function Home() {
               </span>
               <span>
                 <Camera size={17} />
-                Показываем объекты
+                Объекты можно посмотреть
               </span>
               <span>
                 <WalletCards size={17} />
-                Ипотека и бронь
+                Ипотека Сбер, ВТБ, Альфа
               </span>
             </div>
             <div className="hero-actions">
@@ -268,9 +362,10 @@ export default function Home() {
                 <ArrowRight size={18} />
               </a>
               <a className="button secondary" href="#calc">
-                Рассчитать строительство
+                Пройти подбор
               </a>
             </div>
+            <span className="hero-note">Расчет, подбор проекта и варианты ипотеки в одном запросе</span>
           </div>
           <div className="hero-panel" aria-label="Ключевые показатели">
             <div>
@@ -435,7 +530,7 @@ export default function Home() {
         <div className="container two-column">
           <div className="section-head left">
             <span className="eyebrow">Участки под строительство</span>
-            <h2>Земля под дом без отдельного поиска</h2>
+            <h2>Земля под дом <span className="text-accent">без отдельного поиска</span></h2>
             <p>
               Предложим участок и проект дома, который можно разместить с учетом площади,
               подъезда и коммуникаций.
@@ -458,66 +553,82 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section compare-section">
+        <div className="container compare-layout">
+          <div>
+            <span className="eyebrow">Дом или квартира</span>
+            <h2>Сравните <span className="text-accent">дом в ипотеку</span> и квартиру в аренду</h2>
+            <p>
+              Для семей, которые переезжают в Краснодар, показываем понятную разницу:
+              площадь, участок, платеж и уровень свободы.
+            </p>
+          </div>
+          <div className="compare-card" aria-label="Сравнение дома и квартиры">
+            <div>
+              <House />
+              <h3>Дом</h3>
+              <ul>
+                <li>от 94 м²</li>
+                <li>участок от 5 соток</li>
+                <li>своя парковка и двор</li>
+              </ul>
+              <strong>от 40 000 ₽ / месяц</strong>
+            </div>
+            <div>
+              <KeyRound />
+              <h3>Квартира</h3>
+              <ul>
+                <li>60-80 м²</li>
+                <li>без участка</li>
+                <li>аренда без собственности</li>
+              </ul>
+              <strong>от 40 000 ₽ / месяц</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="section calculator-section" id="calc">
         <div className="container calc-layout">
           <div>
             <span className="eyebrow">Подбор и расчет</span>
-            <h2>Быстрый расчет дома под ваш бюджет</h2>
+            <h2>Подберите <span className="text-accent">лучший дом</span> под ваши критерии</h2>
             <p>
               Ответьте на несколько вопросов, и мы подготовим ориентир по стоимости,
-              комплектации и подходящим вариантам.
+              ипотеке, комплектации и подходящим вариантам.
             </p>
           </div>
-          <form className="calc-form">
-            <label>
-              Что интересует?
-              <select defaultValue="ready">
-                <option value="ready">Готовый дом</option>
-                <option value="build">Строительство под заказ</option>
-                <option value="plot">Дом и участок</option>
-              </select>
-            </label>
-            <label>
-              Площадь
-              <select defaultValue="100">
-                <option value="80">80-100 м²</option>
-                <option value="100">100-120 м²</option>
-                <option value="140">120-140 м²</option>
-              </select>
-            </label>
-            <label>
-              Телефон
-              <input type="tel" placeholder="+7 ___ ___-__-__" />
-            </label>
-            <button className="button primary" type="button">
-              <Calculator size={18} />
-              Получить расчет
-            </button>
-          </form>
+          <HouseQuiz />
         </div>
       </section>
 
       <section className="section" id="prices">
         <div className="container section-head">
           <span className="eyebrow">Комплектации и цены</span>
-          <h2>Понятная стоимость без длинных таблиц</h2>
-          <p>Сравните комплектации и выберите формат строительства под свой бюджет.</p>
+          <h2>Подробная <span className="text-accent">таблица комплектаций</span></h2>
+          <p>Сравните основные работы и выберите формат строительства под свой бюджет.</p>
         </div>
-        <div className="container package-grid">
-          {packages.map((pack) => (
-            <article className="package-card" key={pack.name}>
-              <h3>{pack.name}</h3>
-              <strong>{pack.price}</strong>
-              <ul>
-                {pack.items.map((item) => (
-                  <li key={item}>
-                    <CheckCircle2 size={17} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
+        <div className="container price-table-wrap">
+          <table className="price-table">
+            <thead>
+              <tr>
+                <th>Тип работ</th>
+                <th>Теплый контур<br /><strong>от 48 000 ₽/м²</strong></th>
+                <th>Предчистовая<br /><strong>от 62 000 ₽/м²</strong></th>
+                <th>Под ключ<br /><strong>от 78 000 ₽/м²</strong></th>
+              </tr>
+            </thead>
+            <tbody>
+              {priceRows.map((row) => (
+                <tr key={row.work}>
+                  <td>{row.work}</td>
+                  <td>{row.warm}</td>
+                  <td>{row.pre}</td>
+                  <td>{row.full}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -568,11 +679,16 @@ export default function Home() {
         <div className="container payment-card">
           <div>
             <span className="eyebrow">Оплата и ипотека</span>
-            <h2>Варианты покупки без лишней неопределенности</h2>
+            <h2>Аккредитованы в <span className="text-accent">крупных банках</span></h2>
             <p>
-              Поможем подобрать формат оплаты для готового дома, объекта в строительстве
+              Поможем подобрать ипотечную программу для готового дома, объекта в строительстве
               или строительства под заказ.
             </p>
+            <div className="bank-grid" aria-label="Банки партнеры">
+              {banks.map((bank) => (
+                <span key={bank}>{bank}</span>
+              ))}
+            </div>
           </div>
           <div className="payment-points">
             <span>
