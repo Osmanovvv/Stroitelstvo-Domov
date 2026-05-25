@@ -1,5 +1,6 @@
 import Image from "next/image";
 import HouseQuiz from "./HouseQuiz";
+import WorkStatus from "./WorkStatus";
 import {
   ArrowRight,
   BadgeCheck,
@@ -8,17 +9,19 @@ import {
   Camera,
   ClipboardCheck,
   Clock3,
+  FileCheck2,
   Hammer,
   House,
   KeyRound,
   MapPin,
-  MessageCircle,
   Phone,
   Ruler,
   ShieldCheck,
   Star,
   Trees,
+  Trophy,
   WalletCards,
+  type LucideIcon,
 } from "lucide-react";
 
 const readyHomes = [
@@ -272,7 +275,152 @@ const priceRows = [
   },
 ];
 
-const banks = ["Сбер", "Альфа-Банк", "ВТБ", "Дом.РФ"];
+const choiceItems = [
+  {
+    icon: House,
+    title: "Купить готовый дом",
+    text: "Объекты с участком и коммуникациями",
+    href: "#homes",
+  },
+  {
+    icon: Hammer,
+    title: "Посмотреть стройку",
+    text: "Покажем этап, качество и срок сдачи",
+    href: "#building",
+  },
+  {
+    icon: Ruler,
+    title: "Выбрать проект",
+    text: "Планировки 80-140 м² под бюджет",
+    href: "#projects",
+  },
+  {
+    icon: Trees,
+    title: "Подобрать участок",
+    text: "Земля под дом без отдельного поиска",
+    href: "#plots",
+  },
+];
+
+const bankItems: {
+  name: string;
+  logo: string;
+  logoWidth: number;
+  logoHeight: number;
+}[] = [
+  {
+    name: "Сбер",
+    logo: "/bank-logos/sber.svg",
+    logoWidth: 150,
+    logoHeight: 25,
+  },
+  {
+    name: "Альфа-Банк",
+    logo: "/bank-logos/alfa.svg",
+    logoWidth: 160,
+    logoHeight: 33,
+  },
+  {
+    name: "ВТБ",
+    logo: "/bank-logos/vtb.svg",
+    logoWidth: 139,
+    logoHeight: 50,
+  },
+  {
+    name: "Дом.РФ",
+    logo: "/bank-logos/domrf.png",
+    logoWidth: 98,
+    logoHeight: 60,
+  },
+];
+
+const processSteps: {
+  icon: LucideIcon;
+  number: string;
+  title: string;
+  text: string;
+}[] = [
+  {
+    icon: House,
+    number: "01",
+    title: "Подбор",
+    text: "Выбираем готовый дом, проект или участок.",
+  },
+  {
+    icon: Camera,
+    number: "02",
+    title: "Просмотр",
+    text: "Показываем объект, стройку или планировку.",
+  },
+  {
+    icon: FileCheck2,
+    number: "03",
+    title: "Смета",
+    text: "Фиксируем комплектацию, цену и сроки.",
+  },
+  {
+    icon: Trophy,
+    number: "04",
+    title: "Договор",
+    text: "Запускаем сделку или строительство по этапам.",
+  },
+];
+
+type ContactLink = {
+  label: string;
+  href: string;
+  icon?: LucideIcon;
+  logo?: string;
+  external?: boolean;
+};
+
+const contactLinks: ContactLink[] = [
+  {
+    label: "Позвонить",
+    href: "tel:+79990000000",
+    icon: Phone,
+  },
+  {
+    label: "WhatsApp",
+    href: "https://wa.me/79990000000",
+    logo: "/social-icons/whatsapp.svg",
+    external: true,
+  },
+  {
+    label: "Telegram",
+    href: "https://t.me/username",
+    logo: "/social-icons/telegram.svg",
+    external: true,
+  },
+  {
+    label: "MAX",
+    href: "https://max.ru/",
+    logo: "/social-icons/max.svg",
+    external: true,
+  },
+];
+
+function ContactIcon({ link, size }: { link: ContactLink; size: number }) {
+  if (link.icon) {
+    const Icon = link.icon;
+    return <Icon size={size} />;
+  }
+
+  if (link.logo) {
+    return (
+      <Image
+        className="social-logo"
+        src={link.logo}
+        alt=""
+        width={size}
+        height={size}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  return null;
+}
 
 export default function Home() {
   return (
@@ -299,7 +447,24 @@ export default function Home() {
           <a href="#prices">Цены</a>
         </nav>
         <div className="header-actions">
-          <a className="header-callback" href="#contacts">Перезвоните мне</a>
+          <WorkStatus />
+          <div className="header-contact-buttons" aria-label="Быстрая связь">
+            {contactLinks.map((link) => {
+              return (
+                <a
+                  className="header-contact-link"
+                  href={link.href}
+                  key={link.label}
+                  aria-label={link.label}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noreferrer" : undefined}
+                >
+                  <ContactIcon link={link} size={18} />
+                </a>
+              );
+            })}
+          </div>
+          <a className="header-callback" href="#contacts">Обсудить проект</a>
         </div>
         <details className="mobile-menu">
           <summary aria-label="Открыть меню">
@@ -314,10 +479,23 @@ export default function Home() {
             <a href="#plots">Участки</a>
             <a href="#prices">Цены</a>
             <a href="#contacts">Контакты</a>
-            <a className="mobile-menu-phone" href="tel:+79990000000">
-              <Phone size={16} />
-              Позвонить
-            </a>
+            <span className="mobile-work-status">
+              <WorkStatus showHours />
+            </span>
+            {contactLinks.map((link) => {
+              return (
+                <a
+                  className="mobile-menu-phone"
+                  href={link.href}
+                  key={link.label}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noreferrer" : undefined}
+                >
+                  <ContactIcon link={link} size={16} />
+                  {link.label}
+                </a>
+              );
+            })}
           </nav>
         </details>
       </header>
@@ -325,8 +503,8 @@ export default function Home() {
       <section className="hero" id="top">
         <Image
           className="hero-image"
-          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2200&q=85"
-          alt="Современный кирпичный дом с участком"
+          src="/hero/brick-house-dusk.jpg"
+          alt="Современный кирпичный дом с теплой подсветкой в сумерках"
           fill
           priority
           sizes="100vw"
@@ -386,30 +564,21 @@ export default function Home() {
 
       <section className="section choice-section">
         <div className="container choice-grid">
-          <a className="choice-item" href="#homes">
-            <span className="choice-icon">
-              <House />
-            </span>
-            <span>Купить готовый дом</span>
-          </a>
-          <a className="choice-item" href="#building">
-            <span className="choice-icon">
-              <Hammer />
-            </span>
-            <span>Посмотреть стройку</span>
-          </a>
-          <a className="choice-item" href="#projects">
-            <span className="choice-icon">
-              <Ruler />
-            </span>
-            <span>Выбрать проект</span>
-          </a>
-          <a className="choice-item" href="#plots">
-            <span className="choice-icon">
-              <Trees />
-            </span>
-            <span>Подобрать участок</span>
-          </a>
+          {choiceItems.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <a className="choice-item" href={item.href} key={item.title}>
+                <span className="choice-icon">
+                  <Icon />
+                </span>
+                <span className="choice-copy">
+                  <strong>{item.title}</strong>
+                  <small>{item.text}</small>
+                </span>
+              </a>
+            );
+          })}
         </div>
       </section>
 
@@ -643,7 +812,9 @@ export default function Home() {
             const Icon = item.icon;
             return (
               <article className="trust-item" key={item.title}>
-                <Icon />
+                <span className="trust-icon">
+                  <Icon />
+                </span>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
               </article>
@@ -659,18 +830,18 @@ export default function Home() {
             <h2>Путь от заявки до дома</h2>
           </div>
           <div className="steps">
-            {[
-              ["01", "Подбор", "Выбираем готовый дом, проект или участок."],
-              ["02", "Просмотр", "Показываем объект, стройку или планировку."],
-              ["03", "Смета", "Фиксируем комплектацию, цену и сроки."],
-              ["04", "Договор", "Запускаем сделку или строительство по этапам."],
-            ].map(([number, title, text]) => (
-              <article className="step" key={number}>
-                <span>{number}</span>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </article>
-            ))}
+            {processSteps.map((step) => {
+              const Icon = step.icon;
+
+              return (
+                <article className="step" key={step.number}>
+                  <span>{step.number}</span>
+                  <Icon />
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -685,9 +856,21 @@ export default function Home() {
               или строительства под заказ.
             </p>
             <div className="bank-grid" aria-label="Банки партнеры">
-              {banks.map((bank) => (
-                <span key={bank}>{bank}</span>
-              ))}
+              {bankItems.map((bank) => {
+                return (
+                  <span className="bank-item" key={bank.name}>
+                    <span className="bank-logo-wrap">
+                      <Image
+                        className="bank-logo"
+                        src={bank.logo}
+                        alt={`Логотип ${bank.name}`}
+                        width={bank.logoWidth}
+                        height={bank.logoHeight}
+                      />
+                    </span>
+                  </span>
+                );
+              })}
             </div>
           </div>
           <div className="payment-points">
@@ -730,15 +913,23 @@ export default function Home() {
             <span className="eyebrow">Контакты</span>
             <h2>Подберем дом, проект или участок под ваш бюджет</h2>
             <p>Оставьте телефон, и мы предложим ближайший вариант для просмотра или расчета.</p>
+            <div className="contact-status-card">
+              <WorkStatus showHours />
+            </div>
             <div className="contact-actions">
-              <a href="tel:+79990000000">
-                <Phone size={18} />
-                Позвонить
-              </a>
-              <a href="https://t.me/username">
-                <MessageCircle size={18} />
-                Telegram
-              </a>
+              {contactLinks.map((link) => {
+                return (
+                  <a
+                    href={link.href}
+                    key={link.label}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noreferrer" : undefined}
+                  >
+                    <ContactIcon link={link} size={18} />
+                    {link.label}
+                  </a>
+                );
+              })}
             </div>
           </div>
           <form className="lead-form">
