@@ -427,7 +427,16 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="На главный экран">
-          <span className="brand-mark">СВМ</span>
+          <span className="brand-logo-shell" aria-hidden="true">
+            <Image
+              className="brand-logo"
+              src="/logo/svm-logo-mark-cutout.png"
+              alt=""
+              width={96}
+              height={96}
+              priority
+            />
+          </span>
           <span>
             <strong>Кирпичные дома</strong>
             <small>Краснодар +70 км</small>

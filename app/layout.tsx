@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Кирпичные дома в Краснодаре | Готовые дома и строительство",
   description:
     "Готовые кирпичные дома, дома в строительстве и строительство под заказ в Краснодаре и радиусе 70 км.",
+  icons: {
+    icon: "/logo/svm-logo-mark-cutout.png",
+    apple: "/logo/svm-logo-mark-cutout.png",
+  },
 };
 
 export default function RootLayout({
