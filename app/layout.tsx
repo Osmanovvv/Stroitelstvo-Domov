@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getSettings } from "./lib/queries";
 
-export const metadata: Metadata = {
-  title: "Кирпичные дома в Краснодаре | Готовые дома и строительство",
-  description:
-    "Готовые кирпичные дома, дома в строительстве и строительство под заказ в Краснодаре и радиусе 70 км.",
-  icons: {
-    icon: "/logo/svm-logo-mark-cutout.png",
-    apple: "/logo/svm-logo-mark-cutout.png",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSettings();
+  return {
+    title: s.seo_title || "Кирпичные дома в Краснодаре | Готовые дома и строительство",
+    description:
+      s.seo_description ||
+      "Готовые кирпичные дома, дома в строительстве и строительство под заказ в Краснодаре и радиусе 70 км.",
+    icons: {
+      icon: "/logo/svm-logo-mark-cutout.png",
+      apple: "/logo/svm-logo-mark-cutout.png",
+    },
+  };
+}
 
 export default function RootLayout({
   children,
