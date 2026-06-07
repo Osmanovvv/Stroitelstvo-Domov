@@ -1,0 +1,28 @@
+import { prisma } from "@/app/lib/db";
+import { updateSettings } from "./actions";
+
+export const dynamic = "force-dynamic";
+
+export default async function SettingsAdmin() {
+  const rows = await prisma.siteSetting.findMany();
+  const s = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+
+  return (
+    <>
+      <div className="admin-topbar"><h2>Настройки сайта</h2></div>
+      <div className="admin-card">
+        <form className="admin-form" action={updateSettings}>
+          <div className="admin-field"><label>Телефон</label><input name="phone" defaultValue={s.phone ?? ""} placeholder="+79990000000" /></div>
+          <div className="admin-field"><label>WhatsApp (ссылка)</label><input name="whatsapp_url" defaultValue={s.whatsapp_url ?? ""} /></div>
+          <div className="admin-field"><label>Telegram (ссылка)</label><input name="telegram_url" defaultValue={s.telegram_url ?? ""} /></div>
+          <div className="admin-field"><label>MAX (ссылка)</label><input name="max_url" defaultValue={s.max_url ?? ""} /></div>
+          <div className="admin-field"><label>Начало работы (ЧЧ:ММ)</label><input name="work_start" defaultValue={s.work_start ?? "08:00"} /></div>
+          <div className="admin-field"><label>Конец работы (ЧЧ:ММ)</label><input name="work_end" defaultValue={s.work_end ?? "19:00"} /></div>
+          <div className="admin-field"><label>SEO title</label><input name="seo_title" defaultValue={s.seo_title ?? ""} /></div>
+          <div className="admin-field"><label>SEO description</label><textarea name="seo_description" defaultValue={s.seo_description ?? ""} /></div>
+          <button className="admin-btn primary" type="submit">Сохранить настройки</button>
+        </form>
+      </div>
+    </>
+  );
+}
