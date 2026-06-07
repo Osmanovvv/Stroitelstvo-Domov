@@ -1,0 +1,14 @@
+export { default as BuildingSection } from "./BuildingSection";
+export { default as CalculatorSection } from "./CalculatorSection";
+export { default as ChoiceSection } from "./ChoiceSection";
+export { default as CompareSection } from "./CompareSection";
+export { default as ContactsSection } from "./ContactsSection";
+export { default as FaqSection } from "./FaqSection";
+export { default as HeroSection } from "./HeroSection";
+export { default as HomesSection } from "./HomesSection";
+export { default as PaymentSection } from "./PaymentSection";
+export { default as PlotsSection } from "./PlotsSection";
+export { default as PricesSection } from "./PricesSection";
+export { default as ProcessSection } from "./ProcessSection";
+export { default as ProjectsSection } from "./ProjectsSection";
+export { default as TrustSection } from "./TrustSection";
