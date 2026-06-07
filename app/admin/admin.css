@@ -25,6 +25,22 @@
   font-size: 14px;
 }
 .admin-sidebar a:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.admin-nav a.active {
+  position: relative;
+  background: linear-gradient(135deg, rgba(80, 111, 240, 0.85), rgba(98, 200, 201, 0.55));
+  color: #fff;
+  font-weight: 700;
+}
+.admin-nav a.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: #fff;
+}
 .admin-sidebar-footer { margin-top: auto; padding-top: 16px; display: grid; gap: 8px; }
 .admin-site-link { border: 1px solid rgba(255, 255, 255, 0.16); }
 .admin-sidebar-footer .admin-btn { width: 100%; justify-content: center; }
