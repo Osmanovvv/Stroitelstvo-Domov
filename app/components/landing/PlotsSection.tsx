@@ -18,7 +18,7 @@ export default async function PlotsSection() {
         </div>
         <div className="plot-list">
           {plots.map((plot) => (
-            <article className="plot-item" key={plot.title}>
+            <article className="plot-item" key={plot.id}>
               <MapPin />
               <div>
                 <h3>{plot.title}</h3>

@@ -13,7 +13,7 @@ export default async function HomesSection() {
       </div>
       <div className="container homes-grid">
         {readyHomes.map((home) => (
-          <article className="home-card" key={home.title}>
+          <article className="home-card" key={home.id}>
             <div className="home-image-wrap">
               <Image
                 src={home.image}

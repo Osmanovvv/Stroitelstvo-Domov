@@ -13,7 +13,7 @@ export default async function ProjectsSection() {
       </div>
       <div className="container project-grid">
         {projects.map((project) => (
-          <article className="project-card" key={project.name}>
+          <article className="project-card" key={project.id}>
             <div className="project-media">
               <Image
                 src={project.image}

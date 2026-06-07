@@ -20,7 +20,7 @@ export default async function BuildingSection() {
         </div>
         <div className="building-list">
           {buildingHomes.map((item) => (
-            <article className="building-item" key={item.title}>
+            <article className="building-item" key={item.id}>
               <div>
                 <h3>{item.title}</h3>
                 <p>{item.location}</p>
