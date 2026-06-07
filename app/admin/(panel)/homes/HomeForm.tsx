@@ -9,7 +9,7 @@ type HomeFormProps = {
 
 export default function HomeForm({ action, home }: HomeFormProps) {
   return (
-    <form className="admin-form" action={action} encType="multipart/form-data">
+    <form className="admin-form" action={action}>
       {home && <input type="hidden" name="id" value={home.id} />}
       <input type="hidden" name="imageExisting" value={home?.image ?? ""} />
 

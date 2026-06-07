@@ -9,7 +9,7 @@ type ProjectFormProps = {
 
 export default function ProjectForm({ action, project }: ProjectFormProps) {
   return (
-    <form className="admin-form" action={action} encType="multipart/form-data">
+    <form className="admin-form" action={action}>
       {project && <input type="hidden" name="id" value={project.id} />}
       <input type="hidden" name="imageExisting" value={project?.image ?? ""} />
 
