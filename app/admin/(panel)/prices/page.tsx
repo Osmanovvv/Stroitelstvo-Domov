@@ -1,6 +1,6 @@
 import { prisma } from "@/app/lib/db";
 import DeleteButton from "@/app/admin/components/DeleteButton";
-import { createRow, updateRow, deleteRow, updatePackages } from "./actions";
+import { addRow, updateRow, deleteRow, updatePackages } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -46,8 +46,13 @@ export default async function PricesAdmin() {
         </form>
       </div>
 
-      <div className="admin-card" style={{ marginBottom: 20 }}>
-        <h3>Строки таблицы</h3>
+      <div className="admin-card">
+        <div className="admin-topbar" style={{ marginBottom: 16 }}>
+          <h3 style={{ margin: 0 }}>Строки таблицы</h3>
+          <form action={addRow}>
+            <button className="admin-btn primary" type="submit">Добавить строку</button>
+          </form>
+        </div>
         <table className="admin-table">
           <thead>
             <tr><th>Работа</th><th>Пакет 1</th><th>Пакет 2</th><th>Пакет 3</th><th></th></tr>
@@ -60,10 +65,10 @@ export default async function PricesAdmin() {
                     <input type="hidden" name="id" value={row.id} />
                     <input type="hidden" name="sortOrder" value={row.sortOrder} />
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr) auto auto", gap: 8, alignItems: "center" }}>
-                      <input name="work" defaultValue={row.work} />
-                      <input name="warm" defaultValue={row.warm} />
-                      <input name="pre" defaultValue={row.pre} />
-                      <input name="full" defaultValue={row.full} />
+                      <input name="work" defaultValue={row.work} placeholder="Работа" />
+                      <input name="warm" defaultValue={row.warm} placeholder="Пакет 1" />
+                      <input name="pre" defaultValue={row.pre} placeholder="Пакет 2" />
+                      <input name="full" defaultValue={row.full} placeholder="Пакет 3" />
                       <button className="admin-btn" type="submit">Сохранить</button>
                     </div>
                   </form>
@@ -75,17 +80,6 @@ export default async function PricesAdmin() {
             ))}
           </tbody>
         </table>
-      </div>
-
-      <div className="admin-card">
-        <h3>Добавить строку</h3>
-        <form className="admin-form" action={createRow}>
-          <div className="admin-field"><label>Работа</label><input name="work" required /></div>
-          <div className="admin-field"><label>Пакет 1</label><input name="warm" /></div>
-          <div className="admin-field"><label>Пакет 2</label><input name="pre" /></div>
-          <div className="admin-field"><label>Пакет 3</label><input name="full" /></div>
-          <button className="admin-btn primary" type="submit">Добавить</button>
-        </form>
       </div>
     </>
   );

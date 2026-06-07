@@ -9,16 +9,10 @@ function revalidate() {
   revalidatePath("/admin/prices");
 }
 
-export async function createRow(formData: FormData) {
+export async function addRow() {
   const count = await prisma.priceRow.count();
   await prisma.priceRow.create({
-    data: {
-      work: str(formData, "work"),
-      warm: str(formData, "warm"),
-      pre: str(formData, "pre"),
-      full: str(formData, "full"),
-      sortOrder: count,
-    },
+    data: { work: "", warm: "", pre: "", full: "", sortOrder: count },
   });
   revalidate();
 }
