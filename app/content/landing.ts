@@ -484,3 +484,22 @@ export const mobileNavigationLinks = [
   { label: "Цены", href: "#prices" },
   { label: "Контакты", href: "#contacts" },
 ];
+
+export function buildContactLinks(settings: Record<string, string>): ContactLink[] {
+  return [
+    { label: "Позвонить", href: `tel:${settings.phone ?? ""}`, icon: Phone },
+    {
+      label: "WhatsApp",
+      href: settings.whatsapp_url || "#",
+      logo: "/social-icons/whatsapp.svg",
+      external: true,
+    },
+    {
+      label: "Telegram",
+      href: settings.telegram_url || "#",
+      logo: "/social-icons/telegram.svg",
+      external: true,
+    },
+    { label: "MAX", href: settings.max_url || "#", logo: "/social-icons/max.svg", external: true },
+  ];
+}
