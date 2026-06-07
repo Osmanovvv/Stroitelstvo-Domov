@@ -1,9 +1,13 @@
 import { ArrowRight } from "lucide-react";
-import { contactLinks } from "../../content/landing";
+import { buildContactLinks } from "../../content/landing";
+import { getSettings } from "../../lib/queries";
 import ContactIcon from "../ContactIcon";
 import WorkStatus from "../WorkStatus";
 
-export default function ContactsSection() {
+export default async function ContactsSection() {
+  const settings = await getSettings();
+  const contactLinks = buildContactLinks(settings);
+
   return (
     <section className="section contacts-section" id="contacts">
       <div className="container contacts-layout">
@@ -12,7 +16,7 @@ export default function ContactsSection() {
           <h2>Подберем дом, проект или участок под ваш бюджет</h2>
           <p>Оставьте телефон, и мы предложим ближайший вариант для просмотра или расчета.</p>
           <div className="contact-status-card">
-            <WorkStatus showHours />
+            <WorkStatus showHours workStart={settings.work_start} workEnd={settings.work_end} />
           </div>
           <div className="contact-actions">
             {contactLinks.map((link) => (
@@ -31,12 +35,7 @@ export default function ContactsSection() {
         <form className="lead-form">
           <label>
             Имя
-            <input
-              type="text"
-              name="name"
-              autoComplete="name"
-              placeholder="Как к вам обращаться"
-            />
+            <input type="text" name="name" autoComplete="name" placeholder="Как к вам обращаться" />
           </label>
           <label>
             Телефон

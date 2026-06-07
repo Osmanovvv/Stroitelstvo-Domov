@@ -1,6 +1,7 @@
-import { faqItems } from "../../content/landing";
+import { getFaqItems } from "../../lib/queries";
 
-export default function FaqSection() {
+export default async function FaqSection() {
+  const faqItems = await getFaqItems();
   return (
     <section className="section faq-section">
       <div className="container two-column">
@@ -10,7 +11,7 @@ export default function FaqSection() {
         </div>
         <div className="faq-list">
           {faqItems.map((item) => (
-            <article className="faq-item" key={item.question}>
+            <article className="faq-item" key={item.id}>
               <h3>{item.question}</h3>
               <p>{item.answer}</p>
             </article>

@@ -1,6 +1,8 @@
-import { priceRows } from "../../content/landing";
+import { getPriceRows, getSettings } from "../../lib/queries";
 
-export default function PricesSection() {
+export default async function PricesSection() {
+  const [priceRows, settings] = await Promise.all([getPriceRows(), getSettings()]);
+
   return (
     <section className="section" id="prices">
       <div className="container section-head">
@@ -16,26 +18,29 @@ export default function PricesSection() {
             <tr>
               <th>Тип работ</th>
               <th>
-                Теплый контур<br />
-                <strong>от 48 000 ₽/м²</strong>
+                {settings.price_warm_label}
+                <br />
+                <strong>{settings.price_warm_value}</strong>
               </th>
               <th>
-                Предчистовая<br />
-                <strong>от 62 000 ₽/м²</strong>
+                {settings.price_pre_label}
+                <br />
+                <strong>{settings.price_pre_value}</strong>
               </th>
               <th>
-                Под ключ<br />
-                <strong>от 78 000 ₽/м²</strong>
+                {settings.price_full_label}
+                <br />
+                <strong>{settings.price_full_value}</strong>
               </th>
             </tr>
           </thead>
           <tbody>
             {priceRows.map((row) => (
-              <tr key={row.work}>
+              <tr key={row.id}>
                 <td>{row.work}</td>
-                <td data-label="Теплый контур">{row.warm}</td>
-                <td data-label="Предчистовая">{row.pre}</td>
-                <td data-label="Под ключ">{row.full}</td>
+                <td data-label={settings.price_warm_label}>{row.warm}</td>
+                <td data-label={settings.price_pre_label}>{row.pre}</td>
+                <td data-label={settings.price_full_label}>{row.full}</td>
               </tr>
             ))}
           </tbody>

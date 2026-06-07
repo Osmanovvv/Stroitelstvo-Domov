@@ -1,7 +1,8 @@
 import { ArrowRight } from "lucide-react";
-import { buildingHomes } from "../../content/landing";
+import { getBuildingHomes } from "../../lib/queries";
 
-export default function BuildingSection() {
+export default async function BuildingSection() {
+  const buildingHomes = await getBuildingHomes();
   return (
     <section className="section split-section" id="building">
       <div className="container split-layout">

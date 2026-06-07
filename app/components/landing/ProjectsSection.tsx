@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { projects } from "../../content/landing";
+import { getProjects } from "../../lib/queries";
 
-export default function ProjectsSection() {
+export default async function ProjectsSection() {
+  const projects = await getProjects();
   return (
     <section className="section tinted" id="projects">
       <div className="container section-head">

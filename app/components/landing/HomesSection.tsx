@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { ArrowRight, Bath, BedDouble, MapPin, Ruler, Trees } from "lucide-react";
-import { readyHomes } from "../../content/landing";
+import { getReadyHomes } from "../../lib/queries";
 
-export default function HomesSection() {
+export default async function HomesSection() {
+  const readyHomes = await getReadyHomes();
   return (
     <section className="section" id="homes">
       <div className="container section-head">

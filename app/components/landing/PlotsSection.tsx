@@ -1,7 +1,8 @@
 import { MapPin } from "lucide-react";
-import { plots } from "../../content/landing";
+import { getPlots } from "../../lib/queries";
 
-export default function PlotsSection() {
+export default async function PlotsSection() {
+  const plots = await getPlots();
   return (
     <section className="section" id="plots">
       <div className="container two-column">
