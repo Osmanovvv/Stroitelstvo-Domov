@@ -30,11 +30,6 @@ export default function BuildingForm({ action, item }: BuildingFormProps) {
         <label>Порядок</label>
         <input name="sortOrder" type="number" defaultValue={item?.sortOrder ?? 0} />
       </div>
-      <div className="admin-field">
-        <label>
-          <input name="isVisible" type="checkbox" defaultChecked={item?.isVisible ?? true} /> Показывать на сайте
-        </label>
-      </div>
       <div className="admin-form-actions">
         <button className="admin-btn primary" type="submit">Сохранить</button>
         <Link className="admin-btn" href="/admin/building">Отмена</Link>

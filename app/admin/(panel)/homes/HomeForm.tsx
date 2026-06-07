@@ -56,11 +56,6 @@ export default function HomeForm({ action, home }: HomeFormProps) {
         <label>Порядок</label>
         <input name="sortOrder" type="number" defaultValue={home?.sortOrder ?? 0} />
       </div>
-      <div className="admin-field">
-        <label>
-          <input name="isVisible" type="checkbox" defaultChecked={home?.isVisible ?? true} /> Показывать на сайте
-        </label>
-      </div>
       <div className="admin-form-actions">
         <button className="admin-btn primary" type="submit">Сохранить</button>
         <Link className="admin-btn" href="/admin/homes">Отмена</Link>

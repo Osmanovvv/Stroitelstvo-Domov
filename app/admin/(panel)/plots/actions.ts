@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
-import { str, num, bool } from "@/app/lib/form";
+import { str, num } from "@/app/lib/form";
 
 function revalidate() {
   revalidatePath("/");
@@ -17,7 +17,6 @@ function readData(formData: FormData) {
     utilities: str(formData, "utilities"),
     location: str(formData, "location"),
     sortOrder: num(formData, "sortOrder"),
-    isVisible: bool(formData, "isVisible"),
   };
 }
 

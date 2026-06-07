@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
-import { str, num, bool } from "@/app/lib/form";
+import { str, num } from "@/app/lib/form";
 import { saveUploadedImage } from "@/app/lib/upload";
 
 function revalidate() {
@@ -27,7 +27,6 @@ async function readData(formData: FormData) {
     status: str(formData, "status"),
     image,
     sortOrder: num(formData, "sortOrder"),
-    isVisible: bool(formData, "isVisible"),
   };
 }
 
