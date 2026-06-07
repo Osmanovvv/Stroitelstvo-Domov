@@ -87,6 +87,11 @@
 }
 .admin-field textarea { min-height: 90px; resize: vertical; }
 .admin-form-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+/* Кнопки-прямые потомки grid-формы не растягиваются на всю ширину */
+.admin-form > button,
+.admin-form > .admin-btn { justify-self: start; }
+/* …кроме формы входа, где кнопка на всю ширину карточки */
+.admin-login-card .admin-btn { justify-self: stretch; }
 .admin-loading { display: inline-flex; align-items: center; gap: 10px; color: #5a6478; font-size: 15px; font-weight: 600; }
 .admin-spinner {
   width: 18px;
