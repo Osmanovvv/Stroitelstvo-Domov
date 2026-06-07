@@ -1,13 +1,17 @@
 import Image from "next/image";
 import {
-  contactLinks,
+  buildContactLinks,
   mobileNavigationLinks,
   navigationLinks,
 } from "../content/landing";
+import { getSettings } from "../lib/queries";
 import ContactIcon from "./ContactIcon";
 import WorkStatus from "./WorkStatus";
 
-export default function SiteHeader() {
+export default async function SiteHeader() {
+  const settings = await getSettings();
+  const contactLinks = buildContactLinks(settings);
+
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label="На главный экран">
@@ -43,7 +47,7 @@ export default function SiteHeader() {
       </nav>
 
       <div className="header-actions">
-        <WorkStatus />
+        <WorkStatus workStart={settings.work_start} workEnd={settings.work_end} />
         <div className="header-contact-buttons" aria-label="Быстрая связь">
           {contactLinks.map((link) => (
             <a
@@ -76,7 +80,7 @@ export default function SiteHeader() {
             </a>
           ))}
           <span className="mobile-work-status">
-            <WorkStatus showHours />
+            <WorkStatus showHours workStart={settings.work_start} workEnd={settings.work_end} />
           </span>
           {contactLinks.map((link) => (
             <a
