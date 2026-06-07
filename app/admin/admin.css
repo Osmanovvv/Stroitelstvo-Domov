@@ -87,6 +87,16 @@
 }
 .admin-field textarea { min-height: 90px; resize: vertical; }
 .admin-form-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.admin-loading { display: inline-flex; align-items: center; gap: 10px; color: #5a6478; font-size: 15px; font-weight: 600; }
+.admin-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d3d9e6;
+  border-top-color: #506ff0;
+  border-radius: 50%;
+  animation: admin-spin 0.7s linear infinite;
+}
+@keyframes admin-spin { to { transform: rotate(360deg); } }
 .admin-row-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
 .admin-preview { width: 160px; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e7f0; }
 .admin-error { color: #c0392b; font-size: 14px; }
