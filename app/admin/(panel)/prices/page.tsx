@@ -17,32 +17,45 @@ export default async function PricesAdmin() {
 
       <div className="admin-card" style={{ marginBottom: 20 }}>
         <h3>Заголовки пакетов</h3>
-        <form className="admin-form" action={updatePackages}>
-          <div className="admin-field">
-            <label>Пакет 1 — название</label>
-            <input name="price_warm_label" defaultValue={s.price_warm_label ?? ""} />
+        <form action={updatePackages}>
+          <div className="admin-packages-grid">
+            <fieldset className="admin-package">
+              <legend>Пакет 1</legend>
+              <div className="admin-field">
+                <label>Название</label>
+                <input name="price_warm_label" defaultValue={s.price_warm_label ?? ""} placeholder="Теплый контур" />
+              </div>
+              <div className="admin-field">
+                <label>Цена</label>
+                <input name="price_warm_value" defaultValue={s.price_warm_value ?? ""} placeholder="от 48 000 ₽/м²" />
+              </div>
+            </fieldset>
+            <fieldset className="admin-package">
+              <legend>Пакет 2</legend>
+              <div className="admin-field">
+                <label>Название</label>
+                <input name="price_pre_label" defaultValue={s.price_pre_label ?? ""} placeholder="Предчистовая" />
+              </div>
+              <div className="admin-field">
+                <label>Цена</label>
+                <input name="price_pre_value" defaultValue={s.price_pre_value ?? ""} placeholder="от 62 000 ₽/м²" />
+              </div>
+            </fieldset>
+            <fieldset className="admin-package">
+              <legend>Пакет 3</legend>
+              <div className="admin-field">
+                <label>Название</label>
+                <input name="price_full_label" defaultValue={s.price_full_label ?? ""} placeholder="Под ключ" />
+              </div>
+              <div className="admin-field">
+                <label>Цена</label>
+                <input name="price_full_value" defaultValue={s.price_full_value ?? ""} placeholder="от 78 000 ₽/м²" />
+              </div>
+            </fieldset>
           </div>
-          <div className="admin-field">
-            <label>Пакет 1 — цена</label>
-            <input name="price_warm_value" defaultValue={s.price_warm_value ?? ""} />
+          <div className="admin-form-actions">
+            <button className="admin-btn primary" type="submit">Сохранить заголовки</button>
           </div>
-          <div className="admin-field">
-            <label>Пакет 2 — название</label>
-            <input name="price_pre_label" defaultValue={s.price_pre_label ?? ""} />
-          </div>
-          <div className="admin-field">
-            <label>Пакет 2 — цена</label>
-            <input name="price_pre_value" defaultValue={s.price_pre_value ?? ""} />
-          </div>
-          <div className="admin-field">
-            <label>Пакет 3 — название</label>
-            <input name="price_full_label" defaultValue={s.price_full_label ?? ""} />
-          </div>
-          <div className="admin-field">
-            <label>Пакет 3 — цена</label>
-            <input name="price_full_value" defaultValue={s.price_full_value ?? ""} />
-          </div>
-          <button className="admin-btn primary" type="submit">Сохранить заголовки</button>
         </form>
       </div>
 
