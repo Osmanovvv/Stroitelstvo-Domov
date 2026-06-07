@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Plot } from "@prisma/client";
 
 type PlotFormProps = {
@@ -34,7 +35,10 @@ export default function PlotForm({ action, plot }: PlotFormProps) {
           <input name="isVisible" type="checkbox" defaultChecked={plot?.isVisible ?? true} /> Показывать на сайте
         </label>
       </div>
-      <button className="admin-btn primary" type="submit">Сохранить</button>
+      <div className="admin-form-actions">
+        <button className="admin-btn primary" type="submit">Сохранить</button>
+        <Link className="admin-btn" href="/admin/plots">Отмена</Link>
+      </div>
     </form>
   );
 }

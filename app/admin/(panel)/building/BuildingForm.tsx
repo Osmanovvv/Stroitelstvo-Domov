@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { BuildingHome } from "@prisma/client";
 
 type BuildingFormProps = {
@@ -34,7 +35,10 @@ export default function BuildingForm({ action, item }: BuildingFormProps) {
           <input name="isVisible" type="checkbox" defaultChecked={item?.isVisible ?? true} /> Показывать на сайте
         </label>
       </div>
-      <button className="admin-btn primary" type="submit">Сохранить</button>
+      <div className="admin-form-actions">
+        <button className="admin-btn primary" type="submit">Сохранить</button>
+        <Link className="admin-btn" href="/admin/building">Отмена</Link>
+      </div>
     </form>
   );
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReadyHome } from "@prisma/client";
 
 type HomeFormProps = {
@@ -60,7 +61,10 @@ export default function HomeForm({ action, home }: HomeFormProps) {
           <input name="isVisible" type="checkbox" defaultChecked={home?.isVisible ?? true} /> Показывать на сайте
         </label>
       </div>
-      <button className="admin-btn primary" type="submit">Сохранить</button>
+      <div className="admin-form-actions">
+        <button className="admin-btn primary" type="submit">Сохранить</button>
+        <Link className="admin-btn" href="/admin/homes">Отмена</Link>
+      </div>
     </form>
   );
 }

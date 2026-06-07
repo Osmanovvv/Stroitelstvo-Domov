@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Project } from "@prisma/client";
 
 type ProjectFormProps = {
@@ -56,7 +57,10 @@ export default function ProjectForm({ action, project }: ProjectFormProps) {
           <input name="isVisible" type="checkbox" defaultChecked={project?.isVisible ?? true} /> Показывать на сайте
         </label>
       </div>
-      <button className="admin-btn primary" type="submit">Сохранить</button>
+      <div className="admin-form-actions">
+        <button className="admin-btn primary" type="submit">Сохранить</button>
+        <Link className="admin-btn" href="/admin/projects">Отмена</Link>
+      </div>
     </form>
   );
 }
