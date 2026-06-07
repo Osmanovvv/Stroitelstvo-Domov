@@ -1,6 +1,6 @@
 import { prisma } from "@/app/lib/db";
-import DeleteButton from "@/app/admin/components/DeleteButton";
-import { addRow, updateRow, deleteRow, updatePackages } from "./actions";
+import InlineDeleteButton from "@/app/admin/components/InlineDeleteButton";
+import { addRow, saveAllRows, deleteRow, updatePackages } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -53,33 +53,32 @@ export default async function PricesAdmin() {
             <button className="admin-btn primary" type="submit">Добавить строку</button>
           </form>
         </div>
-        <table className="admin-table">
-          <thead>
-            <tr><th>Работа</th><th>Пакет 1</th><th>Пакет 2</th><th>Пакет 3</th><th></th></tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id}>
-                <td colSpan={5}>
-                  <form className="admin-form" action={updateRow} style={{ maxWidth: "none" }}>
-                    <input type="hidden" name="id" value={row.id} />
-                    <input type="hidden" name="sortOrder" value={row.sortOrder} />
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr) auto auto", gap: 8, alignItems: "center" }}>
-                      <input name="work" defaultValue={row.work} placeholder="Работа" />
-                      <input name="warm" defaultValue={row.warm} placeholder="Пакет 1" />
-                      <input name="pre" defaultValue={row.pre} placeholder="Пакет 2" />
-                      <input name="full" defaultValue={row.full} placeholder="Пакет 3" />
-                      <button className="admin-btn" type="submit">Сохранить</button>
+        <form action={saveAllRows}>
+          <table className="admin-table">
+            <thead>
+              <tr><th>Работа</th><th>Пакет 1</th><th>Пакет 2</th><th>Пакет 3</th><th></th></tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td colSpan={5}>
+                    <input type="hidden" name="rowId" value={row.id} />
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr) auto", gap: 8, alignItems: "center" }}>
+                      <input name={`work_${row.id}`} defaultValue={row.work} placeholder="Работа" />
+                      <input name={`warm_${row.id}`} defaultValue={row.warm} placeholder="Пакет 1" />
+                      <input name={`pre_${row.id}`} defaultValue={row.pre} placeholder="Пакет 2" />
+                      <input name={`full_${row.id}`} defaultValue={row.full} placeholder="Пакет 3" />
+                      <InlineDeleteButton action={deleteRow.bind(null, row.id)} />
                     </div>
-                  </form>
-                  <div style={{ marginTop: 6 }}>
-                    <DeleteButton action={deleteRow} id={row.id} label="Удалить строку" />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="admin-form-actions">
+            <button className="admin-btn primary" type="submit">Сохранить</button>
+          </div>
+        </form>
       </div>
     </>
   );

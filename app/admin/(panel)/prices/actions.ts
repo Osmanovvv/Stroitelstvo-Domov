@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
-import { str, num } from "@/app/lib/form";
+import { str } from "@/app/lib/form";
 
 function revalidate() {
   revalidatePath("/");
@@ -17,22 +17,28 @@ export async function addRow() {
   revalidate();
 }
 
-export async function updateRow(formData: FormData) {
-  await prisma.priceRow.update({
-    where: { id: str(formData, "id") },
-    data: {
-      work: str(formData, "work"),
-      warm: str(formData, "warm"),
-      pre: str(formData, "pre"),
-      full: str(formData, "full"),
-      sortOrder: num(formData, "sortOrder"),
-    },
-  });
+// Сохраняет все строки разом: поля каждой строки заданы с суффиксом её id,
+// а список id передаётся скрытыми полями rowId.
+export async function saveAllRows(formData: FormData) {
+  const ids = formData.getAll("rowId").map((v) => String(v));
+  await Promise.all(
+    ids.map((id) =>
+      prisma.priceRow.update({
+        where: { id },
+        data: {
+          work: str(formData, `work_${id}`),
+          warm: str(formData, `warm_${id}`),
+          pre: str(formData, `pre_${id}`),
+          full: str(formData, `full_${id}`),
+        },
+      }),
+    ),
+  );
   revalidate();
 }
 
-export async function deleteRow(formData: FormData) {
-  await prisma.priceRow.delete({ where: { id: str(formData, "id") } });
+export async function deleteRow(id: string) {
+  await prisma.priceRow.delete({ where: { id } });
   revalidate();
 }
 
