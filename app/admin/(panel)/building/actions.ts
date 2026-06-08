@@ -1,14 +1,9 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
-
-function revalidate() {
-  revalidatePath("/");
-  revalidatePath("/admin/building");
-}
+import { toRecord } from "./config";
 
 function readData(formData: FormData) {
   return {
@@ -21,17 +16,20 @@ function readData(formData: FormData) {
 
 export async function createBuilding(formData: FormData) {
   const max = await prisma.buildingHome.aggregate({ _max: { sortOrder: true } });
-  await prisma.buildingHome.create({
+  const item = await prisma.buildingHome.create({
     data: { ...readData(formData), sortOrder: (max._max.sortOrder ?? -1) + 1 },
   });
-  revalidate();
-  redirect("/admin/building");
+  revalidatePath("/");
+  return toRecord(item);
 }
 
 export async function updateBuilding(formData: FormData) {
-  await prisma.buildingHome.update({ where: { id: str(formData, "id") }, data: readData(formData) });
-  revalidate();
-  redirect("/admin/building");
+  const item = await prisma.buildingHome.update({
+    where: { id: str(formData, "id") },
+    data: readData(formData),
+  });
+  revalidatePath("/");
+  return toRecord(item);
 }
 
 export async function deleteBuilding(id: string) {

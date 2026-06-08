@@ -1,39 +1,27 @@
-import Link from "next/link";
 import { prisma } from "@/app/lib/db";
-import SortableList, { type SortableItem } from "@/app/admin/components/SortableList";
-import { deleteHome, toggleHome, moveHome } from "./actions";
+import ResourceManager from "@/app/admin/components/ResourceManager";
+import { columns, fields, hasImage, toRecord } from "./config";
+import { createHome, updateHome, deleteHome, toggleHome, moveHome } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomesAdmin() {
   const homes = await prisma.readyHome.findMany({ orderBy: { sortOrder: "asc" } });
-  const items: SortableItem[] = homes.map((h) => ({
-    id: h.id,
-    isVisible: h.isVisible,
-    editHref: `/admin/homes/${h.id}`,
-    cells: [
-      { kind: "image", src: h.image },
-      { kind: "title", value: h.title },
-      { kind: "text", value: h.price },
-      { kind: "text", value: h.status },
-    ],
-  }));
+  const items = homes.map(toRecord);
 
   return (
-    <>
-      <div className="admin-topbar">
-        <h2>Готовые дома</h2>
-        <Link className="admin-btn primary" href="/admin/homes/new">Добавить дом</Link>
-      </div>
-      <div className="admin-card">
-        <SortableList
-          headers={["Фото", "Название", "Цена", "Статус"]}
-          items={items}
-          move={moveHome}
-          toggle={toggleHome}
-          remove={deleteHome}
-        />
-      </div>
-    </>
+    <ResourceManager
+      title="Готовые дома"
+      addLabel="Добавить дом"
+      hasImage={hasImage}
+      columns={columns}
+      fields={fields}
+      items={items}
+      create={createHome}
+      update={updateHome}
+      remove={deleteHome}
+      toggle={toggleHome}
+      move={moveHome}
+    />
   );
 }

@@ -1,14 +1,9 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
-
-function revalidate() {
-  revalidatePath("/");
-  revalidatePath("/admin/plots");
-}
+import { toRecord } from "./config";
 
 function readData(formData: FormData) {
   return {
@@ -21,17 +16,20 @@ function readData(formData: FormData) {
 
 export async function createPlot(formData: FormData) {
   const max = await prisma.plot.aggregate({ _max: { sortOrder: true } });
-  await prisma.plot.create({
+  const plot = await prisma.plot.create({
     data: { ...readData(formData), sortOrder: (max._max.sortOrder ?? -1) + 1 },
   });
-  revalidate();
-  redirect("/admin/plots");
+  revalidatePath("/");
+  return toRecord(plot);
 }
 
 export async function updatePlot(formData: FormData) {
-  await prisma.plot.update({ where: { id: str(formData, "id") }, data: readData(formData) });
-  revalidate();
-  redirect("/admin/plots");
+  const plot = await prisma.plot.update({
+    where: { id: str(formData, "id") },
+    data: readData(formData),
+  });
+  revalidatePath("/");
+  return toRecord(plot);
 }
 
 export async function deletePlot(id: string) {

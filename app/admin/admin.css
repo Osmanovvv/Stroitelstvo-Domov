@@ -157,6 +157,52 @@
 .admin-move-btn { min-width: 40px; justify-content: center; padding: 8px 10px; font-size: 19px; line-height: 1; }
 .admin-preview { width: 160px; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e7f0; }
 .admin-hero-preview { width: 320px; max-width: 100%; height: 170px; object-fit: cover; border-radius: 10px; border: 1px solid #e2e7f0; }
+
+/* Модалка добавления/редактирования */
+.admin-modal {
+  width: min(560px, calc(100% - 32px));
+  max-height: 90vh;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: #fff;
+  color: #11182f;
+  box-shadow: 0 30px 80px rgba(17, 24, 47, 0.35);
+  overflow: hidden;
+}
+.admin-modal::backdrop { background: rgba(17, 24, 47, 0.5); }
+.admin-modal-inner {
+  max-width: none;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 22px;
+}
+.admin-modal-head { display: flex; align-items: center; justify-content: space-between; }
+.admin-modal-head h3 { margin: 0; }
+.admin-modal-close {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #d3d9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: #11182f;
+  font-size: 15px;
+  cursor: pointer;
+}
+.admin-modal-close:hover { background: #f1f4fa; }
+@media (max-width: 620px) {
+  .admin-modal {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  .admin-modal-inner { max-height: 100%; height: 100%; }
+}
 .admin-error { color: #c0392b; font-size: 14px; }
 .admin-dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
 .admin-dash-card { display: block; text-decoration: none; }

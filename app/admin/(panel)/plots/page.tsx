@@ -1,38 +1,27 @@
-import Link from "next/link";
 import { prisma } from "@/app/lib/db";
-import SortableList, { type SortableItem } from "@/app/admin/components/SortableList";
-import { deletePlot, togglePlot, movePlot } from "./actions";
+import ResourceManager from "@/app/admin/components/ResourceManager";
+import { columns, fields, hasImage, toRecord } from "./config";
+import { createPlot, updatePlot, deletePlot, togglePlot, movePlot } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function PlotsAdmin() {
   const plots = await prisma.plot.findMany({ orderBy: { sortOrder: "asc" } });
-  const items: SortableItem[] = plots.map((p) => ({
-    id: p.id,
-    isVisible: p.isVisible,
-    editHref: `/admin/plots/${p.id}`,
-    cells: [
-      { kind: "title", value: p.title },
-      { kind: "text", value: p.area },
-      { kind: "text", value: p.location },
-    ],
-  }));
+  const items = plots.map(toRecord);
 
   return (
-    <>
-      <div className="admin-topbar">
-        <h2>Участки</h2>
-        <Link className="admin-btn primary" href="/admin/plots/new">Добавить участок</Link>
-      </div>
-      <div className="admin-card">
-        <SortableList
-          headers={["Название", "Площадь", "Локация"]}
-          items={items}
-          move={movePlot}
-          toggle={togglePlot}
-          remove={deletePlot}
-        />
-      </div>
-    </>
+    <ResourceManager
+      title="Участки"
+      addLabel="Добавить участок"
+      hasImage={hasImage}
+      columns={columns}
+      fields={fields}
+      items={items}
+      create={createPlot}
+      update={updatePlot}
+      remove={deletePlot}
+      toggle={togglePlot}
+      move={movePlot}
+    />
   );
 }

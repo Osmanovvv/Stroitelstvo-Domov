@@ -1,15 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
 import { saveUploadedImage } from "@/app/lib/upload";
-
-function revalidate() {
-  revalidatePath("/");
-  revalidatePath("/admin/projects");
-}
+import { toRecord } from "./config";
 
 async function readData(formData: FormData) {
   const image = await saveUploadedImage(
@@ -31,17 +26,20 @@ async function readData(formData: FormData) {
 export async function createProject(formData: FormData) {
   const data = await readData(formData);
   const max = await prisma.project.aggregate({ _max: { sortOrder: true } });
-  await prisma.project.create({
+  const project = await prisma.project.create({
     data: { ...data, sortOrder: (max._max.sortOrder ?? -1) + 1 },
   });
-  revalidate();
-  redirect("/admin/projects");
+  revalidatePath("/");
+  return toRecord(project);
 }
 
 export async function updateProject(formData: FormData) {
-  await prisma.project.update({ where: { id: str(formData, "id") }, data: await readData(formData) });
-  revalidate();
-  redirect("/admin/projects");
+  const project = await prisma.project.update({
+    where: { id: str(formData, "id") },
+    data: await readData(formData),
+  });
+  revalidatePath("/");
+  return toRecord(project);
 }
 
 export async function deleteProject(id: string) {

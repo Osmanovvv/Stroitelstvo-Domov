@@ -1,15 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
 import { saveUploadedImage } from "@/app/lib/upload";
-
-function revalidate() {
-  revalidatePath("/");
-  revalidatePath("/admin/homes");
-}
+import { toRecord } from "./config";
 
 async function readData(formData: FormData) {
   const image = await saveUploadedImage(
@@ -32,18 +27,20 @@ async function readData(formData: FormData) {
 export async function createHome(formData: FormData) {
   const data = await readData(formData);
   const max = await prisma.readyHome.aggregate({ _max: { sortOrder: true } });
-  await prisma.readyHome.create({
+  const home = await prisma.readyHome.create({
     data: { ...data, sortOrder: (max._max.sortOrder ?? -1) + 1 },
   });
-  revalidate();
-  redirect("/admin/homes");
+  revalidatePath("/");
+  return toRecord(home);
 }
 
 export async function updateHome(formData: FormData) {
-  const id = str(formData, "id");
-  await prisma.readyHome.update({ where: { id }, data: await readData(formData) });
-  revalidate();
-  redirect("/admin/homes");
+  const home = await prisma.readyHome.update({
+    where: { id: str(formData, "id") },
+    data: await readData(formData),
+  });
+  revalidatePath("/");
+  return toRecord(home);
 }
 
 export async function deleteHome(id: string) {
