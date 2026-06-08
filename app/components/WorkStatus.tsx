@@ -36,26 +36,30 @@ export default function WorkStatus({
   const startMinutes = toMinutes(workStart, 8 * 60);
   const endMinutes = toMinutes(workEnd, 19 * 60);
 
-  const isWorkingNow = () => {
-    const minutes = getMoscowMinutes();
-    return minutes >= startMinutes && minutes < endMinutes;
-  };
-
-  const [isWorking, setIsWorking] = useState(isWorkingNow);
+  // Начальное значение детерминировано (null) и одинаково на сервере и клиенте —
+  // это исключает hydration mismatch. Реальный статус (зависит от времени)
+  // вычисляется только на клиенте в useEffect.
+  const [isWorking, setIsWorking] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const updateStatus = () => setIsWorking(isWorkingNow());
+    const updateStatus = () => {
+      const minutes = getMoscowMinutes();
+      setIsWorking(minutes >= startMinutes && minutes < endMinutes);
+    };
     const intervalId = window.setInterval(updateStatus, 60_000);
     updateStatus();
     return () => window.clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startMinutes, endMinutes]);
 
+  const stateClass = isWorking === null ? "is-pending" : isWorking ? "is-open" : "is-closed";
+  const label =
+    isWorking === null ? "Часы работы" : isWorking ? "Сейчас работаем" : "Сейчас не работаем";
+
   return (
-    <span className={`work-status ${isWorking ? "is-open" : "is-closed"}`} aria-live="polite">
+    <span className={`work-status ${stateClass}`} aria-live="polite">
       <span className="work-status-dot" aria-hidden="true" />
       <span className="work-status-copy">
-        <strong>{isWorking ? "Сейчас работаем" : "Сейчас не работаем"}</strong>
+        <strong>{label}</strong>
         {showHours && <small>{workStart}-{workEnd} МСК</small>}
       </span>
     </span>

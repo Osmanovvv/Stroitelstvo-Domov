@@ -317,6 +317,11 @@ img {
     0 0 14px rgba(217, 149, 40, 0.36);
 }
 
+.site-header .work-status.is-pending .work-status-dot {
+  background: #9aa3b5;
+  box-shadow: 0 0 0 4px rgba(154, 163, 181, 0.16);
+}
+
 .site-header .work-status-copy small {
   color: rgba(17, 24, 47, 0.54);
 }
@@ -332,6 +337,11 @@ img {
 .work-status.is-closed .work-status-dot {
   background: #f6c86f;
   box-shadow: 0 0 0 4px rgba(246, 200, 111, 0.14);
+}
+
+.work-status.is-pending .work-status-dot {
+  background: #9aa3b5;
+  box-shadow: 0 0 0 4px rgba(154, 163, 181, 0.14);
 }
 
 .work-status-copy {
