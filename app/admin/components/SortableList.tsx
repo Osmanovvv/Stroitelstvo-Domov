@@ -106,7 +106,7 @@ export default function SortableList({
                   Редактировать
                 </Link>
                 <button
-                  className="admin-btn"
+                  className="admin-btn admin-move-btn"
                   type="button"
                   aria-label="Выше"
                   onClick={() => reorder(index, "up")}
@@ -114,7 +114,7 @@ export default function SortableList({
                   ↑
                 </button>
                 <button
-                  className="admin-btn"
+                  className="admin-btn admin-move-btn"
                   type="button"
                   aria-label="Ниже"
                   onClick={() => reorder(index, "down")}
