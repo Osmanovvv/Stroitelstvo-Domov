@@ -18,7 +18,7 @@ export async function createSessionToken(username: string): Promise<string> {
 
 export async function verifySessionToken(token: string): Promise<JWTPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, getSecret());
+    const { payload } = await jwtVerify(token, getSecret(), { algorithms: ["HS256"] });
     return payload;
   } catch {
     return null;

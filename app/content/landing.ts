@@ -494,7 +494,7 @@ export const mobileNavigationLinks = [
 
 export function buildContactLinks(settings: Record<string, string>): ContactLink[] {
   return [
-    { label: "Позвонить", href: `tel:${settings.phone ?? ""}`, icon: Phone },
+    { label: "Позвонить", href: settings.phone ? `tel:${settings.phone}` : "#", icon: Phone },
     {
       label: "WhatsApp",
       href: settings.whatsapp_url || "#",

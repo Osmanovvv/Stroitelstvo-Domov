@@ -16,8 +16,8 @@ export default async function SettingsAdmin() {
           <div className="admin-field"><label>WhatsApp (ссылка)</label><input name="whatsapp_url" defaultValue={s.whatsapp_url ?? ""} /></div>
           <div className="admin-field"><label>Telegram (ссылка)</label><input name="telegram_url" defaultValue={s.telegram_url ?? ""} /></div>
           <div className="admin-field"><label>MAX (ссылка)</label><input name="max_url" defaultValue={s.max_url ?? ""} /></div>
-          <div className="admin-field"><label>Начало работы (ЧЧ:ММ)</label><input name="work_start" defaultValue={s.work_start ?? "08:00"} /></div>
-          <div className="admin-field"><label>Конец работы (ЧЧ:ММ)</label><input name="work_end" defaultValue={s.work_end ?? "19:00"} /></div>
+          <div className="admin-field"><label>Начало работы</label><input type="time" name="work_start" defaultValue={s.work_start ?? "08:00"} /></div>
+          <div className="admin-field"><label>Конец работы</label><input type="time" name="work_end" defaultValue={s.work_end ?? "19:00"} /></div>
           <button className="admin-btn primary" type="submit">Сохранить настройки</button>
         </form>
       </div>

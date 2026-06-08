@@ -10,20 +10,21 @@ function revalidate() {
 }
 
 export async function addRow() {
-  const count = await prisma.priceRow.count();
+  const max = await prisma.priceRow.aggregate({ _max: { sortOrder: true } });
   await prisma.priceRow.create({
-    data: { work: "", warm: "", pre: "", full: "", sortOrder: count },
+    data: { work: "", warm: "", pre: "", full: "", sortOrder: (max._max.sortOrder ?? -1) + 1 },
   });
   revalidate();
 }
 
 // Сохраняет все строки разом: поля каждой строки заданы с суффиксом её id,
-// а список id передаётся скрытыми полями rowId.
+// а список id передаётся скрытыми полями rowId. updateMany не падает, если
+// какая-то строка уже удалена в другой вкладке.
 export async function saveAllRows(formData: FormData) {
   const ids = formData.getAll("rowId").map((v) => String(v));
   await Promise.all(
     ids.map((id) =>
-      prisma.priceRow.update({
+      prisma.priceRow.updateMany({
         where: { id },
         data: {
           work: str(formData, `work_${id}`),
