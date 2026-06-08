@@ -1,16 +1,14 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import type { Project } from "@prisma/client";
 import { prisma } from "@/app/lib/db";
-import { str } from "@/app/lib/form";
-import { saveUploadedImage, deleteUploadedImage } from "@/app/lib/upload";
-import { toRecord } from "./config";
+import { str, file } from "@/app/lib/form";
+import { saveUploadedImage } from "@/app/lib/upload";
+import { createResourceActions, type CollectionDelegate } from "@/app/lib/resourceActions";
+import { hasImage, toRecord } from "./config";
 
 async function readData(formData: FormData) {
-  const image = await saveUploadedImage(
-    formData.get("imageFile") as File | null,
-    str(formData, "imageExisting"),
-  );
+  const image = await saveUploadedImage(file(formData, "imageFile"), str(formData, "imageExisting"));
   return {
     name: str(formData, "name"),
     area: str(formData, "area"),
@@ -23,51 +21,25 @@ async function readData(formData: FormData) {
   };
 }
 
+const actions = createResourceActions<Project, ReturnType<typeof toRecord>>({
+  model: prisma.project as unknown as CollectionDelegate<Project>,
+  hasImage,
+  readData,
+  toRecord,
+});
+
 export async function createProject(formData: FormData) {
-  const data = await readData(formData);
-  if (!data.image) throw new Error("Добавьте фото");
-  const max = await prisma.project.aggregate({ _max: { sortOrder: true } });
-  const project = await prisma.project.create({
-    data: { ...data, sortOrder: (max._max.sortOrder ?? -1) + 1 },
-  });
-  revalidatePath("/");
-  return toRecord(project);
+  return actions.create(formData);
 }
-
 export async function updateProject(formData: FormData) {
-  const data = await readData(formData);
-  if (!data.image) throw new Error("Добавьте фото");
-  const project = await prisma.project.update({ where: { id: str(formData, "id") }, data });
-  revalidatePath("/");
-  return toRecord(project);
+  return actions.update(formData);
 }
-
 export async function deleteProject(id: string) {
-  const project = await prisma.project.findUnique({ where: { id } });
-  await prisma.project.delete({ where: { id } });
-  await deleteUploadedImage(project?.image);
-  revalidatePath("/");
+  return actions.remove(id);
 }
-
 export async function toggleProject(id: string) {
-  const current = await prisma.project.findUnique({ where: { id } });
-  if (!current) return;
-  await prisma.project.update({ where: { id }, data: { isVisible: !current.isVisible } });
-  revalidatePath("/");
+  return actions.toggle(id);
 }
-
 export async function moveProject(id: string, direction: "up" | "down") {
-  const up = direction === "up";
-  const current = await prisma.project.findUnique({ where: { id } });
-  if (!current) return;
-  const neighbor = await prisma.project.findFirst({
-    where: { sortOrder: up ? { lt: current.sortOrder } : { gt: current.sortOrder } },
-    orderBy: { sortOrder: up ? "desc" : "asc" },
-  });
-  if (!neighbor) return;
-  await prisma.$transaction([
-    prisma.project.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } }),
-    prisma.project.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } }),
-  ]);
-  revalidatePath("/");
+  return actions.move(id, direction);
 }

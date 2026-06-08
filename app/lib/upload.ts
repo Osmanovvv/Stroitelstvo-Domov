@@ -79,8 +79,7 @@ export async function saveUploadedImage(
   const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
   await writeFile(path.join(UPLOAD_DIR, fileName), output);
 
-  // Заменяем фото — старый загруженный файл больше не нужен.
-  await deleteUploadedImage(existingPath);
-
+  // Старый файл НЕ удаляем здесь: его удаляет экшен уже ПОСЛЕ успешной записи
+  // в БД (точка невозврата), иначе при ошибке БД фото пропадёт безвозвратно.
   return `/uploads/${fileName}`;
 }
