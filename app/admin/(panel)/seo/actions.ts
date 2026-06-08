@@ -4,16 +4,9 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
 
-const KEYS = [
-  "phone",
-  "whatsapp_url",
-  "telegram_url",
-  "max_url",
-  "work_start",
-  "work_end",
-];
+const KEYS = ["seo_title", "seo_description"];
 
-export async function updateSettings(formData: FormData) {
+export async function updateSeo(formData: FormData) {
   for (const key of KEYS) {
     await prisma.siteSetting.upsert({
       where: { key },
@@ -22,5 +15,5 @@ export async function updateSettings(formData: FormData) {
     });
   }
   revalidatePath("/");
-  revalidatePath("/admin/settings");
+  revalidatePath("/admin/seo");
 }

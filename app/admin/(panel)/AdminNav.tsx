@@ -11,6 +11,7 @@ const sections = [
   { href: "/admin/plots", label: "Участки" },
   { href: "/admin/prices", label: "Цены и комплектации" },
   { href: "/admin/faq", label: "FAQ" },
+  { href: "/admin/seo", label: "SEO" },
   { href: "/admin/settings", label: "Настройки сайта" },
 ];
 
