@@ -18,7 +18,10 @@ export default async function HeroAdmin() {
           <input type="hidden" name="heroImageExisting" value={image} />
           <div className="admin-field">
             <label>Заголовок</label>
-            <input name="hero_title" defaultValue={s.hero_title ?? heroDefaults.title} />
+            <textarea name="hero_title" rows={3} defaultValue={s.hero_title ?? heroDefaults.title} />
+            <small style={{ color: "#8a93a6", fontSize: 12 }}>
+              Каждая строка заголовка — с новой строки (Enter). Размер подстраивается под экран автоматически.
+            </small>
           </div>
           <div className="admin-field">
             <label>Подзаголовок</label>

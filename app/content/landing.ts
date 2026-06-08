@@ -470,7 +470,8 @@ export const contactLinks: ContactLink[] = [
 ];
 
 export const heroDefaults = {
-  title: "Строим вашу мечту: кирпичные дома в Краснодаре",
+  // Каждая строка заголовка — с новой строки (переносы задаёт редактор).
+  title: "Строим вашу мечту:\nкирпичные дома\nв Краснодаре",
   subtitle: "Готовые дома · Проекты · Строительство под ключ",
   image: "/hero/generated-brick-house-hero.png",
 };

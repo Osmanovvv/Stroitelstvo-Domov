@@ -8,6 +8,7 @@ export default async function HeroSection() {
   const title = settings.hero_title || heroDefaults.title;
   const subtitle = settings.hero_subtitle || heroDefaults.subtitle;
   const image = settings.hero_image || heroDefaults.image;
+  const titleLines = title.split("\n").filter((line) => line.trim() !== "");
 
   return (
     <section className="hero" id="top">
@@ -22,7 +23,11 @@ export default async function HeroSection() {
       <div className="hero-overlay" />
       <div className="hero-content">
         <div className="hero-copy">
-          <h1>{title}</h1>
+          <h1>
+            {titleLines.map((line, i) => (
+              <span key={i}>{line}</span>
+            ))}
+          </h1>
           <p className="hero-service-line">{subtitle}</p>
           <div className="hero-actions">
             <a className="button primary" href="#homes">
