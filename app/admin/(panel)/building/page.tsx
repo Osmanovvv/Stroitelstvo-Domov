@@ -5,7 +5,12 @@ import { deleteBuilding, toggleBuilding, moveBuilding } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function BuildingAdmin() {
+export default async function BuildingAdmin({
+  searchParams,
+}: {
+  searchParams: Promise<{ moved?: string }>;
+}) {
+  const { moved } = await searchParams;
   const items = await prisma.buildingHome.findMany({ orderBy: { sortOrder: "asc" } });
 
   return (
@@ -21,7 +26,7 @@ export default async function BuildingAdmin() {
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id}>
+              <tr key={item.id} className={item.id === moved ? "row-flash" : undefined}>
                 <td>
                   {item.title}
                   {!item.isVisible && <div className="admin-hidden-badge">скрыто</div>}

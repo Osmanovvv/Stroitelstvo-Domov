@@ -6,7 +6,12 @@ import { deleteProject, toggleProject, moveProject } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProjectsAdmin() {
+export default async function ProjectsAdmin({
+  searchParams,
+}: {
+  searchParams: Promise<{ moved?: string }>;
+}) {
+  const { moved } = await searchParams;
   const projects = await prisma.project.findMany({ orderBy: { sortOrder: "asc" } });
 
   return (
@@ -22,7 +27,7 @@ export default async function ProjectsAdmin() {
           </thead>
           <tbody>
             {projects.map((project) => (
-              <tr key={project.id}>
+              <tr key={project.id} className={project.id === moved ? "row-flash" : undefined}>
                 <td>{project.image && <Image src={project.image} alt="" width={64} height={44} />}</td>
                 <td>
                   {project.name}

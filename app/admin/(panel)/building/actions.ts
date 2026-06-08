@@ -61,4 +61,5 @@ export async function moveBuilding(formData: FormData) {
   await prisma.buildingHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
   await prisma.buildingHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
   revalidate();
+  redirect(`/admin/building?moved=${id}`);
 }

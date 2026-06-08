@@ -61,4 +61,5 @@ export async function movePlot(formData: FormData) {
   await prisma.plot.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
   await prisma.plot.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
   revalidate();
+  redirect(`/admin/plots?moved=${id}`);
 }

@@ -73,4 +73,5 @@ export async function moveHome(formData: FormData) {
   await prisma.readyHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
   await prisma.readyHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
   revalidate();
+  redirect(`/admin/homes?moved=${id}`);
 }

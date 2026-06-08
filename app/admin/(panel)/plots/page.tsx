@@ -5,7 +5,12 @@ import { deletePlot, togglePlot, movePlot } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function PlotsAdmin() {
+export default async function PlotsAdmin({
+  searchParams,
+}: {
+  searchParams: Promise<{ moved?: string }>;
+}) {
+  const { moved } = await searchParams;
   const plots = await prisma.plot.findMany({ orderBy: { sortOrder: "asc" } });
 
   return (
@@ -21,7 +26,7 @@ export default async function PlotsAdmin() {
           </thead>
           <tbody>
             {plots.map((plot) => (
-              <tr key={plot.id}>
+              <tr key={plot.id} className={plot.id === moved ? "row-flash" : undefined}>
                 <td>
                   {plot.title}
                   {!plot.isVisible && <div className="admin-hidden-badge">скрыто</div>}

@@ -6,7 +6,12 @@ import { deleteHome, toggleHome, moveHome } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomesAdmin() {
+export default async function HomesAdmin({
+  searchParams,
+}: {
+  searchParams: Promise<{ moved?: string }>;
+}) {
+  const { moved } = await searchParams;
   const homes = await prisma.readyHome.findMany({ orderBy: { sortOrder: "asc" } });
 
   return (
@@ -22,7 +27,7 @@ export default async function HomesAdmin() {
           </thead>
           <tbody>
             {homes.map((home) => (
-              <tr key={home.id}>
+              <tr key={home.id} className={home.id === moved ? "row-flash" : undefined}>
                 <td>{home.image && <Image src={home.image} alt="" width={64} height={44} />}</td>
                 <td>
                   {home.title}

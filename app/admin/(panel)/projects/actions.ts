@@ -71,4 +71,5 @@ export async function moveProject(formData: FormData) {
   await prisma.project.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
   await prisma.project.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
   revalidate();
+  redirect(`/admin/projects?moved=${id}`);
 }
