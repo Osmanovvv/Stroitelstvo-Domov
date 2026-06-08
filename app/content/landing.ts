@@ -11,6 +11,7 @@ import {
   Trophy,
   type LucideIcon,
 } from "lucide-react";
+import { safeHref } from "../lib/url";
 
 export type ReadyHome = {
   title: string;
@@ -497,16 +498,16 @@ export function buildContactLinks(settings: Record<string, string>): ContactLink
     { label: "Позвонить", href: settings.phone ? `tel:${settings.phone}` : "#", icon: Phone },
     {
       label: "WhatsApp",
-      href: settings.whatsapp_url || "#",
+      href: safeHref(settings.whatsapp_url),
       logo: "/social-icons/whatsapp.svg",
       external: true,
     },
     {
       label: "Telegram",
-      href: settings.telegram_url || "#",
+      href: safeHref(settings.telegram_url),
       logo: "/social-icons/telegram.svg",
       external: true,
     },
-    { label: "MAX", href: settings.max_url || "#", logo: "/social-icons/max.svg", external: true },
+    { label: "MAX", href: safeHref(settings.max_url), logo: "/social-icons/max.svg", external: true },
   ];
 }

@@ -1,11 +1,10 @@
-import { prisma } from "@/app/lib/db";
+import { getSettings } from "@/app/lib/queries";
 import { updateSeo } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function SeoAdmin() {
-  const rows = await prisma.siteSetting.findMany();
-  const s = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  const s = await getSettings();
 
   return (
     <>

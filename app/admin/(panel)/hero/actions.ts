@@ -1,29 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/app/lib/db";
-import { str } from "@/app/lib/form";
+import { str, file } from "@/app/lib/form";
 import { saveUploadedImage } from "@/app/lib/upload";
+import { upsertSettings } from "@/app/lib/settings";
 
 export async function updateHero(formData: FormData) {
-  const image = await saveUploadedImage(
-    formData.get("heroImageFile") as File | null,
-    str(formData, "heroImageExisting"),
-  );
+  const image = await saveUploadedImage(file(formData, "heroImageFile"), str(formData, "heroImageExisting"));
 
-  const values: Record<string, string> = {
+  await upsertSettings({
     hero_title: str(formData, "hero_title"),
     hero_subtitle: str(formData, "hero_subtitle"),
     hero_image: image,
-  };
-
-  for (const [key, value] of Object.entries(values)) {
-    await prisma.siteSetting.upsert({
-      where: { key },
-      update: { value },
-      create: { key, value },
-    });
-  }
+  });
 
   revalidatePath("/");
   revalidatePath("/admin/hero");

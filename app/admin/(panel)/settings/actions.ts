@@ -1,26 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
+import { upsertSettings } from "@/app/lib/settings";
 
-const KEYS = [
-  "phone",
-  "whatsapp_url",
-  "telegram_url",
-  "max_url",
-  "work_start",
-  "work_end",
-];
+const KEYS = ["phone", "whatsapp_url", "telegram_url", "max_url", "work_start", "work_end"];
 
 export async function updateSettings(formData: FormData) {
-  for (const key of KEYS) {
-    await prisma.siteSetting.upsert({
-      where: { key },
-      update: { value: str(formData, key) },
-      create: { key, value: str(formData, key) },
-    });
-  }
+  await upsertSettings(Object.fromEntries(KEYS.map((key) => [key, str(formData, key)])));
   revalidatePath("/");
   revalidatePath("/admin/settings");
 }

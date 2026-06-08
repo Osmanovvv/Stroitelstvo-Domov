@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
+import { upsertSettings } from "@/app/lib/settings";
 
 function revalidate() {
   revalidatePath("/");
@@ -53,12 +54,6 @@ const PACKAGE_KEYS = [
 ];
 
 export async function updatePackages(formData: FormData) {
-  for (const key of PACKAGE_KEYS) {
-    await prisma.siteSetting.upsert({
-      where: { key },
-      update: { value: str(formData, key) },
-      create: { key, value: str(formData, key) },
-    });
-  }
+  await upsertSettings(Object.fromEntries(PACKAGE_KEYS.map((key) => [key, str(formData, key)])));
   revalidate();
 }

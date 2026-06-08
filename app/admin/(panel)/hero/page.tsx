@@ -1,13 +1,12 @@
 import Image from "next/image";
-import { prisma } from "@/app/lib/db";
+import { getSettings } from "@/app/lib/queries";
 import { heroDefaults } from "@/app/content/landing";
 import { updateHero } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function HeroAdmin() {
-  const rows = await prisma.siteSetting.findMany();
-  const s = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  const s = await getSettings();
   const image = s.hero_image || heroDefaults.image;
 
   return (

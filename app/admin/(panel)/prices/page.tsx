@@ -1,15 +1,11 @@
-import { prisma } from "@/app/lib/db";
 import InlineDeleteButton from "@/app/admin/components/InlineDeleteButton";
+import { getPriceRows, getSettings } from "@/app/lib/queries";
 import { addRow, saveAllRows, deleteRow, updatePackages } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function PricesAdmin() {
-  const [rows, settingsRows] = await Promise.all([
-    prisma.priceRow.findMany({ orderBy: { sortOrder: "asc" } }),
-    prisma.siteSetting.findMany(),
-  ]);
-  const s = Object.fromEntries(settingsRows.map((r) => [r.key, r.value]));
+  const [rows, s] = await Promise.all([getPriceRows(), getSettings()]);
 
   return (
     <>

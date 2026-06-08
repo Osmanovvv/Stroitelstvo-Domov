@@ -17,6 +17,10 @@ import {
   TrustSection,
 } from "./components/landing";
 
+// Контент обновляется по запросу через revalidatePath('/') из админки;
+// фоновая ISR-ревалидация раз в час — страховка от устаревания и сбоев.
+export const revalidate = 3600;
+
 export default function Home() {
   return (
     <main>

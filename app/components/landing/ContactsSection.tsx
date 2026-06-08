@@ -49,7 +49,7 @@ export default async function ContactsSection() {
           </label>
           <label>
             Интересует
-            <select defaultValue="ready-house">
+            <select name="interest" defaultValue="ready-house">
               <option value="ready-house">Готовый дом</option>
               <option value="construction">Дом в строительстве</option>
               <option value="custom">Строительство под заказ</option>
