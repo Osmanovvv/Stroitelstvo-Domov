@@ -15,13 +15,15 @@ export default async function HomesSection() {
         {readyHomes.map((home) => (
           <article className="home-card" key={home.id}>
             <div className="home-image-wrap">
-              <Image
-                src={home.image}
-                alt={home.title}
-                width={820}
-                height={560}
-                sizes="(max-width: 900px) 100vw, 33vw"
-              />
+              {home.image && (
+                <Image
+                  src={home.image}
+                  alt={home.title}
+                  width={820}
+                  height={560}
+                  sizes="(max-width: 900px) 100vw, 33vw"
+                />
+              )}
               <span>{home.status}</span>
             </div>
             <div className="home-card-body">

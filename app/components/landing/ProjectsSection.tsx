@@ -15,12 +15,14 @@ export default async function ProjectsSection() {
         {projects.map((project) => (
           <article className="project-card" key={project.id}>
             <div className="project-media">
-              <Image
-                src={project.image}
-                alt={project.name}
-                fill
-                sizes="(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), (max-width: 1180px) calc((100vw - 108px) / 2), 325px"
-              />
+              {project.image && (
+                <Image
+                  src={project.image}
+                  alt={project.name}
+                  fill
+                  sizes="(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), (max-width: 1180px) calc((100vw - 108px) / 2), 325px"
+                />
+              )}
               <span className="project-area">{project.area}</span>
             </div>
             <div className="project-body">

@@ -53,7 +53,9 @@ export async function movePlot(id: string, direction: "up" | "down") {
     orderBy: { sortOrder: up ? "desc" : "asc" },
   });
   if (!neighbor) return;
-  await prisma.plot.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
-  await prisma.plot.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
+  await prisma.$transaction([
+    prisma.plot.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } }),
+    prisma.plot.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } }),
+  ]);
   revalidatePath("/");
 }

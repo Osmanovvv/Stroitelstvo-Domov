@@ -26,6 +26,7 @@ async function readData(formData: FormData) {
 
 export async function createHome(formData: FormData) {
   const data = await readData(formData);
+  if (!data.image) throw new Error("Добавьте фото");
   const max = await prisma.readyHome.aggregate({ _max: { sortOrder: true } });
   const home = await prisma.readyHome.create({
     data: { ...data, sortOrder: (max._max.sortOrder ?? -1) + 1 },
@@ -35,10 +36,9 @@ export async function createHome(formData: FormData) {
 }
 
 export async function updateHome(formData: FormData) {
-  const home = await prisma.readyHome.update({
-    where: { id: str(formData, "id") },
-    data: await readData(formData),
-  });
+  const data = await readData(formData);
+  if (!data.image) throw new Error("Добавьте фото");
+  const home = await prisma.readyHome.update({ where: { id: str(formData, "id") }, data });
   revalidatePath("/");
   return toRecord(home);
 }
@@ -64,7 +64,9 @@ export async function moveHome(id: string, direction: "up" | "down") {
     orderBy: { sortOrder: up ? "desc" : "asc" },
   });
   if (!neighbor) return;
-  await prisma.readyHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
-  await prisma.readyHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
+  await prisma.$transaction([
+    prisma.readyHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } }),
+    prisma.readyHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } }),
+  ]);
   revalidatePath("/");
 }

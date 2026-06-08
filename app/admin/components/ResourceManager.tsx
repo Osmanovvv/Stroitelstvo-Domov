@@ -55,8 +55,14 @@ export default function ResourceManager({
   const [items, setItems] = useState(initialItems);
   const [editing, setEditing] = useState<ResourceRecord | "new" | null>(null);
   const [saving, setSaving] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  function revert(snapshot: ResourceRecord[]) {
+    setItems(snapshot);
+    alert("Не удалось сохранить изменение. Обновите страницу и попробуйте снова.");
+  }
 
   useEffect(() => {
     if (editing !== null) {
@@ -69,10 +75,12 @@ export default function ResourceManager({
     dialogRef.current?.close();
   }
 
-  function reorder(index: number, direction: "up" | "down") {
+  async function reorder(index: number, direction: "up" | "down") {
+    if (busy) return; // сериализуем перестановки, чтобы не было гонок по sortOrder
     const target = direction === "down" ? index + 1 : index - 1;
     if (target < 0 || target >= items.length) return;
     const movedId = items[index].id;
+    const snapshot = items;
     const apply = () =>
       setItems((prev) => {
         const next = [...prev];
@@ -86,18 +94,36 @@ export default function ResourceManager({
     } else {
       apply();
     }
-    void move(movedId, direction);
+
+    setBusy(true);
+    try {
+      await move(movedId, direction);
+    } catch {
+      revert(snapshot);
+    } finally {
+      setBusy(false);
+    }
   }
 
-  function onToggle(id: string) {
+  async function onToggle(id: string) {
+    const snapshot = items;
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, isVisible: !it.isVisible } : it)));
-    void toggle(id);
+    try {
+      await toggle(id);
+    } catch {
+      revert(snapshot);
+    }
   }
 
-  function onRemove(id: string) {
+  async function onRemove(id: string) {
     if (!confirm("Удалить запись? Действие необратимо.")) return;
+    const snapshot = items;
     setItems((prev) => prev.filter((it) => it.id !== id));
-    void remove(id);
+    try {
+      await remove(id);
+    } catch {
+      revert(snapshot);
+    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -165,6 +191,7 @@ export default function ResourceManager({
                       className="admin-btn admin-move-btn"
                       type="button"
                       aria-label="Выше"
+                      disabled={busy}
                       onClick={() => reorder(index, "up")}
                     >
                       ↑
@@ -173,6 +200,7 @@ export default function ResourceManager({
                       className="admin-btn admin-move-btn"
                       type="button"
                       aria-label="Ниже"
+                      disabled={busy}
                       onClick={() => reorder(index, "down")}
                     >
                       ↓
@@ -194,8 +222,10 @@ export default function ResourceManager({
       <dialog
         ref={dialogRef}
         className="admin-modal"
+        aria-labelledby="admin-modal-title"
         onClose={() => setEditing(null)}
         onClick={(e) => {
+          if (saving) return;
           if (e.target === dialogRef.current) closeModal();
         }}
       >
@@ -206,7 +236,7 @@ export default function ResourceManager({
             onSubmit={handleSubmit}
           >
             <div className="admin-modal-head">
-              <h3>{editing === "new" ? `${addLabel}` : "Редактирование"}</h3>
+              <h3 id="admin-modal-title">{editing === "new" ? `${addLabel}` : "Редактирование"}</h3>
               <button
                 type="button"
                 className="admin-modal-close"
@@ -219,7 +249,7 @@ export default function ResourceManager({
 
             {current && <input type="hidden" name="id" value={current.id} />}
 
-            {fields.map((f) => (
+            {fields.map((f, idx) => (
               <div className="admin-field" key={f.name}>
                 <label>{f.label}</label>
                 {f.type === "textarea" ? (
@@ -228,6 +258,7 @@ export default function ResourceManager({
                     defaultValue={current?.values[f.name] ?? ""}
                     placeholder={f.placeholder}
                     required={f.required}
+                    autoFocus={idx === 0}
                   />
                 ) : (
                   <input
@@ -235,6 +266,7 @@ export default function ResourceManager({
                     defaultValue={current?.values[f.name] ?? ""}
                     placeholder={f.placeholder}
                     required={f.required}
+                    autoFocus={idx === 0}
                   />
                 )}
               </div>
@@ -251,7 +283,11 @@ export default function ResourceManager({
               </div>
             )}
 
-            {error && <p className="admin-error">{error}</p>}
+            {error && (
+              <p className="admin-error" role="alert">
+                {error}
+              </p>
+            )}
 
             <div className="admin-form-actions">
               <button className="admin-btn primary" type="submit" disabled={saving}>

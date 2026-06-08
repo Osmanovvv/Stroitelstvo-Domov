@@ -53,7 +53,9 @@ export async function moveBuilding(id: string, direction: "up" | "down") {
     orderBy: { sortOrder: up ? "desc" : "asc" },
   });
   if (!neighbor) return;
-  await prisma.buildingHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
-  await prisma.buildingHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
+  await prisma.$transaction([
+    prisma.buildingHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } }),
+    prisma.buildingHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } }),
+  ]);
   revalidatePath("/");
 }

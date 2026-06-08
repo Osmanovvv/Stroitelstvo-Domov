@@ -25,6 +25,7 @@ async function readData(formData: FormData) {
 
 export async function createProject(formData: FormData) {
   const data = await readData(formData);
+  if (!data.image) throw new Error("Добавьте фото");
   const max = await prisma.project.aggregate({ _max: { sortOrder: true } });
   const project = await prisma.project.create({
     data: { ...data, sortOrder: (max._max.sortOrder ?? -1) + 1 },
@@ -34,10 +35,9 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(formData: FormData) {
-  const project = await prisma.project.update({
-    where: { id: str(formData, "id") },
-    data: await readData(formData),
-  });
+  const data = await readData(formData);
+  if (!data.image) throw new Error("Добавьте фото");
+  const project = await prisma.project.update({ where: { id: str(formData, "id") }, data });
   revalidatePath("/");
   return toRecord(project);
 }
@@ -63,7 +63,9 @@ export async function moveProject(id: string, direction: "up" | "down") {
     orderBy: { sortOrder: up ? "desc" : "asc" },
   });
   if (!neighbor) return;
-  await prisma.project.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
-  await prisma.project.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
+  await prisma.$transaction([
+    prisma.project.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } }),
+    prisma.project.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } }),
+  ]);
   revalidatePath("/");
 }
