@@ -44,23 +44,20 @@ export async function updateProject(formData: FormData) {
   redirect("/admin/projects");
 }
 
-export async function deleteProject(formData: FormData) {
-  await prisma.project.delete({ where: { id: str(formData, "id") } });
-  revalidate();
+export async function deleteProject(id: string) {
+  await prisma.project.delete({ where: { id } });
+  revalidatePath("/");
 }
 
-export async function toggleProject(formData: FormData) {
-  const id = str(formData, "id");
+export async function toggleProject(id: string) {
   const current = await prisma.project.findUnique({ where: { id } });
-  if (current) {
-    await prisma.project.update({ where: { id }, data: { isVisible: !current.isVisible } });
-    revalidate();
-  }
+  if (!current) return;
+  await prisma.project.update({ where: { id }, data: { isVisible: !current.isVisible } });
+  revalidatePath("/");
 }
 
-export async function moveProject(formData: FormData) {
-  const id = str(formData, "id");
-  const up = str(formData, "direction") === "up";
+export async function moveProject(id: string, direction: "up" | "down") {
+  const up = direction === "up";
   const current = await prisma.project.findUnique({ where: { id } });
   if (!current) return;
   const neighbor = await prisma.project.findFirst({
@@ -70,6 +67,5 @@ export async function moveProject(formData: FormData) {
   if (!neighbor) return;
   await prisma.project.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
   await prisma.project.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
-  revalidate();
-  redirect(`/admin/projects?moved=${id}`);
+  revalidatePath("/");
 }

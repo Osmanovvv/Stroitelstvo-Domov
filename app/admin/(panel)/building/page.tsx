@@ -1,17 +1,22 @@
 import Link from "next/link";
 import { prisma } from "@/app/lib/db";
-import RowActions from "@/app/admin/components/RowActions";
+import SortableList, { type SortableItem } from "@/app/admin/components/SortableList";
 import { deleteBuilding, toggleBuilding, moveBuilding } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function BuildingAdmin({
-  searchParams,
-}: {
-  searchParams: Promise<{ moved?: string }>;
-}) {
-  const { moved } = await searchParams;
-  const items = await prisma.buildingHome.findMany({ orderBy: { sortOrder: "asc" } });
+export default async function BuildingAdmin() {
+  const buildings = await prisma.buildingHome.findMany({ orderBy: { sortOrder: "asc" } });
+  const items: SortableItem[] = buildings.map((b) => ({
+    id: b.id,
+    isVisible: b.isVisible,
+    editHref: `/admin/building/${b.id}`,
+    cells: [
+      { kind: "title", value: b.title },
+      { kind: "text", value: b.stage },
+      { kind: "text", value: b.finish },
+    ],
+  }));
 
   return (
     <>
@@ -20,33 +25,13 @@ export default async function BuildingAdmin({
         <Link className="admin-btn primary" href="/admin/building/new">Добавить</Link>
       </div>
       <div className="admin-card">
-        <table className="admin-table">
-          <thead>
-            <tr><th>Название</th><th>Этап</th><th>Срок</th><th></th></tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id} className={item.id === moved ? "row-flash" : undefined}>
-                <td>
-                  {item.title}
-                  {!item.isVisible && <div className="admin-hidden-badge">скрыто</div>}
-                </td>
-                <td>{item.stage}</td>
-                <td>{item.finish}</td>
-                <td>
-                  <RowActions
-                    editHref={`/admin/building/${item.id}`}
-                    id={item.id}
-                    isVisible={item.isVisible}
-                    toggleAction={toggleBuilding}
-                    moveAction={moveBuilding}
-                    deleteAction={deleteBuilding}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <SortableList
+          headers={["Название", "Этап", "Срок"]}
+          items={items}
+          move={moveBuilding}
+          toggle={toggleBuilding}
+          remove={deleteBuilding}
+        />
       </div>
     </>
   );

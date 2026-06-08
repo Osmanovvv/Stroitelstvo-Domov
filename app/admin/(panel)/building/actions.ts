@@ -34,23 +34,20 @@ export async function updateBuilding(formData: FormData) {
   redirect("/admin/building");
 }
 
-export async function deleteBuilding(formData: FormData) {
-  await prisma.buildingHome.delete({ where: { id: str(formData, "id") } });
-  revalidate();
+export async function deleteBuilding(id: string) {
+  await prisma.buildingHome.delete({ where: { id } });
+  revalidatePath("/");
 }
 
-export async function toggleBuilding(formData: FormData) {
-  const id = str(formData, "id");
+export async function toggleBuilding(id: string) {
   const current = await prisma.buildingHome.findUnique({ where: { id } });
-  if (current) {
-    await prisma.buildingHome.update({ where: { id }, data: { isVisible: !current.isVisible } });
-    revalidate();
-  }
+  if (!current) return;
+  await prisma.buildingHome.update({ where: { id }, data: { isVisible: !current.isVisible } });
+  revalidatePath("/");
 }
 
-export async function moveBuilding(formData: FormData) {
-  const id = str(formData, "id");
-  const up = str(formData, "direction") === "up";
+export async function moveBuilding(id: string, direction: "up" | "down") {
+  const up = direction === "up";
   const current = await prisma.buildingHome.findUnique({ where: { id } });
   if (!current) return;
   const neighbor = await prisma.buildingHome.findFirst({
@@ -60,6 +57,5 @@ export async function moveBuilding(formData: FormData) {
   if (!neighbor) return;
   await prisma.buildingHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
   await prisma.buildingHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
-  revalidate();
-  redirect(`/admin/building?moved=${id}`);
+  revalidatePath("/");
 }

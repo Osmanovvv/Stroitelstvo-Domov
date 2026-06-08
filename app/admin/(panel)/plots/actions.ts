@@ -34,23 +34,20 @@ export async function updatePlot(formData: FormData) {
   redirect("/admin/plots");
 }
 
-export async function deletePlot(formData: FormData) {
-  await prisma.plot.delete({ where: { id: str(formData, "id") } });
-  revalidate();
+export async function deletePlot(id: string) {
+  await prisma.plot.delete({ where: { id } });
+  revalidatePath("/");
 }
 
-export async function togglePlot(formData: FormData) {
-  const id = str(formData, "id");
+export async function togglePlot(id: string) {
   const current = await prisma.plot.findUnique({ where: { id } });
-  if (current) {
-    await prisma.plot.update({ where: { id }, data: { isVisible: !current.isVisible } });
-    revalidate();
-  }
+  if (!current) return;
+  await prisma.plot.update({ where: { id }, data: { isVisible: !current.isVisible } });
+  revalidatePath("/");
 }
 
-export async function movePlot(formData: FormData) {
-  const id = str(formData, "id");
-  const up = str(formData, "direction") === "up";
+export async function movePlot(id: string, direction: "up" | "down") {
+  const up = direction === "up";
   const current = await prisma.plot.findUnique({ where: { id } });
   if (!current) return;
   const neighbor = await prisma.plot.findFirst({
@@ -60,6 +57,5 @@ export async function movePlot(formData: FormData) {
   if (!neighbor) return;
   await prisma.plot.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
   await prisma.plot.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
-  revalidate();
-  redirect(`/admin/plots?moved=${id}`);
+  revalidatePath("/");
 }

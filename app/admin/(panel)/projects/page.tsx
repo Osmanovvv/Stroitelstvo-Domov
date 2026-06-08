@@ -1,18 +1,23 @@
 import Link from "next/link";
-import Image from "next/image";
 import { prisma } from "@/app/lib/db";
-import RowActions from "@/app/admin/components/RowActions";
+import SortableList, { type SortableItem } from "@/app/admin/components/SortableList";
 import { deleteProject, toggleProject, moveProject } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProjectsAdmin({
-  searchParams,
-}: {
-  searchParams: Promise<{ moved?: string }>;
-}) {
-  const { moved } = await searchParams;
+export default async function ProjectsAdmin() {
   const projects = await prisma.project.findMany({ orderBy: { sortOrder: "asc" } });
+  const items: SortableItem[] = projects.map((p) => ({
+    id: p.id,
+    isVisible: p.isVisible,
+    editHref: `/admin/projects/${p.id}`,
+    cells: [
+      { kind: "image", src: p.image },
+      { kind: "title", value: p.name },
+      { kind: "text", value: p.area },
+      { kind: "text", value: p.price },
+    ],
+  }));
 
   return (
     <>
@@ -21,34 +26,13 @@ export default async function ProjectsAdmin({
         <Link className="admin-btn primary" href="/admin/projects/new">Добавить проект</Link>
       </div>
       <div className="admin-card">
-        <table className="admin-table">
-          <thead>
-            <tr><th>Фото</th><th>Название</th><th>Площадь</th><th>Цена</th><th></th></tr>
-          </thead>
-          <tbody>
-            {projects.map((project) => (
-              <tr key={project.id} className={project.id === moved ? "row-flash" : undefined}>
-                <td>{project.image && <Image src={project.image} alt="" width={64} height={44} />}</td>
-                <td>
-                  {project.name}
-                  {!project.isVisible && <div className="admin-hidden-badge">скрыто</div>}
-                </td>
-                <td>{project.area}</td>
-                <td>{project.price}</td>
-                <td>
-                  <RowActions
-                    editHref={`/admin/projects/${project.id}`}
-                    id={project.id}
-                    isVisible={project.isVisible}
-                    toggleAction={toggleProject}
-                    moveAction={moveProject}
-                    deleteAction={deleteProject}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <SortableList
+          headers={["Фото", "Название", "Площадь", "Цена"]}
+          items={items}
+          move={moveProject}
+          toggle={toggleProject}
+          remove={deleteProject}
+        />
       </div>
     </>
   );
