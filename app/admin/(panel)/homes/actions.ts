@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
-import { saveUploadedImage } from "@/app/lib/upload";
+import { saveUploadedImage, deleteUploadedImage } from "@/app/lib/upload";
 import { toRecord } from "./config";
 
 async function readData(formData: FormData) {
@@ -44,7 +44,9 @@ export async function updateHome(formData: FormData) {
 }
 
 export async function deleteHome(id: string) {
+  const home = await prisma.readyHome.findUnique({ where: { id } });
   await prisma.readyHome.delete({ where: { id } });
+  await deleteUploadedImage(home?.image);
   revalidatePath("/");
 }
 

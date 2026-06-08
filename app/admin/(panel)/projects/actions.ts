@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
 import { str } from "@/app/lib/form";
-import { saveUploadedImage } from "@/app/lib/upload";
+import { saveUploadedImage, deleteUploadedImage } from "@/app/lib/upload";
 import { toRecord } from "./config";
 
 async function readData(formData: FormData) {
@@ -43,7 +43,9 @@ export async function updateProject(formData: FormData) {
 }
 
 export async function deleteProject(id: string) {
+  const project = await prisma.project.findUnique({ where: { id } });
   await prisma.project.delete({ where: { id } });
+  await deleteUploadedImage(project?.image);
   revalidatePath("/");
 }
 

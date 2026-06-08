@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
@@ -20,6 +20,19 @@ const ALLOWED_MIME = new Set([
   "image/gif",
   "image/avif",
 ]);
+
+// Удаляет ранее загруженный файл. Трогает ТОЛЬКО файлы из /uploads
+// (не /hero-дефолты, не внешние URL); basename защищает от обхода путей.
+export async function deleteUploadedImage(imagePath: string | null | undefined): Promise<void> {
+  if (!imagePath || !imagePath.startsWith("/uploads/")) {
+    return;
+  }
+  try {
+    await unlink(path.join(UPLOAD_DIR, path.basename(imagePath)));
+  } catch {
+    // файла уже нет — это нормально
+  }
+}
 
 export async function saveUploadedImage(
   file: File | null,
@@ -65,6 +78,9 @@ export async function saveUploadedImage(
 
   const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
   await writeFile(path.join(UPLOAD_DIR, fileName), output);
+
+  // Заменяем фото — старый загруженный файл больше не нужен.
+  await deleteUploadedImage(existingPath);
 
   return `/uploads/${fileName}`;
 }
