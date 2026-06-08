@@ -1,13 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import {
-  readyHomes,
-  projects,
-  buildingHomes,
-  plots,
-  priceRows,
-  faqItems,
-  heroDefaults,
-} from "../app/content/landing";
+import { readyHomes, projects, buildingHomes, plots, priceRows, faqItems } from "./seed-data";
+import { heroDefaults } from "../app/content/landing";
 
 const prisma = new PrismaClient();
 
