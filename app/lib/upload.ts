@@ -1,18 +1,25 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import sharp from "sharp";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
-const MAX_BYTES = 8 * 1024 * 1024; // 8 МБ
+const MAX_BYTES = 15 * 1024 * 1024; // 15 МБ на исходник (на выходе будет в разы меньше)
 
-// Расширение определяется по MIME-типу, а не по имени файла, поэтому
-// небезопасные форматы (svg, html, js) и подмена имени исключены.
-const MIME_EXT: Record<string, string> = {
-  "image/jpeg": ".jpg",
-  "image/png": ".png",
-  "image/webp": ".webp",
-  "image/gif": ".gif",
-  "image/avif": ".avif",
-};
+// Самая длинная сторона ужимается до этого размера — больше для веба не нужно,
+// next/image потом отдаёт картинку под конкретное устройство.
+const MAX_DIMENSION = 2400;
+// Качество WebP: визуально без потерь для фото, но заметно легче исходника.
+const WEBP_QUALITY = 82;
+
+// Разрешённые входные форматы (по MIME, а не по имени файла) — небезопасные
+// svg/html/js исключены. На выход всё конвертируется в оптимизированный WebP.
+const ALLOWED_MIME = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/avif",
+]);
 
 export async function saveUploadedImage(
   file: File | null,
@@ -22,19 +29,42 @@ export async function saveUploadedImage(
     return existingPath;
   }
 
-  const ext = MIME_EXT[file.type];
-  if (!ext) {
+  if (!ALLOWED_MIME.has(file.type)) {
     throw new Error("Недопустимый тип файла. Разрешены JPG, PNG, WebP, GIF, AVIF.");
   }
   if (file.size > MAX_BYTES) {
-    throw new Error("Файл слишком большой (максимум 8 МБ).");
+    throw new Error("Файл слишком большой (максимум 15 МБ).");
+  }
+
+  const input = Buffer.from(await file.arrayBuffer());
+
+  // Сжимаем и оптимизируем прямо при загрузке: поворот по EXIF, ресайз до
+  // разумного максимума без растягивания, конвертация в WebP. Метаданные
+  // (EXIF/GPS) при этом отбрасываются автоматически.
+  let output: Buffer;
+  try {
+    const animated = file.type === "image/gif";
+    let pipeline = sharp(input, animated ? { animated: true } : {});
+    if (!animated) {
+      pipeline = pipeline.rotate();
+    }
+    output = await pipeline
+      .resize({
+        width: MAX_DIMENSION,
+        height: MAX_DIMENSION,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .webp({ quality: WEBP_QUALITY })
+      .toBuffer();
+  } catch {
+    throw new Error("Не удалось обработать изображение. Попробуйте другой файл.");
   }
 
   await mkdir(UPLOAD_DIR, { recursive: true });
 
-  const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(UPLOAD_DIR, fileName), buffer);
+  const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
+  await writeFile(path.join(UPLOAD_DIR, fileName), output);
 
   return `/uploads/${fileName}`;
 }
