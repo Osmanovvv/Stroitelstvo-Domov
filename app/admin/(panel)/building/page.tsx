@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/app/lib/db";
 import RowActions from "@/app/admin/components/RowActions";
-import { deleteBuilding, toggleBuilding } from "./actions";
+import { deleteBuilding, toggleBuilding, moveBuilding } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +34,7 @@ export default async function BuildingAdmin() {
                     id={item.id}
                     isVisible={item.isVisible}
                     toggleAction={toggleBuilding}
+                    moveAction={moveBuilding}
                     deleteAction={deleteBuilding}
                   />
                 </td>

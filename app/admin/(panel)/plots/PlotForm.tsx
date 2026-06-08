@@ -26,10 +26,6 @@ export default function PlotForm({ action, plot }: PlotFormProps) {
         <label>Локация</label>
         <input name="location" defaultValue={plot?.location ?? ""} placeholder="Краснодар +20 км" />
       </div>
-      <div className="admin-field">
-        <label>Порядок</label>
-        <input name="sortOrder" type="number" defaultValue={plot?.sortOrder ?? 0} />
-      </div>
       <div className="admin-form-actions">
         <button className="admin-btn primary" type="submit">Сохранить</button>
         <Link className="admin-btn" href="/admin/plots">Отмена</Link>

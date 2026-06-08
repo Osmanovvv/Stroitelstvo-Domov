@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/app/lib/db";
 import RowActions from "@/app/admin/components/RowActions";
-import { deleteProject, toggleProject } from "./actions";
+import { deleteProject, toggleProject, moveProject } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +36,7 @@ export default async function ProjectsAdmin() {
                     id={project.id}
                     isVisible={project.isVisible}
                     toggleAction={toggleProject}
+                    moveAction={moveProject}
                     deleteAction={deleteProject}
                   />
                 </td>

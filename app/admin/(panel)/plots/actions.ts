@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
-import { str, num } from "@/app/lib/form";
+import { str } from "@/app/lib/form";
 
 function revalidate() {
   revalidatePath("/");
@@ -16,12 +16,14 @@ function readData(formData: FormData) {
     area: str(formData, "area"),
     utilities: str(formData, "utilities"),
     location: str(formData, "location"),
-    sortOrder: num(formData, "sortOrder"),
   };
 }
 
 export async function createPlot(formData: FormData) {
-  await prisma.plot.create({ data: readData(formData) });
+  const max = await prisma.plot.aggregate({ _max: { sortOrder: true } });
+  await prisma.plot.create({
+    data: { ...readData(formData), sortOrder: (max._max.sortOrder ?? -1) + 1 },
+  });
   revalidate();
   redirect("/admin/plots");
 }
@@ -44,4 +46,19 @@ export async function togglePlot(formData: FormData) {
     await prisma.plot.update({ where: { id }, data: { isVisible: !current.isVisible } });
     revalidate();
   }
+}
+
+export async function movePlot(formData: FormData) {
+  const id = str(formData, "id");
+  const up = str(formData, "direction") === "up";
+  const current = await prisma.plot.findUnique({ where: { id } });
+  if (!current) return;
+  const neighbor = await prisma.plot.findFirst({
+    where: { sortOrder: up ? { lt: current.sortOrder } : { gt: current.sortOrder } },
+    orderBy: { sortOrder: up ? "desc" : "asc" },
+  });
+  if (!neighbor) return;
+  await prisma.plot.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
+  await prisma.plot.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
+  revalidate();
 }

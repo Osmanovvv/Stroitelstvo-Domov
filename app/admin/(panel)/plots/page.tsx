@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/app/lib/db";
 import RowActions from "@/app/admin/components/RowActions";
-import { deletePlot, togglePlot } from "./actions";
+import { deletePlot, togglePlot, movePlot } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +34,7 @@ export default async function PlotsAdmin() {
                     id={plot.id}
                     isVisible={plot.isVisible}
                     toggleAction={togglePlot}
+                    moveAction={movePlot}
                     deleteAction={deletePlot}
                   />
                 </td>

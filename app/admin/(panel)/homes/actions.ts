@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
-import { str, num } from "@/app/lib/form";
+import { str } from "@/app/lib/form";
 import { saveUploadedImage } from "@/app/lib/upload";
 
 function revalidate() {
@@ -26,12 +26,15 @@ async function readData(formData: FormData) {
     location: str(formData, "location"),
     status: str(formData, "status"),
     image,
-    sortOrder: num(formData, "sortOrder"),
   };
 }
 
 export async function createHome(formData: FormData) {
-  await prisma.readyHome.create({ data: await readData(formData) });
+  const data = await readData(formData);
+  const max = await prisma.readyHome.aggregate({ _max: { sortOrder: true } });
+  await prisma.readyHome.create({
+    data: { ...data, sortOrder: (max._max.sortOrder ?? -1) + 1 },
+  });
   revalidate();
   redirect("/admin/homes");
 }
@@ -55,4 +58,19 @@ export async function toggleHome(formData: FormData) {
     await prisma.readyHome.update({ where: { id }, data: { isVisible: !current.isVisible } });
     revalidate();
   }
+}
+
+export async function moveHome(formData: FormData) {
+  const id = str(formData, "id");
+  const up = str(formData, "direction") === "up";
+  const current = await prisma.readyHome.findUnique({ where: { id } });
+  if (!current) return;
+  const neighbor = await prisma.readyHome.findFirst({
+    where: { sortOrder: up ? { lt: current.sortOrder } : { gt: current.sortOrder } },
+    orderBy: { sortOrder: up ? "desc" : "asc" },
+  });
+  if (!neighbor) return;
+  await prisma.readyHome.update({ where: { id: current.id }, data: { sortOrder: neighbor.sortOrder } });
+  await prisma.readyHome.update({ where: { id: neighbor.id }, data: { sortOrder: current.sortOrder } });
+  revalidate();
 }

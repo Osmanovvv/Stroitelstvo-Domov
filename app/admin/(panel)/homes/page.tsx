@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/app/lib/db";
 import RowActions from "@/app/admin/components/RowActions";
-import { deleteHome, toggleHome } from "./actions";
+import { deleteHome, toggleHome, moveHome } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +36,7 @@ export default async function HomesAdmin() {
                     id={home.id}
                     isVisible={home.isVisible}
                     toggleAction={toggleHome}
+                    moveAction={moveHome}
                     deleteAction={deleteHome}
                   />
                 </td>
