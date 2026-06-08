@@ -6,6 +6,7 @@ import {
   plots,
   priceRows,
   faqItems,
+  heroDefaults,
 } from "../app/content/landing";
 
 const prisma = new PrismaClient();
@@ -64,6 +65,9 @@ async function main() {
     price_pre_value: "от 62 000 ₽/м²",
     price_full_label: "Под ключ",
     price_full_value: "от 78 000 ₽/м²",
+    hero_title: heroDefaults.title,
+    hero_subtitle: heroDefaults.subtitle,
+    hero_image: heroDefaults.image,
   };
   await prisma.siteSetting.createMany({
     data: Object.entries(settings).map(([key, value]) => ({ key, value })),

@@ -1,12 +1,19 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { heroDefaults } from "../../content/landing";
+import { getSettings } from "../../lib/queries";
 
-export default function HeroSection() {
+export default async function HeroSection() {
+  const settings = await getSettings();
+  const title = settings.hero_title || heroDefaults.title;
+  const subtitle = settings.hero_subtitle || heroDefaults.subtitle;
+  const image = settings.hero_image || heroDefaults.image;
+
   return (
     <section className="hero" id="top">
       <Image
         className="hero-image"
-        src="/hero/generated-brick-house-hero.png"
+        src={image}
         alt="Современный кирпичный дом в вечернем свете"
         fill
         priority
@@ -15,12 +22,8 @@ export default function HeroSection() {
       <div className="hero-overlay" />
       <div className="hero-content">
         <div className="hero-copy">
-          <h1>
-            <span>Строим вашу мечту:</span>{" "}
-            <span>кирпичные дома</span>{" "}
-            <span>в Краснодаре</span>
-          </h1>
-          <p className="hero-service-line">Готовые дома · Проекты · Строительство под ключ</p>
+          <h1>{title}</h1>
+          <p className="hero-service-line">{subtitle}</p>
           <div className="hero-actions">
             <a className="button primary" href="#homes">
               Смотреть дома

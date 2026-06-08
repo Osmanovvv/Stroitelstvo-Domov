@@ -469,6 +469,12 @@ export const contactLinks: ContactLink[] = [
   },
 ];
 
+export const heroDefaults = {
+  title: "Строим вашу мечту: кирпичные дома в Краснодаре",
+  subtitle: "Готовые дома · Проекты · Строительство под ключ",
+  image: "/hero/generated-brick-house-hero.png",
+};
+
 export const navigationLinks = [
   { label: "Готовые дома", href: "#homes" },
   { label: "Проекты", href: "#projects" },
