@@ -124,6 +124,20 @@
 @media (max-width: 760px) {
   .admin-packages-grid { grid-template-columns: 1fr; }
 }
+
+/* Карточки вопросов FAQ */
+.admin-faq-list { display: grid; gap: 14px; margin-bottom: 16px; }
+.admin-faq-item { display: grid; gap: 12px; padding: 16px; border: 1px solid #e2e7f0; border-radius: 10px; background: #f7f9fc; }
+.admin-faq-item-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-item-num {
+  padding: 2px 10px;
+  border: 1px solid #d3d9e6;
+  border-radius: 999px;
+  background: #fff;
+  color: #506ff0;
+  font-size: 13px;
+  font-weight: 700;
+}
 .admin-loading { display: inline-flex; align-items: center; gap: 10px; color: #5a6478; font-size: 15px; font-weight: 600; }
 .admin-spinner {
   width: 18px;

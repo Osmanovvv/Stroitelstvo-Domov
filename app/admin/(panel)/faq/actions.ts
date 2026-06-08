@@ -2,34 +2,40 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/db";
-import { str, num } from "@/app/lib/form";
+import { str } from "@/app/lib/form";
 
 function revalidate() {
   revalidatePath("/");
   revalidatePath("/admin/faq");
 }
 
-export async function createFaq(formData: FormData) {
+export async function addFaq() {
   const count = await prisma.faqItem.count();
   await prisma.faqItem.create({
-    data: { question: str(formData, "question"), answer: str(formData, "answer"), sortOrder: count },
+    data: { question: "", answer: "", sortOrder: count },
   });
   revalidate();
 }
 
-export async function updateFaq(formData: FormData) {
-  await prisma.faqItem.update({
-    where: { id: str(formData, "id") },
-    data: {
-      question: str(formData, "question"),
-      answer: str(formData, "answer"),
-      sortOrder: num(formData, "sortOrder"),
-    },
-  });
+// Сохраняет все вопросы разом: поля каждого заданы с суффиксом id,
+// список id передаётся скрытыми полями faqId.
+export async function saveAllFaq(formData: FormData) {
+  const ids = formData.getAll("faqId").map((v) => String(v));
+  await Promise.all(
+    ids.map((id) =>
+      prisma.faqItem.update({
+        where: { id },
+        data: {
+          question: str(formData, `question_${id}`),
+          answer: str(formData, `answer_${id}`),
+        },
+      }),
+    ),
+  );
   revalidate();
 }
 
-export async function deleteFaq(formData: FormData) {
-  await prisma.faqItem.delete({ where: { id: str(formData, "id") } });
+export async function deleteFaq(id: string) {
+  await prisma.faqItem.delete({ where: { id } });
   revalidate();
 }

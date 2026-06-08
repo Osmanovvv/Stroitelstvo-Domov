@@ -1,6 +1,6 @@
 import { prisma } from "@/app/lib/db";
-import DeleteButton from "@/app/admin/components/DeleteButton";
-import { createFaq, updateFaq, deleteFaq } from "./actions";
+import InlineDeleteButton from "@/app/admin/components/InlineDeleteButton";
+import { addFaq, saveAllFaq, deleteFaq } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -11,36 +11,50 @@ export default async function FaqAdmin() {
     <>
       <div className="admin-topbar"><h2>FAQ</h2></div>
 
-      <div className="admin-card" style={{ marginBottom: 20 }}>
-        <h3>Вопросы</h3>
-        {items.map((item) => (
-          <div key={item.id} style={{ marginBottom: 16, borderBottom: "1px solid #eef1f6", paddingBottom: 16 }}>
-            <form className="admin-form" action={updateFaq}>
-              <input type="hidden" name="id" value={item.id} />
-              <input type="hidden" name="sortOrder" value={item.sortOrder} />
-              <div className="admin-field">
-                <label>Вопрос</label>
-                <input name="question" defaultValue={item.question} />
-              </div>
-              <div className="admin-field">
-                <label>Ответ</label>
-                <textarea name="answer" defaultValue={item.answer} />
-              </div>
-              <button className="admin-btn primary" type="submit">Сохранить</button>
-            </form>
-            <div style={{ marginTop: 8 }}>
-              <DeleteButton action={deleteFaq} id={item.id} label="Удалить" />
-            </div>
-          </div>
-        ))}
-      </div>
-
       <div className="admin-card">
-        <h3>Добавить вопрос</h3>
-        <form className="admin-form" action={createFaq}>
-          <div className="admin-field"><label>Вопрос</label><input name="question" required /></div>
-          <div className="admin-field"><label>Ответ</label><textarea name="answer" required /></div>
-          <button className="admin-btn primary" type="submit">Добавить</button>
+        <div className="admin-topbar" style={{ marginBottom: 16 }}>
+          <h3 style={{ margin: 0 }}>Вопросы</h3>
+          <form action={addFaq}>
+            <button className="admin-btn primary" type="submit">Добавить вопрос</button>
+          </form>
+        </div>
+
+        <form action={saveAllFaq}>
+          <div className="admin-faq-list">
+            {items.map((item, index) => (
+              <div className="admin-faq-item" key={item.id}>
+                <input type="hidden" name="faqId" value={item.id} />
+                <div className="admin-faq-item-head">
+                  <span className="admin-item-num">Вопрос {index + 1}</span>
+                  <InlineDeleteButton
+                    action={deleteFaq.bind(null, item.id)}
+                    label="Удалить"
+                    confirmText="Удалить вопрос? Действие необратимо."
+                  />
+                </div>
+                <div className="admin-field">
+                  <label>Вопрос</label>
+                  <input
+                    name={`question_${item.id}`}
+                    defaultValue={item.question}
+                    placeholder="Текст вопроса"
+                  />
+                </div>
+                <div className="admin-field">
+                  <label>Ответ</label>
+                  <textarea
+                    name={`answer_${item.id}`}
+                    defaultValue={item.answer}
+                    placeholder="Текст ответа"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="admin-form-actions">
+            <button className="admin-btn primary" type="submit">Сохранить</button>
+          </div>
         </form>
       </div>
     </>
