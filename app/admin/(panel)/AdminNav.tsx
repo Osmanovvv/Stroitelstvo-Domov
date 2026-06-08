@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const sections = [
-  { href: "/admin", label: "Дашборд" },
   { href: "/admin/homes", label: "Готовые дома" },
   { href: "/admin/building", label: "Дома в строительстве" },
   { href: "/admin/projects", label: "Проекты" },
