@@ -7,3 +7,4 @@ output
 *.log
 /public/uploads
 big-test.jpg
+.playwright-mcp/
