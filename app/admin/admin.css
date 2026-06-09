@@ -111,8 +111,16 @@
 /* Кнопки-прямые потомки grid-формы не растягиваются на всю ширину */
 .admin-form > button,
 .admin-form > .admin-btn { justify-self: start; }
-/* …кроме формы входа, где кнопка на всю ширину карточки */
-.admin-login-card .admin-btn { justify-self: stretch; }
+/* …кроме формы входа, где кнопка на всю ширину карточки и по центру */
+.admin-login-card .admin-btn {
+  justify-self: stretch;
+  justify-content: center;
+  margin-top: 6px;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+.admin-login-card .admin-btn:disabled { opacity: 0.65; cursor: default; transform: none; }
 
 /* Группировка пакетов цен в отдельные карточки */
 .admin-packages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
