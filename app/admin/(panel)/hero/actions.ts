@@ -5,9 +5,17 @@ import { str, file } from "@/app/lib/form";
 import { saveUploadedImage, deleteUploadedImage } from "@/app/lib/upload";
 import { upsertSettings } from "@/app/lib/settings";
 
-export async function updateHero(formData: FormData) {
+export async function updateHero(
+  formData: FormData,
+): Promise<{ ok: true } | { error: string }> {
   const oldImage = str(formData, "heroImageExisting");
-  const image = await saveUploadedImage(file(formData, "heroImageFile"), oldImage);
+  let image: string;
+  try {
+    image = await saveUploadedImage(file(formData, "heroImageFile"), oldImage);
+  } catch (error) {
+    // Ошибки бросать нельзя — в проде их текст скрывается; возвращаем сообщение.
+    return { error: error instanceof Error ? error.message : "Не удалось обработать файл" };
+  }
 
   await upsertSettings({
     hero_title: str(formData, "hero_title"),
@@ -20,4 +28,5 @@ export async function updateHero(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/admin/hero");
+  return { ok: true };
 }

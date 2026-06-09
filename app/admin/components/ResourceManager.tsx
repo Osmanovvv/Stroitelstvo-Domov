@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import Image from "next/image";
+import { compressImage } from "./compressImage";
 
 export type ResourceRecord = {
   id: string;
@@ -32,8 +33,8 @@ type ResourceManagerProps = {
   columns: Column[];
   fields: Field[];
   items: ResourceRecord[];
-  create: (formData: FormData) => Promise<ResourceRecord>;
-  update: (formData: FormData) => Promise<ResourceRecord>;
+  create: (formData: FormData) => Promise<ResourceRecord | { error: string }>;
+  update: (formData: FormData) => Promise<ResourceRecord | { error: string }>;
   remove: (id: string) => Promise<void>;
   toggle: (id: string) => Promise<void>;
   move: (id: string, direction: "up" | "down") => Promise<void>;
@@ -128,13 +129,26 @@ export default function ResourceManager({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const formEl = event.currentTarget;
     setSaving(true);
     setError(null);
     try {
-      const saved = editing === "new" ? await create(formData) : await update(formData);
+      const formData = new FormData(formEl);
+      // Сжимаем фото в браузере до отправки — тело запроса остаётся маленьким.
+      if (hasImage) {
+        const input = formEl.querySelector('input[name="imageFile"]') as HTMLInputElement | null;
+        const file = input?.files?.[0];
+        if (file && file.size > 0) {
+          formData.set("imageFile", await compressImage(file));
+        }
+      }
+      const result = editing === "new" ? await create(formData) : await update(formData);
+      if ("error" in result) {
+        setError(result.error);
+        return;
+      }
       setItems((prev) =>
-        editing === "new" ? [...prev, saved] : prev.map((it) => (it.id === saved.id ? saved : it)),
+        editing === "new" ? [...prev, result] : prev.map((it) => (it.id === result.id ? result : it)),
       );
       closeModal();
     } catch (err) {

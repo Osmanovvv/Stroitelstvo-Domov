@@ -3,7 +3,7 @@ import path from "node:path";
 import sharp from "sharp";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
-const MAX_BYTES = 15 * 1024 * 1024; // 15 МБ на исходник (на выходе будет в разы меньше)
+const MAX_BYTES = 20 * 1024 * 1024; // 20 МБ на исходник (обычно фото жмётся в браузере до отправки)
 
 // Самая длинная сторона ужимается до этого размера — больше для веба не нужно,
 // next/image потом отдаёт картинку под конкретное устройство.
@@ -46,7 +46,7 @@ export async function saveUploadedImage(
     throw new Error("Недопустимый тип файла. Разрешены JPG, PNG, WebP, GIF, AVIF.");
   }
   if (file.size > MAX_BYTES) {
-    throw new Error("Файл слишком большой (максимум 15 МБ).");
+    throw new Error("Файл слишком большой (максимум 20 МБ).");
   }
 
   const input = Buffer.from(await file.arrayBuffer());

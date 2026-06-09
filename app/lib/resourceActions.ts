@@ -26,9 +26,15 @@ export type CollectionDelegate<TRaw extends SortableRow> = {
   }): Promise<TRaw | null>;
 };
 
+// Экшены возвращают запись при успехе или { error } при ошибке валидации.
+// Важно: в проде Next СКРЫВАЕТ текст брошенных в server action ошибок (показывает
+// обезличенный «Server Components render error»), поэтому ошибки именно
+// ВОЗВРАЩАЕМ, а не бросаем — тогда понятный текст доходит до клиента.
+export type ActionResult<TRecord> = TRecord | { error: string };
+
 export type ResourceActions<TRecord> = {
-  create: (formData: FormData) => Promise<TRecord>;
-  update: (formData: FormData) => Promise<TRecord>;
+  create: (formData: FormData) => Promise<ActionResult<TRecord>>;
+  update: (formData: FormData) => Promise<ActionResult<TRecord>>;
   remove: (id: string) => Promise<void>;
   toggle: (id: string) => Promise<void>;
   move: (id: string, direction: "up" | "down") => Promise<void>;
@@ -49,9 +55,14 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
 ): ResourceActions<TRecord> {
   const { model, hasImage, readData, toRecord } = config;
 
-  async function create(formData: FormData): Promise<TRecord> {
-    const data = await readData(formData);
-    if (hasImage && !data.image) throw new Error("Добавьте фото");
+  async function create(formData: FormData): Promise<ActionResult<TRecord>> {
+    let data: Record<string, unknown>;
+    try {
+      data = await readData(formData); // тут может бросить проверка фото (размер/тип)
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : "Не удалось обработать файл" };
+    }
+    if (hasImage && !data.image) return { error: "Добавьте фото" };
     try {
       const max = await model.aggregate({ _max: { sortOrder: true } });
       const row = await model.create({
@@ -59,17 +70,22 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
       });
       revalidatePath("/");
       return toRecord(row);
-    } catch (error) {
+    } catch {
       // БД упала — убираем только что записанный файл, чтобы не плодить сирот.
-      if (hasImage && typeof data.image === "string") await deleteUploadedImage(data.image);
-      throw error;
+      if (typeof data.image === "string") await deleteUploadedImage(data.image);
+      return { error: "Не удалось сохранить. Попробуйте ещё раз." };
     }
   }
 
-  async function update(formData: FormData): Promise<TRecord> {
+  async function update(formData: FormData): Promise<ActionResult<TRecord>> {
     const id = str(formData, "id");
-    const data = await readData(formData);
-    if (hasImage && !data.image) throw new Error("Добавьте фото");
+    let data: Record<string, unknown>;
+    try {
+      data = await readData(formData);
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : "Не удалось обработать файл" };
+    }
+    if (hasImage && !data.image) return { error: "Добавьте фото" };
     const oldImage = hasImage ? str(formData, "imageExisting") : "";
     const newImage = hasImage && typeof data.image === "string" ? data.image : "";
     try {
@@ -78,10 +94,10 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
       if (oldImage && oldImage !== newImage) await deleteUploadedImage(oldImage);
       revalidatePath("/");
       return toRecord(row);
-    } catch (error) {
+    } catch {
       // БД упала — старое фото цело, убираем новый осиротевший файл.
       if (newImage && newImage !== oldImage) await deleteUploadedImage(newImage);
-      throw error;
+      return { error: "Не удалось сохранить. Попробуйте ещё раз." };
     }
   }
 
