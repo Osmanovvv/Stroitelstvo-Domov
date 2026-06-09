@@ -6,3 +6,4 @@ output
 .env.local
 *.log
 /public/uploads
+big-test.jpg

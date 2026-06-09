@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
     middlewareClientMaxBodySize: "25mb",
   },
   images: {
+    // Оптимизатор next/image не отдаёт файлы, добавленные в public/ ПОСЛЕ
+    // сборки (загруженные через админку фото) — он их не находит. Поэтому
+    // отдаём картинки как есть: загрузки идёт nginx из /uploads, исходники
+    // уже web-размера (Unsplash w=1600, hero webp, sharp-сжатые загрузки).
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
