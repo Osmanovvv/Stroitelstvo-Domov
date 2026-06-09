@@ -3,12 +3,15 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.resolve(__dirname),
-  // Server Actions по умолчанию ограничивают тело запроса 1 МБ — поднимаем,
-  // чтобы можно было загружать фото (саму картинку потом сжимает sharp).
+  // Лимиты тела запроса для загрузки фото (sharp потом сожмёт картинку).
+  // serverActions — лимит для самого экшена; middlewareClientMaxBodySize —
+  // отдельный лимит для запросов, проходящих через middleware (все /admin),
+  // по умолчанию всего 10 МБ: без него крупные фото обрезаются и не грузятся.
   experimental: {
     serverActions: {
-      bodySizeLimit: "20mb",
+      bodySizeLimit: "25mb",
     },
+    middlewareClientMaxBodySize: "25mb",
   },
   images: {
     remotePatterns: [
