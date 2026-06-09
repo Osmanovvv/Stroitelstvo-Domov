@@ -23,7 +23,10 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
-    secure: process.env.NODE_ENV === "production",
+    // Secure включён в проде (HTTPS). Для тестового демо по HTTP его можно
+    // отключить переменной ALLOW_INSECURE_COOKIES=1, иначе браузер по HTTP
+    // не сохранит cookie и вход «не залогинивается».
+    secure: process.env.NODE_ENV === "production" && process.env.ALLOW_INSECURE_COOKIES !== "1",
   });
 
   redirect("/admin");
