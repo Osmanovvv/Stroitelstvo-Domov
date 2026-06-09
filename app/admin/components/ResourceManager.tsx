@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import Image from "next/image";
 import { compressImage } from "./compressImage";
+import { toast } from "./Toast";
 
 export type ResourceRecord = {
   id: string;
@@ -108,9 +109,11 @@ export default function ResourceManager({
 
   async function onToggle(id: string) {
     const snapshot = items;
+    const willBeVisible = !items.find((it) => it.id === id)?.isVisible;
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, isVisible: !it.isVisible } : it)));
     try {
       await toggle(id);
+      toast(willBeVisible ? "Показано" : "Скрыто");
     } catch {
       revert(snapshot);
     }
@@ -122,6 +125,7 @@ export default function ResourceManager({
     setItems((prev) => prev.filter((it) => it.id !== id));
     try {
       await remove(id);
+      toast("Удалено");
     } catch {
       revert(snapshot);
     }
@@ -150,6 +154,7 @@ export default function ResourceManager({
       setItems((prev) =>
         editing === "new" ? [...prev, result] : prev.map((it) => (it.id === result.id ? result : it)),
       );
+      toast(editing === "new" ? "Добавлено" : "Сохранено");
       closeModal();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не удалось сохранить");

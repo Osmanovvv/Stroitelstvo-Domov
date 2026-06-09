@@ -1,5 +1,6 @@
 import { prisma } from "@/app/lib/db";
 import InlineDeleteButton from "@/app/admin/components/InlineDeleteButton";
+import ToastForm from "@/app/admin/components/ToastForm";
 import { addFaq, saveAllFaq, deleteFaq } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -14,12 +15,12 @@ export default async function FaqAdmin() {
       <div className="admin-card">
         <div className="admin-topbar" style={{ marginBottom: 16 }}>
           <h3 style={{ margin: 0 }}>Вопросы</h3>
-          <form action={addFaq}>
+          <ToastForm action={addFaq} message="Добавлено">
             <button className="admin-btn primary" type="submit">Добавить вопрос</button>
-          </form>
+          </ToastForm>
         </div>
 
-        <form action={saveAllFaq}>
+        <ToastForm action={saveAllFaq} message="Сохранено">
           <div className="admin-faq-list">
             {items.map((item, index) => (
               <div className="admin-faq-item" key={item.id}>
@@ -55,7 +56,7 @@ export default async function FaqAdmin() {
           <div className="admin-form-actions">
             <button className="admin-btn primary" type="submit">Сохранить</button>
           </div>
-        </form>
+        </ToastForm>
       </div>
     </>
   );

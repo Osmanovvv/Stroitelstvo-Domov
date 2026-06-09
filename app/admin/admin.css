@@ -212,6 +212,50 @@
   .admin-modal-inner { height: 100dvh; max-height: 100dvh; }
 }
 .admin-error { color: #c0392b; font-size: 14px; }
+
+/* Ненавязчивые всплывающие уведомления (тосты) */
+.admin-toasts {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.admin-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #11182f;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 14px 34px rgba(17, 24, 47, 0.3);
+  animation: admin-toast-in 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.admin-toast-check {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #506ff0, #62c8c9);
+  font-size: 12px;
+}
+@keyframes admin-toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 620px) {
+  .admin-toasts { right: 12px; left: 12px; bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-toast { animation: none; }
+}
 .admin-dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
 .admin-dash-card { display: block; text-decoration: none; }
 .admin-dash-card strong { display: block; font-size: 28px; color: #506ff0; }

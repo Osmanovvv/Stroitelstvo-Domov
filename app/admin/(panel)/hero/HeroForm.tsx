@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { compressImage } from "@/app/admin/components/compressImage";
+import { toast } from "@/app/admin/components/Toast";
 import { updateHero } from "./actions";
 
 type HeroFormProps = {
@@ -14,14 +15,12 @@ type HeroFormProps = {
 export default function HeroForm({ title, subtitle, image }: HeroFormProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formEl = event.currentTarget;
     setSaving(true);
     setError(null);
-    setSaved(false);
     try {
       const formData = new FormData(formEl);
       const input = formEl.querySelector(
@@ -36,7 +35,7 @@ export default function HeroForm({ title, subtitle, image }: HeroFormProps) {
         setError(result.error);
         return;
       }
-      setSaved(true);
+      toast("Сохранено");
     } catch {
       setError("Не удалось сохранить");
     } finally {
@@ -68,7 +67,6 @@ export default function HeroForm({ title, subtitle, image }: HeroFormProps) {
           {error}
         </p>
       )}
-      {saved && <p style={{ color: "#1f9d55", fontSize: 14, margin: 0 }}>Сохранено ✓</p>}
       <button className="admin-btn primary" type="submit" disabled={saving}>
         {saving ? "Сохранение…" : "Сохранить"}
       </button>

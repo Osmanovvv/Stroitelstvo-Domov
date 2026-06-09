@@ -1,4 +1,5 @@
 import { getSettings } from "@/app/lib/queries";
+import ToastForm from "@/app/admin/components/ToastForm";
 import { updateSeo } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +11,7 @@ export default async function SeoAdmin() {
     <>
       <div className="admin-topbar"><h2>SEO</h2></div>
       <div className="admin-card">
-        <form className="admin-form" action={updateSeo}>
+        <ToastForm className="admin-form" action={updateSeo} message="Сохранено">
           <div className="admin-field">
             <label>Заголовок страницы (title)</label>
             <input
@@ -34,7 +35,7 @@ export default async function SeoAdmin() {
             </small>
           </div>
           <button className="admin-btn primary" type="submit">Сохранить SEO</button>
-        </form>
+        </ToastForm>
       </div>
     </>
   );

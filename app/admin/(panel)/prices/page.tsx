@@ -1,4 +1,5 @@
 import InlineDeleteButton from "@/app/admin/components/InlineDeleteButton";
+import ToastForm from "@/app/admin/components/ToastForm";
 import { getPriceRows, getSettings } from "@/app/lib/queries";
 import { addRow, saveAllRows, deleteRow, updatePackages } from "./actions";
 
@@ -13,7 +14,7 @@ export default async function PricesAdmin() {
 
       <div className="admin-card" style={{ marginBottom: 20 }}>
         <h3>Заголовки пакетов</h3>
-        <form action={updatePackages}>
+        <ToastForm action={updatePackages} message="Сохранено">
           <div className="admin-packages-grid">
             <fieldset className="admin-package">
               <legend>Пакет 1</legend>
@@ -52,17 +53,17 @@ export default async function PricesAdmin() {
           <div className="admin-form-actions">
             <button className="admin-btn primary" type="submit">Сохранить заголовки</button>
           </div>
-        </form>
+        </ToastForm>
       </div>
 
       <div className="admin-card">
         <div className="admin-topbar" style={{ marginBottom: 16 }}>
           <h3 style={{ margin: 0 }}>Строки таблицы</h3>
-          <form action={addRow}>
+          <ToastForm action={addRow} message="Добавлено">
             <button className="admin-btn primary" type="submit">Добавить строку</button>
-          </form>
+          </ToastForm>
         </div>
-        <form action={saveAllRows}>
+        <ToastForm action={saveAllRows} message="Сохранено">
           <table className="admin-table">
             <thead>
               <tr><th>Работа</th><th>Пакет 1</th><th>Пакет 2</th><th>Пакет 3</th><th></th></tr>
@@ -87,7 +88,7 @@ export default async function PricesAdmin() {
           <div className="admin-form-actions">
             <button className="admin-btn primary" type="submit">Сохранить</button>
           </div>
-        </form>
+        </ToastForm>
       </div>
     </>
   );
