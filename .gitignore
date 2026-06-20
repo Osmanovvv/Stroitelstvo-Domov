@@ -2,6 +2,8 @@
 node_modules
 out
 output
+tsconfig.tsbuildinfo
+.claude/launch.json
 .env
 .env.local
 *.log

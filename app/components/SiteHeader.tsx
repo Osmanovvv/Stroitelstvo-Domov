@@ -25,9 +25,9 @@ export default async function SiteHeader() {
             priority
           />
         </span>
-        <span>
-          <strong>Кирпичные дома</strong>
-          <small>Краснодар +70 км</small>
+        <span className="brand-text">
+          <strong>Строим вашу мечту</strong>
+          <small>Кирпичные дома · Краснодар +70 км · с 2016 г.</small>
         </span>
       </a>
 

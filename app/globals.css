@@ -94,8 +94,8 @@ img {
 .brand-logo-shell {
   position: relative;
   display: grid;
-  width: 58px;
-  height: 54px;
+  width: 76px;
+  height: 70px;
   flex: 0 0 auto;
   place-items: center;
   overflow: hidden;
@@ -105,8 +105,8 @@ img {
   position: relative;
   z-index: 1;
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   filter:
     drop-shadow(0 1px 0 rgba(255, 255, 255, 0.55))
@@ -114,9 +114,9 @@ img {
 }
 
 .brand strong {
-  font-size: 15px;
-  line-height: 1;
-  font-weight: 750;
+  font-size: 18px;
+  line-height: 1.05;
+  font-weight: 760;
   white-space: nowrap;
 }
 
@@ -126,7 +126,7 @@ img {
 }
 
 .brand small {
-  margin-top: 2px;
+  margin-top: 3px;
   color: rgba(17, 24, 47, 0.58);
   font-size: 12px;
   white-space: nowrap;
@@ -515,7 +515,7 @@ img {
   object-fit: cover;
   object-position: 58% center;
   transform: scale(1.02);
-  filter: sepia(0.12) saturate(0.74) contrast(1.12) brightness(0.94) hue-rotate(-8deg);
+  filter: saturate(1.04) contrast(1.03);
 }
 
 .hero-overlay {
@@ -523,9 +523,9 @@ img {
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(16, 15, 12, 0.96) 0%,
-    rgba(24, 22, 18, 0.82) 45%,
-    rgba(30, 27, 22, 0.36) 100%
+    rgba(10, 14, 32, 0.94) 0%,
+    rgba(17, 24, 47, 0.74) 45%,
+    rgba(17, 24, 47, 0.14) 100%
   );
 }
 
@@ -541,9 +541,9 @@ img {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1080px);
+  grid-template-columns: minmax(0, 820px) minmax(300px, 390px);
   align-items: center;
-  justify-content: center;
+  gap: 72px;
   width: min(1360px, calc(100% - 72px));
   min-height: clamp(740px, 88svh, 880px);
   margin: 0 auto;
@@ -551,7 +551,7 @@ img {
 }
 
 .hero-copy {
-  text-align: center;
+  text-align: left;
 }
 
 .eyebrow {
@@ -586,18 +586,15 @@ h1 {
 }
 
 .hero h1 {
-  max-width: 1080px;
-  margin-right: auto;
-  margin-left: auto;
-  /* Плавный размер: самая длинная строка заголовка влезает на любой ширине. */
-  font-size: clamp(20px, 5.5vw, 64px);
-  line-height: 1;
+  max-width: none;
+  /* Плавный размер: заголовок остаётся крупным, но влезает в левую колонку. */
+  font-size: clamp(34px, 4.6vw, 64px);
+  line-height: 1.04;
   letter-spacing: 0;
-  text-transform: uppercase;
   text-wrap: balance;
 }
 
-.hero h1 span {
+.hero h1 .hero-line {
   display: block;
 }
 
@@ -633,31 +630,80 @@ p {
 
 .hero p {
   max-width: 680px;
-  margin-right: auto;
   margin-top: 24px;
-  margin-left: auto;
   color: rgba(255, 255, 255, 0.8);
   font-size: 19px;
   line-height: 1.62;
 }
 
-.hero .hero-service-line {
-  max-width: none;
-  color: #85f0f0;
-  font-size: 16px;
-  font-weight: 760;
-  letter-spacing: 0.08em;
-  line-height: 1.45;
-  text-shadow: 0 0 22px rgba(98, 200, 201, 0.22);
-  text-transform: uppercase;
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.hero-badges span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(98, 200, 201, 0.32);
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(17, 24, 47, 0.82), rgba(16, 26, 48, 0.58));
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 620;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(14px);
+}
+
+.hero-badges svg {
+  display: block;
+  flex: 0 0 auto;
+  color: var(--cyan);
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 12px;
   margin-top: 30px;
+}
+
+.hero-note {
+  display: block;
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hero-panel {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(20px);
+}
+
+.hero-panel div {
+  padding: 24px;
+  background: rgba(15, 18, 16, 0.44);
+}
+
+.hero-panel strong {
+  display: block;
+  font-size: 34px;
+  font-weight: 760;
+}
+
+.hero-panel span {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .button {
@@ -1901,17 +1947,17 @@ select:focus {
   }
 
   .brand-logo-shell {
-    width: 70px;
-    height: 58px;
+    width: 86px;
+    height: 78px;
   }
 
   .brand-logo {
-    width: 54px;
-    height: 54px;
+    width: 76px;
+    height: 76px;
   }
 
   .brand strong {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   .brand small {
@@ -1931,12 +1977,14 @@ select:focus {
     padding-inline: 12px;
   }
 
+  .hero,
   .hero-content {
     min-height: clamp(860px, 84svh, 980px);
   }
 
   .hero-content {
-    grid-template-columns: minmax(0, 1120px);
+    grid-template-columns: minmax(0, 920px) minmax(320px, 420px);
+    gap: 96px;
     padding: 132px 0 112px;
   }
 
@@ -1946,8 +1994,7 @@ select:focus {
   }
 
   .hero h1 {
-    max-width: 1120px;
-    font-size: 74px;
+    font-size: 70px;
   }
 
   .hero p {
@@ -1993,7 +2040,7 @@ select:focus {
   }
 
   .hero-content {
-    grid-template-columns: minmax(0, 1240px);
+    grid-template-columns: minmax(0, 1040px) minmax(360px, 460px);
   }
 
   h1 {
@@ -2002,8 +2049,7 @@ select:focus {
   }
 
   .hero h1 {
-    max-width: 1240px;
-    font-size: 84px;
+    font-size: 78px;
   }
 
   .hero p {
@@ -2064,7 +2110,7 @@ select:focus {
   }
 
   .hero-content {
-    grid-template-columns: minmax(0, 900px);
+    grid-template-columns: minmax(0, 600px) minmax(240px, 320px);
   }
 
   h1 {
@@ -2121,12 +2167,18 @@ select:focus {
   }
 
   .hero-content {
-    align-items: center;
+    align-content: center;
+    gap: 28px;
     /* Высота как у .hero: иначе контент схлопывается и прижимается кверху,
        оставляя пустую тёмную зону внизу секции (актуально для 821–1040px;
        на ≤820px .hero сам переходит на min-height: auto). */
     min-height: clamp(740px, 88svh, 880px);
     padding: 142px 0 64px;
+  }
+
+  /* Панель статистики уходит под текст и становится горизонтальной строкой. */
+  .hero-panel {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   h1 {
@@ -2176,13 +2228,19 @@ select:focus {
   }
 
   .brand-logo-shell {
-    width: 56px;
-    height: 48px;
+    width: 62px;
+    height: 56px;
   }
 
   .brand-logo {
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
+  }
+
+  /* На узких экранах строка фактов переносится, а не обрезается/распирает шапку. */
+  .brand small {
+    white-space: normal;
+    line-height: 1.3;
   }
 
   .header-actions {
@@ -2194,6 +2252,8 @@ select:focus {
   }
 
   .hero-content {
+    min-height: auto;
+    align-content: start;
     padding: 132px 0 56px;
   }
 
@@ -2327,26 +2387,26 @@ select:focus {
   }
 
   .hero {
-    min-height: 760px;
+    min-height: auto;
   }
 
   .hero-content {
-    align-items: start;
-    min-height: 760px;
-    padding: 184px 0 52px;
+    align-content: start;
+    gap: 24px;
+    min-height: auto;
+    padding: 124px 0 56px;
   }
 
   .hero-copy {
-    align-self: start;
-    padding-top: clamp(96px, 18svh, 138px);
+    padding-top: 0;
   }
 
   .hero-overlay {
     background: linear-gradient(
       180deg,
-      rgba(16, 15, 12, 0.54) 0%,
-      rgba(18, 16, 13, 0.72) 34%,
-      rgba(18, 16, 13, 0.88) 100%
+      rgba(10, 14, 32, 0.9) 0%,
+      rgba(15, 21, 40, 0.78) 42%,
+      rgba(17, 24, 47, 0.66) 100%
     );
   }
 
@@ -2366,11 +2426,6 @@ select:focus {
   .hero p {
     margin-top: 16px;
     font-size: 16px;
-  }
-
-  .hero .hero-service-line {
-    font-size: 13px;
-    letter-spacing: 0.04em;
   }
 
   .choice-grid,
@@ -2527,16 +2582,16 @@ select:focus {
   }
 
   .hero {
-    min-height: 720px;
+    min-height: auto;
   }
 
   .hero-content {
-    min-height: 720px;
-    padding: 154px 0 40px;
+    min-height: auto;
+    padding: 112px 0 44px;
   }
 
   .hero-copy {
-    padding-top: clamp(86px, 15svh, 118px);
+    padding-top: 0;
   }
 
   h1 {
@@ -2553,17 +2608,29 @@ select:focus {
     line-height: 1.55;
   }
 
-  .hero .hero-service-line {
-    max-width: 310px;
-    font-size: 12px;
+  .hero-badges span {
+    font-size: 13px;
+  }
+
+  .hero-panel div {
+    padding: 14px 10px;
+  }
+
+  .hero-panel strong {
+    font-size: 26px;
+  }
+
+  .hero-panel span {
+    font-size: 11px;
+    line-height: 1.25;
   }
 
   .hero-actions {
     display: grid;
-    width: min(100%, 306px);
+    width: 100%;
     align-items: stretch;
     gap: 10px;
-    margin: 18px auto 0;
+    margin: 18px 0 0;
   }
 
   .hero-actions .button {
@@ -2599,13 +2666,13 @@ select:focus {
   }
 
   .brand-logo-shell {
-    width: 48px;
-    height: 42px;
+    width: 54px;
+    height: 48px;
   }
 
   .brand-logo {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
   }
 
   .brand strong {
@@ -2617,16 +2684,16 @@ select:focus {
   }
 
   .hero {
-    min-height: 600px;
+    min-height: auto;
   }
 
   .hero-content {
-    min-height: 600px;
-    padding: 138px 0 34px;
+    min-height: auto;
+    padding: 104px 0 36px;
   }
 
   .hero-copy {
-    padding-top: clamp(74px, 13svh, 94px);
+    padding-top: 0;
   }
 
   h1 {

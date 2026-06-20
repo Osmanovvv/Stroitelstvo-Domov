@@ -51,6 +51,7 @@ export default function HeroForm({ title, subtitle, image }: HeroFormProps) {
         <textarea name="hero_title" rows={3} defaultValue={title} />
         <small style={{ color: "#8a93a6", fontSize: 12 }}>
           Каждая строка заголовка — с новой строки (Enter). Размер подстраивается под экран автоматически.
+          Текст между **двумя звёздочками** выделяется цветом, например: Кирпичные дома **в Краснодаре**.
         </small>
       </div>
       <div className="admin-field">
