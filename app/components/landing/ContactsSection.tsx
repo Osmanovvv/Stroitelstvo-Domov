@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { buildContactLinks } from "../../content/landing";
 import { getSettings } from "../../lib/queries";
+import ConsentField from "../ConsentField";
 import ContactIcon from "../ContactIcon";
 import WorkStatus from "../WorkStatus";
 
@@ -56,6 +57,7 @@ export default async function ContactsSection() {
               <option value="plot">Участок</option>
             </select>
           </label>
+          <ConsentField />
           <button className="button primary" type="button">
             Оставить заявку
             <ArrowRight size={18} />

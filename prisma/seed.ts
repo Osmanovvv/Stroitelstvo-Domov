@@ -1,10 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { readyHomes, projects, buildingHomes, plots, priceRows, faqItems } from "./seed-data";
-import { heroDefaults } from "../app/content/landing";
+import { heroDefaults, legalDefaults } from "../app/content/landing";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // Сид стирает ВСЕ данные (включая правки заказчика через админку и тексты
+  // юр. документов). На проде — только с явным подтверждением.
+  if (process.env.NODE_ENV === "production" && process.env.FORCE_SEED !== "1") {
+    console.error("Отказ: сид перезапишет все данные. На проде запускайте с FORCE_SEED=1.");
+    process.exit(1);
+  }
+
   await prisma.readyHome.deleteMany();
   await prisma.project.deleteMany();
   await prisma.buildingHome.deleteMany();
@@ -61,6 +68,7 @@ async function main() {
     hero_title: heroDefaults.title,
     hero_subtitle: heroDefaults.subtitle,
     hero_image: heroDefaults.image,
+    ...legalDefaults,
   };
   await prisma.siteSetting.createMany({
     data: Object.entries(settings).map(([key, value]) => ({ key, value })),

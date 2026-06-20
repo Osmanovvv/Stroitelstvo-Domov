@@ -12,6 +12,7 @@ const sections = [
   { href: "/admin/prices", label: "Цены и комплектации" },
   { href: "/admin/faq", label: "FAQ" },
   { href: "/admin/seo", label: "SEO" },
+  { href: "/admin/legal", label: "Юр. документы" },
   { href: "/admin/settings", label: "Настройки сайта" },
 ];
 

@@ -1,3 +1,4 @@
+import SiteFooter from "./components/SiteFooter";
 import SiteHeader from "./components/SiteHeader";
 import ScrollReveal from "./components/ScrollReveal";
 import {
@@ -23,23 +24,26 @@ export const revalidate = 3600;
 
 export default function Home() {
   return (
-    <main>
-      <ScrollReveal />
-      <SiteHeader />
-      <HeroSection />
-      <ChoiceSection />
-      <HomesSection />
-      <BuildingSection />
-      <ProjectsSection />
-      <PlotsSection />
-      <CompareSection />
-      <CalculatorSection />
-      <PricesSection />
-      <TrustSection />
-      <ProcessSection />
-      <PaymentSection />
-      <FaqSection />
-      <ContactsSection />
-    </main>
+    <>
+      <main>
+        <ScrollReveal />
+        <SiteHeader />
+        <HeroSection />
+        <ChoiceSection />
+        <HomesSection />
+        <BuildingSection />
+        <ProjectsSection />
+        <PlotsSection />
+        <CompareSection />
+        <CalculatorSection />
+        <PricesSection />
+        <TrustSection />
+        <ProcessSection />
+        <PaymentSection />
+        <FaqSection />
+        <ContactsSection />
+      </main>
+      <SiteFooter />
+    </>
   );
 }

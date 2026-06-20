@@ -13,6 +13,7 @@ import {
   optionSteps,
   type QuizAnswers,
 } from "../content/quiz";
+import ConsentField from "./ConsentField";
 
 export default function HouseQuiz() {
   const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers);
@@ -23,6 +24,9 @@ export default function HouseQuiz() {
   const isContactStep = stepIndex === optionSteps.length;
   const progress = ((stepIndex + 1) / totalSteps) * 100;
   const currentStep = optionSteps[stepIndex];
+  // Согласие не входит в условие: кнопка остается активной, и при сабмите без
+  // галочки браузер сам показывает подсказку у required-чекбокса (onSubmit не
+  // вызывается, пока нативная валидация не пройдена).
   const canContinue = isContactStep ? answers.phone.trim().length >= 6 : Boolean(answers[currentStep.key]);
 
   function updateAnswer(key: keyof QuizAnswers, value: string) {
@@ -171,6 +175,7 @@ export default function HouseQuiz() {
               {getOptionLabel("payment", answers.payment)}
             </span>
           </div>
+          <ConsentField />
         </>
       )}
 

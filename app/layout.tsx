@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CookieNotice from "./components/CookieNotice";
 import { getSettings } from "./lib/queries";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,8 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
-      <body>{children}</body>
+    // data-scroll-behavior: globals.css задает scroll-behavior: smooth, Next 15.5+
+    // требует пометить это явно, чтобы корректно отключать плавность при роутинге.
+    <html lang="ru" data-scroll-behavior="smooth">
+      <body>
+        {children}
+        <CookieNotice />
+      </body>
     </html>
   );
 }

@@ -168,6 +168,44 @@ export const mobileNavigationLinks = [
   { label: "Контакты", href: "#contacts" },
 ];
 
+// Реквизиты оператора ПДн. Значения-заглушки помечены «уточняется» — заказчик
+// заполняет реальные через админку («Настройки»), отсюда берутся фолбэки и сид.
+export const legalDefaults: Record<string, string> = {
+  legal_operator_name: "Наименование оператора уточняется (ИП / ООО)",
+  legal_inn: "уточняется",
+  legal_ogrn: "уточняется",
+  legal_address: "г. Краснодар (адрес уточняется)",
+  legal_email: "адрес электронной почты уточняется",
+  legal_updated: "11.06.2026",
+};
+
+export type LegalInfo = {
+  operatorName: string;
+  inn: string;
+  ogrn: string;
+  address: string;
+  email: string;
+  updated: string;
+};
+
+// Админка сохраняет дату редакции через input type="date" (ГГГГ-ММ-ДД) —
+// на страницах показываем в привычном виде ДД.ММ.ГГГГ.
+function formatLegalDate(value: string): string {
+  const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  return iso ? `${iso[3]}.${iso[2]}.${iso[1]}` : value;
+}
+
+export function buildLegalInfo(settings: Record<string, string>): LegalInfo {
+  return {
+    operatorName: settings.legal_operator_name || legalDefaults.legal_operator_name,
+    inn: settings.legal_inn || legalDefaults.legal_inn,
+    ogrn: settings.legal_ogrn || legalDefaults.legal_ogrn,
+    address: settings.legal_address || legalDefaults.legal_address,
+    email: settings.legal_email || legalDefaults.legal_email,
+    updated: formatLegalDate(settings.legal_updated || legalDefaults.legal_updated),
+  };
+}
+
 export function buildContactLinks(settings: Record<string, string>): ContactLink[] {
   return [
     { label: "Позвонить", href: settings.phone ? `tel:${settings.phone}` : "#", icon: Phone },
