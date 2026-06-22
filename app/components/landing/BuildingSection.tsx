@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { getBuildingHomes } from "../../lib/queries";
+import LeadModalTrigger from "../LeadModalTrigger";
 
 export default async function BuildingSection() {
   const buildingHomes = await getBuildingHomes();
@@ -13,10 +14,10 @@ export default async function BuildingSection() {
             Дома на разных этапах готовности: можно посмотреть ход строительства,
             уточнить срок сдачи и условия бронирования.
           </p>
-          <a className="button dark" href="#contacts">
+          <LeadModalTrigger className="button dark" title="Узнать условия брони">
             Узнать условия брони
             <ArrowRight size={18} />
-          </a>
+          </LeadModalTrigger>
         </div>
         <div className="building-list">
           {buildingHomes.map((item) => (

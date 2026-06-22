@@ -1,4 +1,5 @@
 export { default as BuildingSection } from "./BuildingSection";
+export { default as BuiltSection } from "./BuiltSection";
 export { default as CalculatorSection } from "./CalculatorSection";
 export { default as ChoiceSection } from "./ChoiceSection";
 export { default as CompareSection } from "./CompareSection";

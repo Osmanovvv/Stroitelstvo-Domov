@@ -51,6 +51,14 @@ export type PriceRow = {
   full: string;
 };
 
+export type BuiltObject = {
+  title: string;
+  area: string;
+  location: string;
+  year: string;
+  image: string;
+};
+
 export const readyHomes: ReadyHome[] = [
   {
     title: "Дом в Немецкой Деревне",
@@ -302,5 +310,50 @@ export const priceRows: PriceRow[] = [
     warm: "под закрытый контур",
     pre: "под финишную отделку",
     full: "можно заезжать",
+  },
+];
+
+export const builtObjects: BuiltObject[] = [
+  {
+    title: "Двухэтажный дом 140 м²",
+    area: "140 м²",
+    location: "Краснодар, Немецкая Деревня",
+    year: "2024",
+    image: "/projects/project-vidny-140.jpg",
+  },
+  {
+    title: "Семейный дом 126 м²",
+    area: "126 м²",
+    location: "Краснодар, ст. Елизаветинская",
+    year: "2024",
+    image: "/projects/project-semeyny-126.jpg",
+  },
+  {
+    title: "Дом с террасой 118 м²",
+    area: "118 м²",
+    location: "Краснодар, мкр. Российский",
+    year: "2023",
+    image: "/projects/project-komfort-118.jpg",
+  },
+  {
+    title: "Одноэтажный дом 104 м²",
+    area: "104 м²",
+    location: "Краснодар, +35 км",
+    year: "2023",
+    image: "/projects/project-yuzhny-104.jpg",
+  },
+  {
+    title: "Компактный дом 92 м²",
+    area: "92 м²",
+    location: "Краснодар, пос. Знаменский",
+    year: "2022",
+    image: "/projects/project-praktichny-92.jpg",
+  },
+  {
+    title: "Дом для старта 80 м²",
+    area: "80 м²",
+    location: "Краснодар, +40 км",
+    year: "2022",
+    image: "/projects/project-klever-80.jpg",
   },
 ];

@@ -1,6 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { readyHomes, projects, buildingHomes, plots, priceRows, faqItems } from "./seed-data";
-import { heroDefaults, legalDefaults } from "../app/content/landing";
+import {
+  readyHomes,
+  projects,
+  buildingHomes,
+  plots,
+  priceRows,
+  faqItems,
+  builtObjects,
+} from "./seed-data";
+import { heroDefaults, legalDefaults, packageSettingDefaults } from "../app/content/landing";
 
 const prisma = new PrismaClient();
 
@@ -18,12 +26,16 @@ async function main() {
   await prisma.plot.deleteMany();
   await prisma.priceRow.deleteMany();
   await prisma.faqItem.deleteMany();
+  await prisma.builtObject.deleteMany();
   await prisma.siteSetting.deleteMany();
 
   await prisma.readyHome.createMany({
     data: readyHomes.map((h, i) => ({ ...h, sortOrder: i })),
   });
   await prisma.project.createMany({
+    // image2/image3/plan — демо-галерея (стенды из фото других проектов),
+    // чтобы слайдер в карточке было видно. Заказчик заменит реальными
+    // рендерами и планировкой через админку.
     data: projects.map((p, i) => ({
       name: p.name,
       area: p.area,
@@ -33,6 +45,9 @@ async function main() {
       tag: p.tag,
       description: p.description,
       image: p.image,
+      image2: projects[(i + 1) % projects.length].image,
+      image3: projects[(i + 2) % projects.length].image,
+      plan: projects[(i + 3) % projects.length].image,
       sortOrder: i,
     })),
   });
@@ -48,6 +63,17 @@ async function main() {
   await prisma.faqItem.createMany({
     data: faqItems.map((f, i) => ({ ...f, sortOrder: i })),
   });
+  await prisma.builtObject.createMany({
+    // image2-4 — демо-галерея (стенды из фото других объектов), чтобы был виден
+    // слайдер. Заказчик заменит реальными фото объекта через админку.
+    data: builtObjects.map((b, i) => ({
+      ...b,
+      image2: builtObjects[(i + 1) % builtObjects.length].image,
+      image3: builtObjects[(i + 2) % builtObjects.length].image,
+      image4: builtObjects[(i + 3) % builtObjects.length].image,
+      sortOrder: i,
+    })),
+  });
 
   const settings: Record<string, string> = {
     phone: "+79990000000",
@@ -59,12 +85,10 @@ async function main() {
     seo_title: "Кирпичные дома в Краснодаре | Готовые дома и строительство",
     seo_description:
       "Готовые кирпичные дома, дома в строительстве и строительство под заказ в Краснодаре и радиусе 70 км.",
-    price_warm_label: "Теплый контур",
     price_warm_value: "от 48 000 ₽/м²",
-    price_pre_label: "Предчистовая",
     price_pre_value: "от 62 000 ₽/м²",
-    price_full_label: "Под ключ",
     price_full_value: "от 78 000 ₽/м²",
+    ...packageSettingDefaults(),
     hero_title: heroDefaults.title,
     hero_subtitle: heroDefaults.subtitle,
     hero_image: heroDefaults.image,

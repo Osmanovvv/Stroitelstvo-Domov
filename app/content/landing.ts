@@ -4,11 +4,12 @@ import {
   FileCheck2,
   Hammer,
   House,
+  KeyRound,
+  MapPin,
   Phone,
   Ruler,
   ShieldCheck,
   Trees,
-  Trophy,
   type LucideIcon,
 } from "lucide-react";
 import { safeHref } from "../lib/url";
@@ -120,28 +121,62 @@ export const bankItems: BankItem[] = [
 
 export const processSteps: ProcessStep[] = [
   {
-    icon: House,
+    icon: ClipboardCheck,
     number: "01",
-    title: "Подбор",
-    text: "Выбираем готовый дом, проект или участок.",
+    title: "Заявка и консультация",
+    text: "Уточняем тип дома, площадь, бюджет и считаем предварительную стоимость.",
   },
   {
-    icon: Camera,
+    icon: Ruler,
     number: "02",
-    title: "Просмотр",
-    text: "Показываем объект, стройку или планировку.",
+    title: "Проект",
+    text: "Подбираем готовый проект из каталога или разрабатываем индивидуальный.",
+  },
+  {
+    icon: MapPin,
+    number: "03",
+    title: "Выезд на участок",
+    text: "Инженер оценивает грунт и подъезды, подбирает фундамент и уточняет смету.",
   },
   {
     icon: FileCheck2,
-    number: "03",
-    title: "Смета",
-    text: "Фиксируем комплектацию, цену и сроки.",
-  },
-  {
-    icon: Trophy,
     number: "04",
     title: "Договор",
-    text: "Запускаем сделку или строительство по этапам.",
+    text: "Фиксируем смету, гарантии, график работ и поэтапную оплату.",
+  },
+  {
+    icon: Hammer,
+    number: "05",
+    title: "Строительство",
+    text: "Одна команда ведёт коробку, кровлю, инженерию и отделку с контролем качества.",
+  },
+  {
+    icon: KeyRound,
+    number: "06",
+    title: "Сдача и гарантия",
+    text: "Передаём дом с документами и гарантией на конструкции и инженерию.",
+  },
+];
+
+// Преимущества ипотеки/рассрочки для тёмного блока «Ипотека».
+// ВНИМАНИЕ: ставка и суммы — маркетинговые плейсхолдеры. Реклама финансовых
+// услуг требует полных условий; заказчик обязан подтвердить реальные цифры.
+export const mortgageFeatures = [
+  {
+    title: "Ставка от 5,9%",
+    text: "Закреплена на весь срок — без скрытых переплат.",
+  },
+  {
+    title: "Семейная и господдержка",
+    text: "Подберём программу под ваш случай: семейная, IT, господдержка.",
+  },
+  {
+    title: "Платёж от 25 000 ₽/мес",
+    text: "Свой дом — дешевле аренды. Посчитаем под ваш бюджет.",
+  },
+  {
+    title: "Эскроу-счёт",
+    text: "Деньги в банке; застройщик получает их после этапов работ.",
   },
 ];
 
@@ -154,19 +189,104 @@ export const heroDefaults = {
   image: "/hero/brick-house-dusk.webp",
 };
 
+// Комплектации строительства (карточки в секции «Цены»). Заголовок/подзаголовок
+// и список работ редактируются в админке (ключи SiteSetting price_<key>_label /
+// _sub / _items); _items — по одной работе на строку. Пусто = дефолт отсюда.
+export type PackageInfo = {
+  key: "warm" | "pre" | "full";
+  title: string;
+  sub: string;
+  items: string[];
+};
+
+export const packageDefaults: PackageInfo[] = [
+  {
+    key: "warm",
+    title: "Тёплый контур",
+    sub: "Включает в себя:",
+    items: [
+      "Подготовительные работы: выбор или разработка проекта дома",
+      "Устройство фундамента с закладными под коммуникации",
+      "Устройство несущих стен, внешних и внутренних",
+      "Устройство перекрытий",
+      "Монтаж внутренних перегородок",
+      "Устройство монолитной железобетонной лестницы",
+      "Устройство утеплённой кровли",
+      "Изготовление и монтаж окон",
+    ],
+  },
+  {
+    key: "pre",
+    title: "White box",
+    sub: "Включает «тёплый контур», а также:",
+    items: [
+      "Работы по отделке фасада",
+      "Монтаж водосточной системы",
+      "Подшивка карнизных свесов",
+      "Внутренняя штукатурка стен и откосов",
+      "Монтаж системы отопления и водоснабжения",
+      "Монтаж черновой электрики со щитом и заземлением",
+      "Устройство черновой стяжки пола",
+    ],
+  },
+  {
+    key: "full",
+    title: "Под ключ",
+    sub: "Включает «White box», а также:",
+    items: [
+      "Подготовка стен к финишному покрытию",
+      "Покраска оконных откосов и монтаж подоконников",
+      "Поклейка обоев, покраска стен, монтаж плитки",
+      "Монтаж напольных покрытий (плитка, ламинат и пр.)",
+      "Монтаж потолков и приборов освещения",
+      "Монтаж межкомнатных дверей",
+      "Монтаж чистовой сантехники, розеток и выключателей",
+      "Меблировка и бытовая техника (по опциям)",
+    ],
+  },
+];
+
+export function buildPackages(settings: Record<string, string>): PackageInfo[] {
+  return packageDefaults.map((p) => {
+    const itemsRaw = settings[`price_${p.key}_items`];
+    const items = itemsRaw
+      ? itemsRaw.split("\n").map((line) => line.trim()).filter(Boolean)
+      : p.items;
+    return {
+      key: p.key,
+      title: settings[`price_${p.key}_label`] || p.title,
+      sub: settings[`price_${p.key}_sub`] || p.sub,
+      items,
+    };
+  });
+}
+
+// Плоские дефолтные настройки пакетов для сида/скрипта инициализации.
+export function packageSettingDefaults(): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const p of packageDefaults) {
+    out[`price_${p.key}_label`] = p.title;
+    out[`price_${p.key}_sub`] = p.sub;
+    out[`price_${p.key}_items`] = p.items.join("\n");
+  }
+  return out;
+}
+
 export const navigationLinks = [
-  { label: "Готовые дома", href: "#homes" },
   { label: "Проекты", href: "#projects" },
-  { label: "Участки", href: "#plots" },
-  { label: "Цены", href: "#prices" },
+  { label: "Готовые дома в продаже", href: "#homes" },
+  { label: "Ипотека", href: "#mortgage" },
+  { label: "Как мы работаем", href: "#process" },
+  { label: "Построенные объекты", href: "#built" },
 ];
 
 export const mobileNavigationLinks = [
-  { label: "Готовые дома", href: "#homes" },
-  { label: "Строящиеся дома", href: "#building" },
   { label: "Проекты", href: "#projects" },
+  { label: "Готовые дома в продаже", href: "#homes" },
+  { label: "Ипотека", href: "#mortgage" },
+  { label: "Как мы работаем", href: "#process" },
+  { label: "Построенные объекты", href: "#built" },
   { label: "Участки", href: "#plots" },
-  { label: "Цены", href: "#prices" },
   { label: "Контакты", href: "#contacts" },
 ];
 

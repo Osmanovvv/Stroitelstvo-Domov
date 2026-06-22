@@ -1,7 +1,14 @@
 import type { Project } from "@prisma/client";
-import type { Column, Field, ResourceRecord } from "@/app/admin/components/ResourceManager";
+import type { Column, Field, ImageField, ResourceRecord } from "@/app/admin/components/ResourceManager";
 
 export const hasImage = true;
+
+// Доп. изображения проекта (помимо основного «Фото» = рендер 1 / обложка).
+export const extraImageFields: ImageField[] = [
+  { name: "image2", label: "Рендер 2" },
+  { name: "image3", label: "Рендер 3" },
+  { name: "plan", label: "Планировка" },
+];
 
 export const columns: Column[] = [
   { header: "Фото", field: "image", kind: "image" },
@@ -25,6 +32,7 @@ export function toRecord(p: Project): ResourceRecord {
     id: p.id,
     isVisible: p.isVisible,
     image: p.image,
+    extraImages: { image2: p.image2, image3: p.image3, plan: p.plan },
     values: {
       name: p.name,
       area: p.area,

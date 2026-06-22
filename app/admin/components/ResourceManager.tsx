@@ -10,7 +10,14 @@ export type ResourceRecord = {
   id: string;
   isVisible: boolean;
   image: string | null;
+  // Доп. картинки (галерея), кроме основного фото: ключ — имя поля (image2/plan…).
+  extraImages?: Record<string, string | null>;
   values: Record<string, string>;
+};
+
+export type ImageField = {
+  name: string;
+  label: string;
 };
 
 export type Column = {
@@ -31,6 +38,7 @@ type ResourceManagerProps = {
   title: string;
   addLabel: string;
   hasImage: boolean;
+  extraImageFields?: ImageField[];
   columns: Column[];
   fields: Field[];
   items: ResourceRecord[];
@@ -45,6 +53,7 @@ export default function ResourceManager({
   title,
   addLabel,
   hasImage,
+  extraImageFields = [],
   columns,
   fields,
   items: initialItems,
@@ -144,6 +153,15 @@ export default function ResourceManager({
         const file = input?.files?.[0];
         if (file && file.size > 0) {
           formData.set("imageFile", await compressImage(file));
+        }
+      }
+      for (const ef of extraImageFields) {
+        const input = formEl.querySelector(
+          `input[name="${ef.name}File"]`,
+        ) as HTMLInputElement | null;
+        const file = input?.files?.[0];
+        if (file && file.size > 0) {
+          formData.set(`${ef.name}File`, await compressImage(file));
         }
       }
       const result = editing === "new" ? await create(formData) : await update(formData);
@@ -301,6 +319,20 @@ export default function ResourceManager({
                 <input name="imageFile" type="file" accept="image/*" />
               </div>
             )}
+
+            {extraImageFields.map((ef) => {
+              const existing = current?.extraImages?.[ef.name] ?? "";
+              return (
+                <div className="admin-field" key={ef.name}>
+                  <label>{ef.label}</label>
+                  <input type="hidden" name={`${ef.name}Existing`} value={existing} />
+                  {existing && (
+                    <Image className="admin-preview" src={existing} alt="" width={160} height={110} />
+                  )}
+                  <input name={`${ef.name}File`} type="file" accept="image/*" />
+                </div>
+              );
+            })}
 
             {error && (
               <p className="admin-error" role="alert">

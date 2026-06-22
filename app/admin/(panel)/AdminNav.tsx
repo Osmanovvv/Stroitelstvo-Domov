@@ -9,6 +9,7 @@ const sections = [
   { href: "/admin/building", label: "Дома в строительстве" },
   { href: "/admin/projects", label: "Проекты" },
   { href: "/admin/plots", label: "Участки" },
+  { href: "/admin/built", label: "Построенные объекты" },
   { href: "/admin/prices", label: "Цены и комплектации" },
   { href: "/admin/faq", label: "FAQ" },
   { href: "/admin/seo", label: "SEO" },

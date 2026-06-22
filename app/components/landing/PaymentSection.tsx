@@ -1,49 +1,47 @@
 import Image from "next/image";
-import { Clock3, KeyRound, WalletCards } from "lucide-react";
-import { bankItems } from "../../content/landing";
+import { bankItems, mortgageFeatures } from "../../content/landing";
+import LeadModalTrigger from "../LeadModalTrigger";
 
 export default function PaymentSection() {
   return (
-    <section className="section payment-section">
-      <div className="container payment-card">
-        <div>
-          <span className="eyebrow">Оплата и ипотека</span>
+    <section className="section payment-section" id="mortgage">
+      <div className="container payment-inner">
+        <div className="payment-head">
+          <span className="eyebrow">Ипотека и рассрочка</span>
           <h2>
-            Аккредитованы в <span className="text-accent">крупных банках</span>
+            Дом в ипотеку <span className="text-accent">от 5,9%</span> или рассрочка от компании
           </h2>
           <p>
-            Поможем подобрать ипотечную программу для готового дома, объекта в строительстве
-            или строительства под заказ.
+            Аккредитованы в крупных банках — поможем подобрать программу и собрать документы.
           </p>
-          <div className="bank-grid" aria-label="Банки партнеры">
+        </div>
+
+        <div className="payment-points">
+          {mortgageFeatures.map((feature) => (
+            <div className="payment-point" key={feature.title}>
+              <span className="payment-dot" aria-hidden="true" />
+              <strong>{feature.title}</strong>
+              <p>{feature.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="payment-foot">
+          <LeadModalTrigger className="button primary" title="Рассчитать ипотеку">
+            Рассчитать стоимость
+          </LeadModalTrigger>
+          <div className="bank-row" aria-label="Банки-партнёры">
             {bankItems.map((bank) => (
-              <span className="bank-item" key={bank.name}>
-                <span className="bank-logo-wrap">
-                  <Image
-                    className="bank-logo"
-                    src={bank.logo}
-                    alt={`Логотип ${bank.name}`}
-                    width={bank.logoWidth}
-                    height={bank.logoHeight}
-                  />
-                </span>
+              <span className="bank-chip" key={bank.name}>
+                <Image
+                  src={bank.logo}
+                  alt={bank.name}
+                  width={bank.logoWidth}
+                  height={bank.logoHeight}
+                />
               </span>
             ))}
           </div>
-        </div>
-        <div className="payment-points">
-          <span>
-            <WalletCards />
-            Ипотека и семейные программы
-          </span>
-          <span>
-            <KeyRound />
-            Бронь строящихся объектов
-          </span>
-          <span>
-            <Clock3 />
-            Поэтапная оплата строительства
-          </span>
         </div>
       </div>
     </section>

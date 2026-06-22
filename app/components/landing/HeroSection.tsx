@@ -8,6 +8,7 @@ import {
   getReadyHomes,
   getSettings,
 } from "../../lib/queries";
+import LeadModalTrigger from "../LeadModalTrigger";
 
 // Заголовок редактируется в админке. Переносы строк — \n, акцентный цвет —
 // текст между **двумя звёздочками**. Рендерим в безопасные React-узлы (без
@@ -84,12 +85,12 @@ export default async function HeroSection() {
             </span>
           </div>
           <div className="hero-actions">
-            <a className="button primary" href="#homes">
-              Смотреть дома
+            <LeadModalTrigger className="button primary" title="Узнать стоимость строительства">
+              Узнать стоимость строительства
               <ArrowRight size={18} />
-            </a>
-            <a className="button secondary" href="#calc">
-              Пройти подбор
+            </LeadModalTrigger>
+            <a className="button secondary" href="#homes">
+              Смотреть дома
             </a>
           </div>
           <span className="hero-note">

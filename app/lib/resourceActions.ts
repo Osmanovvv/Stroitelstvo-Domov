@@ -43,17 +43,26 @@ export type ResourceActions<TRecord> = {
 type Config<TRaw extends SortableRow, TRecord> = {
   model: CollectionDelegate<TRaw>;
   hasImage: boolean;
+  // Доп. поля-картинки помимо основного `image` (напр. галерея проекта:
+  // image2/image3/plan). Фабрика чистит их файлы при замене/удалении так же,
+  // как основное фото. По умолчанию пусто — одно-картиночные разделы не меняются.
+  extraImageFields?: string[];
   readData: (formData: FormData) => Promise<Record<string, unknown>>;
   toRecord: (row: TRaw) => TRecord;
 };
 
-// Единая фабрика CRUD для сортируемых коллекций (homes/projects/building/plots).
+function asString(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
+
+// Единая фабрика CRUD для сортируемых коллекций (homes/projects/building/plots/built).
 // Убирает копипасту и держит логику (порядок удаления фото, транзакции,
 // revalidate) в одном месте.
 export function createResourceActions<TRaw extends SortableRow, TRecord>(
   config: Config<TRaw, TRecord>,
 ): ResourceActions<TRecord> {
   const { model, hasImage, readData, toRecord } = config;
+  const extraImageFields = config.extraImageFields ?? [];
 
   async function create(formData: FormData): Promise<ActionResult<TRecord>> {
     let data: Record<string, unknown>;
@@ -71,8 +80,11 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
       revalidatePath("/");
       return toRecord(row);
     } catch {
-      // БД упала — убираем только что записанный файл, чтобы не плодить сирот.
+      // БД упала — убираем только что записанные файлы, чтобы не плодить сирот.
       if (typeof data.image === "string") await deleteUploadedImage(data.image);
+      for (const field of extraImageFields) {
+        if (typeof data[field] === "string") await deleteUploadedImage(data[field] as string);
+      }
       return { error: "Не удалось сохранить. Попробуйте ещё раз." };
     }
   }
@@ -87,24 +99,42 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
     }
     if (hasImage && !data.image) return { error: "Добавьте фото" };
     const oldImage = hasImage ? str(formData, "imageExisting") : "";
-    const newImage = hasImage && typeof data.image === "string" ? data.image : "";
+    const newImage = hasImage ? asString(data.image) : "";
+    // Пары старое/новое для доп. картинок — чтобы удалить заменённые файлы.
+    const extras = extraImageFields.map((field) => ({
+      old: str(formData, `${field}Existing`),
+      next: asString(data[field]),
+    }));
     try {
       const row = await model.update({ where: { id }, data });
-      // Запись прошла — теперь безопасно удалить заменённое старое фото.
+      // Запись прошла — теперь безопасно удалить заменённые старые фото.
       if (oldImage && oldImage !== newImage) await deleteUploadedImage(oldImage);
+      for (const { old, next } of extras) {
+        if (old && old !== next) await deleteUploadedImage(old);
+      }
       revalidatePath("/");
       return toRecord(row);
     } catch {
-      // БД упала — старое фото цело, убираем новый осиротевший файл.
+      // БД упала — старые фото целы, убираем новые осиротевшие файлы.
       if (newImage && newImage !== oldImage) await deleteUploadedImage(newImage);
+      for (const { old, next } of extras) {
+        if (next && next !== old) await deleteUploadedImage(next);
+      }
       return { error: "Не удалось сохранить. Попробуйте ещё раз." };
     }
   }
 
   async function remove(id: string): Promise<void> {
-    const row = hasImage ? await model.findUnique({ where: { id } }) : null;
+    const needsRow = hasImage || extraImageFields.length > 0;
+    const row = needsRow ? await model.findUnique({ where: { id } }) : null;
     await model.delete({ where: { id } });
-    if (hasImage) await deleteUploadedImage(row?.image);
+    if (row) {
+      if (hasImage) await deleteUploadedImage(row.image);
+      const record = row as unknown as Record<string, unknown>;
+      for (const field of extraImageFields) {
+        await deleteUploadedImage(asString(record[field]) || null);
+      }
+    }
     revalidatePath("/");
   }
 

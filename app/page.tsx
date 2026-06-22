@@ -1,8 +1,10 @@
+import LeadModal from "./components/LeadModal";
 import SiteFooter from "./components/SiteFooter";
 import SiteHeader from "./components/SiteHeader";
 import ScrollReveal from "./components/ScrollReveal";
 import {
   BuildingSection,
+  BuiltSection,
   CalculatorSection,
   ChoiceSection,
   CompareSection,
@@ -34,6 +36,7 @@ export default function Home() {
         <BuildingSection />
         <ProjectsSection />
         <PlotsSection />
+        <BuiltSection />
         <CompareSection />
         <CalculatorSection />
         <PricesSection />
@@ -44,6 +47,7 @@ export default function Home() {
         <ContactsSection />
       </main>
       <SiteFooter />
+      <LeadModal />
     </>
   );
 }

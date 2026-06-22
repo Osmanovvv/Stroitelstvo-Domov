@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowRight, Bath, BedDouble, MapPin, Ruler, Trees } from "lucide-react";
 import { getReadyHomes } from "../../lib/queries";
+import LeadModalTrigger from "../LeadModalTrigger";
 
 export default async function HomesSection() {
   const readyHomes = await getReadyHomes();
@@ -53,10 +54,10 @@ export default async function HomesSection() {
                   {home.baths}
                 </span>
               </div>
-              <a className="text-link" href="#contacts">
+              <LeadModalTrigger className="text-link" title="Записаться на просмотр">
                 Записаться на просмотр
                 <ArrowRight size={17} />
-              </a>
+              </LeadModalTrigger>
             </div>
           </article>
         ))}

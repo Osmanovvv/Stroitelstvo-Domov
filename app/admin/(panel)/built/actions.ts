@@ -1,6 +1,6 @@
 "use server";
 
-import type { Project } from "@prisma/client";
+import type { BuiltObject } from "@prisma/client";
 import { prisma } from "@/app/lib/db";
 import { str, file } from "@/app/lib/form";
 import { saveUploadedImage } from "@/app/lib/upload";
@@ -11,43 +11,40 @@ async function readData(formData: FormData) {
   const image = await saveUploadedImage(file(formData, "imageFile"), str(formData, "imageExisting"));
   const image2 = await saveUploadedImage(file(formData, "image2File"), str(formData, "image2Existing"));
   const image3 = await saveUploadedImage(file(formData, "image3File"), str(formData, "image3Existing"));
-  const plan = await saveUploadedImage(file(formData, "planFile"), str(formData, "planExisting"));
+  const image4 = await saveUploadedImage(file(formData, "image4File"), str(formData, "image4Existing"));
   return {
-    name: str(formData, "name"),
+    title: str(formData, "title"),
     area: str(formData, "area"),
-    floors: str(formData, "floors"),
-    price: str(formData, "price"),
-    time: str(formData, "time"),
-    tag: str(formData, "tag"),
-    description: str(formData, "description"),
+    location: str(formData, "location"),
+    year: str(formData, "year"),
     image,
-    // Пустая строка = картинка не задана (поля nullable в схеме) — фильтруется на сайте.
+    // Пустая строка = фото не задано (поля nullable) — фильтруется на сайте.
     image2: image2 || null,
     image3: image3 || null,
-    plan: plan || null,
+    image4: image4 || null,
   };
 }
 
-const actions = createResourceActions<Project, ReturnType<typeof toRecord>>({
-  model: prisma.project as unknown as CollectionDelegate<Project>,
+const actions = createResourceActions<BuiltObject, ReturnType<typeof toRecord>>({
+  model: prisma.builtObject as unknown as CollectionDelegate<BuiltObject>,
   hasImage,
   extraImageFields: extraImageFields.map((f) => f.name),
   readData,
   toRecord,
 });
 
-export async function createProject(formData: FormData) {
+export async function createBuilt(formData: FormData) {
   return actions.create(formData);
 }
-export async function updateProject(formData: FormData) {
+export async function updateBuilt(formData: FormData) {
   return actions.update(formData);
 }
-export async function deleteProject(id: string) {
+export async function deleteBuilt(id: string) {
   return actions.remove(id);
 }
-export async function toggleProject(id: string) {
+export async function toggleBuilt(id: string) {
   return actions.toggle(id);
 }
-export async function moveProject(id: string, direction: "up" | "down") {
+export async function moveBuilt(id: string, direction: "up" | "down") {
   return actions.move(id, direction);
 }

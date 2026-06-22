@@ -34,6 +34,9 @@ model Project {
   tag         String
   description String
   image       String
+  image2      String?
+  image3      String?
+  plan        String?
   sortOrder   Int      @default(0)
   isVisible   Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -87,4 +90,20 @@ model FaqItem {
 model SiteSetting {
   key   String @id
   value String
+}
+
+model BuiltObject {
+  id        String   @id @default(cuid())
+  title     String
+  area      String
+  location  String
+  year      String
+  image     String
+  image2    String?
+  image3    String?
+  image4    String?
+  sortOrder Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
