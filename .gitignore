@@ -6,6 +6,7 @@ tsconfig.tsbuildinfo
 .claude/launch.json
 .env
 .env.local
+.env.production
 *.log
 /public/uploads
 big-test.jpg
