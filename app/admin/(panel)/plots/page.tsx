@@ -1,6 +1,6 @@
 import { prisma } from "@/app/lib/db";
 import ResourceManager from "@/app/admin/components/ResourceManager";
-import { columns, fields, hasImage, toRecord } from "./config";
+import { columns, fields, hasImage, extraImageFields, toRecord } from "./config";
 import { createPlot, updatePlot, deletePlot, togglePlot, movePlot } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +14,7 @@ export default async function PlotsAdmin() {
       title="Участки"
       addLabel="Добавить участок"
       hasImage={hasImage}
+      extraImageFields={extraImageFields}
       columns={columns}
       fields={fields}
       items={items}

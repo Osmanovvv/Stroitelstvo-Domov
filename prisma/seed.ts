@@ -30,7 +30,15 @@ async function main() {
   await prisma.siteSetting.deleteMany();
 
   await prisma.readyHome.createMany({
-    data: readyHomes.map((h, i) => ({ ...h, sortOrder: i })),
+    // image2-4 — демо-галерея (стенды из фото других домов), чтобы был виден
+    // слайдер в карточке. Заказчик заменит реальными фото через админку.
+    data: readyHomes.map((h, i) => ({
+      ...h,
+      image2: readyHomes[(i + 1) % readyHomes.length].image,
+      image3: readyHomes[(i + 2) % readyHomes.length].image,
+      image4: readyHomes[(i + 3) % readyHomes.length].image,
+      sortOrder: i,
+    })),
   });
   await prisma.project.createMany({
     // image2/image3/plan — демо-галерея (стенды из фото других проектов),
@@ -52,10 +60,24 @@ async function main() {
     })),
   });
   await prisma.buildingHome.createMany({
-    data: buildingHomes.map((b, i) => ({ ...b, sortOrder: i })),
+    // image2-4 — демо-галерея (стенды из фото других объектов) для слайдера.
+    data: buildingHomes.map((b, i) => ({
+      ...b,
+      image2: buildingHomes[(i + 1) % buildingHomes.length].image,
+      image3: buildingHomes[(i + 2) % buildingHomes.length].image,
+      image4: buildingHomes[(i + 3) % buildingHomes.length].image,
+      sortOrder: i,
+    })),
   });
   await prisma.plot.createMany({
-    data: plots.map((p, i) => ({ ...p, sortOrder: i })),
+    // image2-4 — демо-галерея (стенды из фото других участков) для слайдера.
+    data: plots.map((p, i) => ({
+      ...p,
+      image2: plots[(i + 1) % plots.length].image,
+      image3: plots[(i + 2) % plots.length].image,
+      image4: plots[(i + 3) % plots.length].image,
+      sortOrder: i,
+    })),
   });
   await prisma.priceRow.createMany({
     data: priceRows.map((r, i) => ({ ...r, sortOrder: i })),

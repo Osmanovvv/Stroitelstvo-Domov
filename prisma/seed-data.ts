@@ -30,6 +30,7 @@ export type BuildingHome = {
   stage: string;
   finish: string;
   location: string;
+  image: string;
 };
 
 export type Plot = {
@@ -37,6 +38,7 @@ export type Plot = {
   area: string;
   utilities: string;
   location: string;
+  image: string;
 };
 
 export type FaqItem = {
@@ -195,36 +197,43 @@ export const projects: Project[] = [
   },
 ];
 
+// image — демо-стенды из статичных фото проектов (заказчик заменит реальными
+// фото стройки/участка через админку); image2-4 проставляются в seed.ts.
 export const buildingHomes: BuildingHome[] = [
   {
     title: "Дом 118 м²",
     stage: "коробка готова",
     finish: "сдача в августе",
     location: "Краснодар +30 км",
+    image: "/projects/project-komfort-118.jpg",
   },
   {
     title: "Дом 132 м²",
     stage: "кровельные работы",
     finish: "сдача в сентябре",
     location: "Краснодар +55 км",
+    image: "/projects/project-prostor-136.jpg",
   },
   {
     title: "Дом 96 м²",
     stage: "фундамент и стены",
     finish: "сдача в октябре",
     location: "пригород Краснодара",
+    image: "/projects/project-praktichny-92.jpg",
   },
   {
     title: "Дом 124 м²",
     stage: "кладка стен",
     finish: "сдача в ноябре",
     location: "Краснодар +35 км",
+    image: "/projects/project-yuzhny-104.jpg",
   },
   {
     title: "Дом 140 м²",
     stage: "инженерные работы",
     finish: "сдача в декабре",
     location: "южное направление",
+    image: "/projects/project-vidny-140.jpg",
   },
 ];
 
@@ -234,18 +243,21 @@ export const plots: Plot[] = [
     area: "5 сот.",
     utilities: "свет, вода рядом",
     location: "Краснодар +20 км",
+    image: "/projects/project-klever-80.jpg",
   },
   {
     title: "Участок под дом 126 м²",
     area: "6 сот.",
     utilities: "подъезд, электричество",
     location: "Краснодар +45 км",
+    image: "/projects/project-semeyny-126.jpg",
   },
   {
     title: "Участок под семейный проект",
     area: "7 сот.",
     utilities: "коммуникации по границе",
     location: "южное направление",
+    image: "/projects/project-yuzhny-104.jpg",
   },
 ];
 

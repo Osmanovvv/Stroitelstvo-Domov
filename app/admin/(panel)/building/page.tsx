@@ -1,6 +1,6 @@
 import { prisma } from "@/app/lib/db";
 import ResourceManager from "@/app/admin/components/ResourceManager";
-import { columns, fields, hasImage, toRecord } from "./config";
+import { columns, fields, hasImage, extraImageFields, toRecord } from "./config";
 import { createBuilding, updateBuilding, deleteBuilding, toggleBuilding, moveBuilding } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +14,7 @@ export default async function BuildingAdmin() {
       title="Дома в строительстве"
       addLabel="Добавить"
       hasImage={hasImage}
+      extraImageFields={extraImageFields}
       columns={columns}
       fields={fields}
       items={items}

@@ -32,6 +32,7 @@ export default async function PricesSection() {
             <LeadModalTrigger
               className="button primary package-cta"
               title={`Рассчитать стоимость — ${pkg.title}`}
+              withFile
             >
               Рассчитать стоимость
             </LeadModalTrigger>

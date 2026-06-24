@@ -37,7 +37,7 @@ export default async function ProjectsSection() {
                 <span>под участок</span>
               </div>
               <strong>{project.price}</strong>
-              <LeadModalTrigger title="Рассчитать проект">
+              <LeadModalTrigger title="Рассчитать проект" withFile>
                 Рассчитать проект
                 <ArrowRight size={18} />
               </LeadModalTrigger>

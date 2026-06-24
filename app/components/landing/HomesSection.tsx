@@ -1,7 +1,10 @@
-import Image from "next/image";
 import { ArrowRight, Bath, BedDouble, MapPin, Ruler, Trees } from "lucide-react";
 import { getReadyHomes } from "../../lib/queries";
 import LeadModalTrigger from "../LeadModalTrigger";
+import ProjectSlider from "../ProjectSlider";
+
+const HOME_IMAGE_SIZES =
+  "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
 
 export default async function HomesSection() {
   const readyHomes = await getReadyHomes();
@@ -13,18 +16,15 @@ export default async function HomesSection() {
         <p>Выберите готовый дом с участком, коммуникациями и понятными условиями покупки.</p>
       </div>
       <div className="container homes-grid">
-        {readyHomes.map((home) => (
+        {readyHomes.map((home) => {
+          const gallery = [home.image, home.image2, home.image3, home.image4].filter(
+            (src): src is string => Boolean(src),
+          );
+
+          return (
           <article className="home-card" key={home.id}>
             <div className="home-image-wrap">
-              {home.image && (
-                <Image
-                  src={home.image}
-                  alt={home.title}
-                  width={820}
-                  height={560}
-                  sizes="(max-width: 900px) 100vw, 33vw"
-                />
-              )}
+              <ProjectSlider images={gallery} alt={home.title} sizes={HOME_IMAGE_SIZES} />
               <span>{home.status}</span>
             </div>
             <div className="home-card-body">
@@ -60,7 +60,8 @@ export default async function HomesSection() {
               </LeadModalTrigger>
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

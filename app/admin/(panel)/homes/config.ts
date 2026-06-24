@@ -1,7 +1,14 @@
 import type { ReadyHome } from "@prisma/client";
-import type { Column, Field, ResourceRecord } from "@/app/admin/components/ResourceManager";
+import type { Column, Field, ImageField, ResourceRecord } from "@/app/admin/components/ResourceManager";
 
 export const hasImage = true;
+
+// Доп. фото дома (помимо основного «Фото» = обложка) — галерея со слайдером.
+export const extraImageFields: ImageField[] = [
+  { name: "image2", label: "Фото 2" },
+  { name: "image3", label: "Фото 3" },
+  { name: "image4", label: "Фото 4" },
+];
 
 export const columns: Column[] = [
   { header: "Фото", field: "image", kind: "image" },
@@ -26,6 +33,7 @@ export function toRecord(h: ReadyHome): ResourceRecord {
     id: h.id,
     isVisible: h.isVisible,
     image: h.image,
+    extraImages: { image2: h.image2, image3: h.image3, image4: h.image4 },
     values: {
       title: h.title,
       price: h.price,

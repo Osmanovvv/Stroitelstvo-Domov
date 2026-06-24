@@ -7,6 +7,7 @@ import {
 } from "../content/landing";
 import { getSettings } from "../lib/queries";
 import ContactIcon from "./ContactIcon";
+import LeadModalTrigger from "./LeadModalTrigger";
 import WorkStatus from "./WorkStatus";
 
 export default async function SiteHeader() {
@@ -42,10 +43,10 @@ export default async function SiteHeader() {
         </a>
 
         <div className="header-cta">
-          <a className="header-estimate" href="#contacts">
+          <LeadModalTrigger className="header-estimate" title="Отправить проект на расчёт" withFile>
             Отправить проект на расчёт
             <ArrowRight size={17} />
-          </a>
+          </LeadModalTrigger>
           <div className="header-messengers">
             <span className="header-online">Пишите, мы онлайн</span>
             <div className="header-messenger-icons" aria-label="Написать в мессенджер">

@@ -18,6 +18,9 @@ model ReadyHome {
   location  String
   status    String
   image     String
+  image2    String?
+  image3    String?
+  image4    String?
   sortOrder Int      @default(0)
   isVisible Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -49,6 +52,10 @@ model BuildingHome {
   stage     String
   finish    String
   location  String
+  image     String   @default("")
+  image2    String?
+  image3    String?
+  image4    String?
   sortOrder Int      @default(0)
   isVisible Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -61,6 +68,10 @@ model Plot {
   area      String
   utilities String
   location  String
+  image     String   @default("")
+  image2    String?
+  image3    String?
+  image4    String?
   sortOrder Int      @default(0)
   isVisible Boolean  @default(true)
   createdAt DateTime @default(now())

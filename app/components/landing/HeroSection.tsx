@@ -2,12 +2,7 @@ import Image from "next/image";
 import { Fragment } from "react";
 import { ArrowRight, BadgeCheck, Camera, WalletCards } from "lucide-react";
 import { heroDefaults } from "../../content/landing";
-import {
-  getBuildingHomes,
-  getProjects,
-  getReadyHomes,
-  getSettings,
-} from "../../lib/queries";
+import { getSettings } from "../../lib/queries";
 import LeadModalTrigger from "../LeadModalTrigger";
 
 // Заголовок редактируется в админке. Переносы строк — \n, акцентный цвет —
@@ -34,25 +29,11 @@ function renderTitle(title: string) {
 }
 
 export default async function HeroSection() {
-  // getSettings/getReadyHomes/getProjects/getBuildingHomes обёрнуты в cache():
-  // эти же запросы делают секции ниже, поэтому новых обращений к БД нет —
-  // счётчики панели берём из тех же данных, что и карточки на странице.
-  const [settings, readyHomes, buildingHomes, projects] = await Promise.all([
-    getSettings(),
-    getReadyHomes(),
-    getBuildingHomes(),
-    getProjects(),
-  ]);
+  const settings = await getSettings();
 
   const title = settings.hero_title || heroDefaults.title;
   const subtitle = settings.hero_subtitle || heroDefaults.subtitle;
   const image = settings.hero_image || heroDefaults.image;
-
-  const stats = [
-    { value: readyHomes.length, label: "готовых домов" },
-    { value: buildingHomes.length, label: "объектов строится" },
-    { value: projects.length, label: "типовых проектов" },
-  ];
 
   return (
     <section className="hero" id="top">
@@ -85,7 +66,7 @@ export default async function HeroSection() {
             </span>
           </div>
           <div className="hero-actions">
-            <LeadModalTrigger className="button primary" title="Узнать стоимость строительства">
+            <LeadModalTrigger className="button primary" title="Узнать стоимость строительства" withFile>
               Узнать стоимость строительства
               <ArrowRight size={18} />
             </LeadModalTrigger>
@@ -96,14 +77,6 @@ export default async function HeroSection() {
           <span className="hero-note">
             Расчет, подбор проекта и варианты ипотеки в одном запросе
           </span>
-        </div>
-        <div className="hero-panel" role="group" aria-label="Ключевые показатели">
-          {stats.map((stat) => (
-            <div key={stat.label}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </div>
-          ))}
         </div>
       </div>
     </section>

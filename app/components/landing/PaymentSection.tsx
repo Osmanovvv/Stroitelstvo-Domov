@@ -27,7 +27,7 @@ export default function PaymentSection() {
         </div>
 
         <div className="payment-foot">
-          <LeadModalTrigger className="button primary" title="Рассчитать ипотеку">
+          <LeadModalTrigger className="button primary" title="Рассчитать ипотеку" withFile>
             Рассчитать стоимость
           </LeadModalTrigger>
           <div className="bank-row" aria-label="Банки-партнёры">

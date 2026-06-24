@@ -153,13 +153,16 @@ img {
   gap: 8px;
   min-height: 46px;
   padding: 0 20px;
+  border: 0;
   border-radius: 8px;
   background: linear-gradient(135deg, var(--blue), var(--cyan));
   color: #fff;
+  font-family: inherit;
   font-size: 14px;
   font-weight: 750;
   line-height: 1.1;
   white-space: nowrap;
+  cursor: pointer;
   box-shadow: 0 12px 26px rgba(80, 111, 240, 0.24);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
@@ -586,7 +589,7 @@ img {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 820px) minmax(300px, 390px);
+  grid-template-columns: minmax(0, 880px);
   align-items: center;
   gap: 72px;
   width: min(1360px, calc(100% - 72px));
@@ -724,32 +727,6 @@ p {
   color: rgba(255, 255, 255, 0.72);
   font-size: 13px;
   font-weight: 600;
-}
-
-.hero-panel {
-  display: grid;
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(20px);
-}
-
-.hero-panel div {
-  padding: 24px;
-  background: rgba(15, 18, 16, 0.44);
-}
-
-.hero-panel strong {
-  display: block;
-  font-size: 34px;
-  font-weight: 760;
-}
-
-.hero-panel span {
-  color: rgba(255, 255, 255, 0.72);
 }
 
 .button {
@@ -1096,64 +1073,6 @@ section[id] {
   background: var(--surface);
 }
 
-.split-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(360px, 1fr);
-  gap: 70px;
-  align-items: center;
-}
-
-.split-layout p {
-  margin-top: 18px;
-}
-
-.building-list {
-  display: grid;
-  gap: 12px;
-}
-
-.building-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--sand);
-  transition: border-color 0.18s ease, transform 0.18s ease;
-}
-
-.building-item:hover {
-  border-color: rgba(36, 84, 63, 0.3);
-  transform: translateX(3px);
-}
-
-.building-item p {
-  margin-top: 6px;
-  font-size: 15px;
-}
-
-.building-meta {
-  text-align: right;
-}
-
-.building-meta span,
-.building-meta strong {
-  display: block;
-}
-
-.building-meta span {
-  color: var(--steel);
-  font-size: 14px;
-}
-
-.building-meta strong {
-  margin-top: 6px;
-  color: var(--green);
-  font-weight: 720;
-}
-
 .tinted {
   background: linear-gradient(180deg, var(--surface-soft) 0%, #eef4fb 100%);
 }
@@ -1348,38 +1267,6 @@ section[id] {
   display: grid;
   grid-template-columns: minmax(0, 0.78fr) minmax(360px, 1fr);
   gap: 70px;
-}
-
-.plot-list {
-  display: grid;
-  gap: 12px;
-}
-
-.plot-item {
-  display: flex;
-  gap: 16px;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  box-shadow: 0 12px 26px rgba(29, 26, 21, 0.05);
-}
-
-.plot-item svg {
-  flex: 0 0 auto;
-  color: var(--clay);
-}
-
-.plot-item p {
-  margin-top: 6px;
-  font-size: 15px;
-}
-
-.plot-item span {
-  display: block;
-  margin-top: 10px;
-  color: var(--green);
-  font-weight: 720;
 }
 
 .calculator-section {
@@ -2142,7 +2029,7 @@ select:focus {
   }
 
   .hero-content {
-    grid-template-columns: minmax(0, 920px) minmax(320px, 420px);
+    grid-template-columns: minmax(0, 980px);
     gap: 96px;
     padding: 180px 0 112px;
   }
@@ -2199,7 +2086,7 @@ select:focus {
   }
 
   .hero-content {
-    grid-template-columns: minmax(0, 1040px) minmax(360px, 460px);
+    grid-template-columns: minmax(0, 1040px);
   }
 
   h1 {
@@ -2261,7 +2148,7 @@ select:focus {
   }
 
   .hero-content {
-    grid-template-columns: minmax(0, 600px) minmax(240px, 320px);
+    grid-template-columns: minmax(0, 700px);
   }
 
   h1 {
@@ -2303,7 +2190,6 @@ select:focus {
   }
 
   .hero-content,
-  .split-layout,
   .two-column,
   .calc-layout,
   .compare-layout,
@@ -2323,11 +2209,6 @@ select:focus {
     padding: 142px 0 64px;
   }
 
-  /* Панель статистики уходит под текст и становится горизонтальной строкой. */
-  .hero-panel {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   h1 {
     font-size: 58px;
   }
@@ -2345,7 +2226,6 @@ select:focus {
   .homes-grid,
   .package-grid,
   .trust-grid,
-  .built-grid,
   .steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2581,7 +2461,6 @@ select:focus {
   .project-grid,
   .package-grid,
   .trust-grid,
-  .built-grid,
   .steps,
   .price-table tbody {
     grid-template-columns: 1fr;
@@ -2640,8 +2519,7 @@ select:focus {
     padding: 14px;
   }
 
-  .home-card-title,
-  .building-item {
+  .home-card-title {
     display: grid;
   }
 
@@ -2672,10 +2550,6 @@ select:focus {
   .location {
     margin-top: 10px;
     font-size: 13px;
-  }
-
-  .building-meta {
-    text-align: left;
   }
 
   .spec-grid {
@@ -2788,8 +2662,6 @@ select:focus {
     padding: 0 18px;
   }
 
-  .building-item,
-  .plot-item,
   .payment-points span {
     padding: 18px;
   }
@@ -3269,6 +3141,113 @@ select:focus {
   color: var(--green);
 }
 
+/* Карточки с галереей для секций «Дома в строительстве» и «Участки».
+   Визуально как построенные объекты (рамка + тень + слайдер), но со своими
+   классами и CTA-ссылкой, прижатой к низу карточки (.text-link margin-top:auto). */
+.media-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.media-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 14px 30px rgba(29, 26, 21, 0.06);
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.media-card-image {
+  position: relative;
+  aspect-ratio: 1.5;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.media-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 6px;
+  background: rgba(10, 14, 32, 0.74);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+  backdrop-filter: blur(6px);
+}
+
+.media-card-badge svg {
+  flex: 0 0 auto;
+  color: var(--cyan);
+}
+
+.media-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px 22px 24px;
+}
+
+.media-card-body h3 {
+  font-size: 19px;
+}
+
+.media-card-meta {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.media-card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.media-card-meta svg {
+  flex: 0 0 auto;
+  color: var(--green);
+}
+
+/* Адаптив сеток с галереей. Правила идут ПОСЛЕ базовых .built-grid/.media-card-grid,
+   т.к. сами базовые определения стоят в файле ниже общих медиа-групп выше — при
+   равной специфичности должна побеждать более поздняя (эта) запись, иначе на
+   планшете/телефоне сетки остались бы в 3 колонки. */
+@media (max-width: 1040px) {
+  .built-grid,
+  .media-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .built-grid,
+  .media-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Всплывающая форма заявки (LeadModal) — открывается поверх экрана, фон не скроллится */
 .modal-overlay {
   position: fixed;
@@ -3358,6 +3337,125 @@ select:focus {
   width: 100%;
   justify-content: center;
   margin-top: 4px;
+}
+
+/* Поле прикрепления файла (кнопка «Отправить проект на расчёт»). */
+.modal-file {
+  display: grid;
+  gap: 8px;
+}
+
+.modal-file-label {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.modal-file-input {
+  display: none;
+}
+
+/* Специфичность .modal-form .modal-file-drop, чтобы перебить общее
+   .modal-form label { display: grid } — иначе иконка и текст встают в столбик. */
+.modal-form .modal-file-drop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px dashed rgba(80, 111, 240, 0.55);
+  border-radius: 8px;
+  background: rgba(80, 111, 240, 0.06);
+  color: var(--blue);
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.modal-form .modal-file-drop:hover {
+  background: rgba(80, 111, 240, 0.12);
+  border-color: var(--blue);
+}
+
+.modal-file-chosen {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid rgba(17, 24, 47, 0.18);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: #111827;
+  font-size: 14px;
+}
+
+.modal-file-chosen > svg {
+  flex: 0 0 auto;
+  color: var(--blue);
+}
+
+.modal-file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.modal-file-size {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.modal-file-remove {
+  flex: 0 0 auto;
+  display: inline-flex;
+  padding: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.modal-file-remove:hover {
+  background: rgba(17, 24, 47, 0.08);
+  color: #111827;
+}
+
+.modal-file-hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.modal-file-error {
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ConsentField внутри попапа: не должен наследовать стиль обычных полей формы
+   (.modal-form label/input делают grid + жирный тёмный текст и большой инпут).
+   Возвращаем ему вид строки «чекбокс + мелкий серый текст». */
+.modal-form .consent-field {
+  display: flex;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.modal-form .consent-field input {
+  min-height: 0;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
 }
 
 .modal-success {
