@@ -35,6 +35,13 @@ export default async function HeroSection() {
   const subtitle = settings.hero_subtitle || heroDefaults.subtitle;
   const image = settings.hero_image || heroDefaults.image;
 
+  // Иконки фиксированы по позиции, текст редактируется в админке (hero_badge_1..3).
+  const badgeIcons = [BadgeCheck, Camera, WalletCards];
+  const badges = heroDefaults.badges.map((def, i) => ({
+    Icon: badgeIcons[i],
+    text: settings[`hero_badge_${i + 1}`] || def,
+  }));
+
   return (
     <section className="hero" id="top">
       <Image
@@ -52,18 +59,12 @@ export default async function HeroSection() {
           <h1>{renderTitle(title)}</h1>
           <p>{subtitle}</p>
           <div className="hero-badges" role="group" aria-label="Преимущества">
-            <span>
-              <BadgeCheck size={17} />
-              Договор и смета
-            </span>
-            <span>
-              <Camera size={17} />
-              Объекты можно посмотреть
-            </span>
-            <span>
-              <WalletCards size={17} />
-              Ипотека Сбер, ВТБ, Альфа
-            </span>
+            {badges.map(({ Icon, text }, i) => (
+              <span key={i}>
+                <Icon size={20} />
+                {text}
+              </span>
+            ))}
           </div>
           <div className="hero-actions">
             <LeadModalTrigger className="button primary" title="Узнать стоимость строительства" withFile>

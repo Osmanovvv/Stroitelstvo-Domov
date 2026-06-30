@@ -207,7 +207,9 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  /* «Чуть шире промежутки»: на широких экранах просторнее, на узких десктопах
+     (от 1181px, где меню ещё видно) 7 пунктов не должны вылезать — отсюда clamp. */
+  gap: clamp(8px, 0.8vw, 16px);
   padding: 4px 14px;
   border-top: 1px solid rgba(17, 24, 47, 0.08);
   background: rgba(17, 24, 47, 0.028);
@@ -553,7 +555,7 @@ img {
 /* Hero */
 .hero {
   position: relative;
-  min-height: clamp(740px, 88svh, 880px);
+  min-height: clamp(600px, 80svh, 730px);
   overflow: hidden;
   background: #11100d;
   color: #fff;
@@ -593,9 +595,9 @@ img {
   align-items: center;
   gap: 72px;
   width: min(1360px, calc(100% - 72px));
-  min-height: clamp(740px, 88svh, 880px);
+  min-height: clamp(600px, 80svh, 730px);
   margin: 0 auto;
-  padding: 168px 0 96px;
+  padding: 223px 0 96px;
 }
 
 .hero-copy {
@@ -624,6 +626,29 @@ h2,
 h3,
 p {
   margin: 0;
+}
+
+/* Бронебойность контента: длинные неразрывные строки (URL, токены, длинные числа
+   без пробелов), введённые через админку, переносятся, а не вылезают за блок и не
+   обрезаются. Обычный текст с пробелами не затрагивается. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+dd,
+dt,
+strong,
+b,
+em,
+small,
+span,
+a,
+.eyebrow {
+  overflow-wrap: break-word;
 }
 
 h1 {
@@ -677,6 +702,14 @@ p {
   color: var(--cyan);
 }
 
+/* Заголовки центрированных секций — без синего акцента (правка заказчика):
+   акцент в .section-head h2 рисуется чёрным. Сейчас затрагивает «Участки» и
+   «Комплектации и цены»; hero / тёмные / левые секции (.section-head.left = FAQ)
+   не трогаем. */
+.section-head:not(.left) h2 .text-accent {
+  color: var(--ink);
+}
+
 .hero p {
   max-width: 680px;
   margin-top: 24px;
@@ -688,22 +721,22 @@ p {
 .hero-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 26px;
 }
 
 .hero-badges span {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 36px;
-  padding: 0 12px;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 16px;
   border: 1px solid rgba(98, 200, 201, 0.32);
-  border-radius: 6px;
+  border-radius: 7px;
   background: linear-gradient(135deg, rgba(17, 24, 47, 0.82), rgba(16, 26, 48, 0.58));
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 14px;
-  font-weight: 620;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 16px;
+  font-weight: 640;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(14px);
 }
@@ -811,7 +844,9 @@ p {
 
 /* Shared sections */
 .section {
-  padding: 104px 0;
+  /* Отступы между секциями уменьшены (правка заказчика): зазор между блоками
+     ≈ 28+28 = 56px (~1,5 см) вместо прежних ~5,5 см. Одинаково по всему сайту. */
+  padding: 28px 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -852,9 +887,12 @@ section[id] {
 
 .choice-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   transform: translateY(-48px);
+  /* Карточки «наезжают» вверх на hero (translateY), но их layout-бокс остаётся —
+     компенсируем часть, чтобы зазор до следующей секции совпадал с остальными (~56px). */
+  margin-bottom: -20px;
 }
 
 .choice-item {
@@ -943,8 +981,82 @@ section[id] {
   text-align: left;
 }
 
+/* Иерархия заголовков разделов (правка заказчика ЛОГО100): надзаголовок —
+   крупный синий (главный акцент), заголовок — ~½ размера, чёрный, подпись —
+   ~⅓ размера, серый. Только в .section-head — hero/тёмные секции не затрагиваются. */
+.section-head .eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: var(--clay);
+  text-transform: none;
+}
+
+.section-head h2 {
+  font-size: clamp(16px, 1.7vw, 22px);
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
 .section-head p {
-  margin-top: 18px;
+  margin-top: 10px;
+  font-size: clamp(13px, 1.05vw, 15px);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Та же иерархия заголовков для секций со своими «головами» (не .section-head):
+   светлая «Дом или квартира» — с цветами как у section-head; тёмные «Подбор и
+   расчёт» / «Ипотека» / «Контакты» — те же размеры, цвета остаются светлыми
+   (их собственные правила цвета надзаголовка/текста не трогаем). */
+.compare-section .eyebrow,
+.calc-layout > div:first-child > .eyebrow,
+.payment-head .eyebrow,
+.contacts-layout > div:first-child > .eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.compare-section h2,
+.calc-layout > div:first-child > h2,
+.payment-head h2,
+.contacts-layout > div:first-child > h2 {
+  font-size: clamp(16px, 1.7vw, 22px);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.compare-section p,
+.calc-layout > div:first-child > p,
+.payment-head p,
+.contacts-layout > div:first-child > p {
+  margin-top: 10px;
+  font-size: clamp(13px, 1.05vw, 15px);
+  line-height: 1.5;
+}
+
+/* Цвета — только для светлой «Дом или квартира». */
+.compare-section .eyebrow {
+  color: var(--clay);
+}
+
+.compare-section h2 {
+  color: var(--ink);
+}
+
+.compare-section p {
+  color: var(--muted);
 }
 
 .homes-grid {
@@ -1006,6 +1118,7 @@ section[id] {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+  min-width: 0;
 }
 
 .home-card-title h3 {
@@ -1030,7 +1143,7 @@ section[id] {
 
 .spec-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 18px;
 }
@@ -1305,8 +1418,13 @@ section[id] {
 }
 
 .quiz-card {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 18px;
+  /* П.10: резервируем высоту самого высокого (контактного) шага, чтобы блок не
+     «прыгал»/не расширялся при переходе на последний шаг. На мобильном (1 колонка)
+     сбрасывается ниже — там высота натуральная. */
+  min-height: 660px;
   padding: 28px;
   border: 1px solid rgba(98, 200, 201, 0.24);
   border-radius: 8px;
@@ -1441,6 +1559,8 @@ section[id] {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 10px;
+  /* Кнопки всегда у нижнего края карточки (высота зарезервирована min-height). */
+  margin-top: auto;
 }
 
 .quiz-actions.single {
@@ -1463,7 +1583,15 @@ section[id] {
 }
 
 .quiz-success {
-  align-content: start;
+  /* Экран успеха ниже зарезервированной высоты — центрируем по вертикали. */
+  justify-content: center;
+}
+
+/* На одной колонке (≤1040px) фиксированная высота не нужна — высота натуральная. */
+@media (max-width: 1040px) {
+  .quiz-card {
+    min-height: 0;
+  }
 }
 
 .quiz-success-icon {
@@ -2025,13 +2153,13 @@ select:focus {
 
   .hero,
   .hero-content {
-    min-height: clamp(860px, 84svh, 980px);
+    min-height: clamp(710px, 76svh, 830px);
   }
 
   .hero-content {
     grid-template-columns: minmax(0, 980px);
     gap: 96px;
-    padding: 180px 0 112px;
+    padding: 238px 0 112px;
   }
 
   h1 {
@@ -2205,7 +2333,7 @@ select:focus {
     /* Высота как у .hero: иначе контент схлопывается и прижимается кверху,
        оставляя пустую тёмную зону внизу секции (актуально для 821–1040px;
        на ≤820px .hero сам переходит на min-height: auto). */
-    min-height: clamp(740px, 88svh, 880px);
+    min-height: clamp(600px, 80svh, 730px);
     padding: 142px 0 64px;
   }
 
@@ -2303,7 +2431,7 @@ select:focus {
   }
 
   .section {
-    padding: 86px 0;
+    padding: 24px 0;
   }
 
   .section-head {
@@ -2498,7 +2626,7 @@ select:focus {
   }
 
   .section {
-    padding: 72px 0;
+    padding: 22px 0;
   }
 
   section[id] {
@@ -2632,7 +2760,7 @@ select:focus {
   }
 
   .hero-badges span {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .hero-panel div {
@@ -2748,7 +2876,7 @@ select:focus {
   }
 
   .section {
-    padding: 64px 0;
+    padding: 20px 0;
   }
 
   .choice-grid {
@@ -3130,8 +3258,10 @@ select:focus {
 
 .built-meta span {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 8px;
+  word-break: break-word;
   color: var(--muted);
   font-size: 14px;
 }
@@ -3219,8 +3349,11 @@ select:focus {
 
 .media-card-meta span {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 8px;
+  /* текст идёт прямым узлом во flex — word-break наследуется и доходит до него */
+  word-break: break-word;
   color: var(--muted);
   font-size: 14px;
 }

@@ -5,12 +5,15 @@ import { usePathname } from "next/navigation";
 
 const sections = [
   { href: "/admin/hero", label: "Главный экран" },
+  { href: "/admin/choice", label: "Блок выбора" },
   { href: "/admin/homes", label: "Готовые дома" },
   { href: "/admin/building", label: "Дома в строительстве" },
   { href: "/admin/projects", label: "Проекты" },
   { href: "/admin/plots", label: "Участки" },
   { href: "/admin/built", label: "Построенные объекты" },
   { href: "/admin/prices", label: "Цены и комплектации" },
+  { href: "/admin/compare", label: "Дом или квартира" },
+  { href: "/admin/calc", label: "Подбор и расчёт" },
   { href: "/admin/faq", label: "FAQ" },
   { href: "/admin/seo", label: "SEO" },
   { href: "/admin/legal", label: "Юр. документы" },

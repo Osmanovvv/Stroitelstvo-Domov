@@ -8,7 +8,14 @@ import {
   faqItems,
   builtObjects,
 } from "./seed-data";
-import { heroDefaults, legalDefaults, packageSettingDefaults } from "../app/content/landing";
+import {
+  calcDefaults,
+  choiceItems,
+  compareDefaults,
+  heroDefaults,
+  legalDefaults,
+  packageSettingDefaults,
+} from "../app/content/landing";
 
 const prisma = new PrismaClient();
 
@@ -114,6 +121,27 @@ async function main() {
     hero_title: heroDefaults.title,
     hero_subtitle: heroDefaults.subtitle,
     hero_image: heroDefaults.image,
+    hero_badge_1: heroDefaults.badges[0],
+    hero_badge_2: heroDefaults.badges[1],
+    hero_badge_3: heroDefaults.badges[2],
+    ...Object.fromEntries(
+      choiceItems.flatMap((c, i) => [
+        [`choice_${i + 1}_title`, c.title],
+        [`choice_${i + 1}_text`, c.text],
+      ]),
+    ),
+    compare_eyebrow: compareDefaults.eyebrow,
+    compare_title: compareDefaults.title,
+    compare_subtitle: compareDefaults.subtitle,
+    compare_house_title: compareDefaults.houseTitle,
+    compare_house_features: compareDefaults.houseFeatures.join("\n"),
+    compare_house_price: compareDefaults.housePrice,
+    compare_flat_title: compareDefaults.flatTitle,
+    compare_flat_features: compareDefaults.flatFeatures.join("\n"),
+    compare_flat_price: compareDefaults.flatPrice,
+    calc_eyebrow: calcDefaults.eyebrow,
+    calc_title: calcDefaults.title,
+    calc_subtitle: calcDefaults.subtitle,
     ...legalDefaults,
   };
   await prisma.siteSetting.createMany({

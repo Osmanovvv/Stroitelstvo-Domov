@@ -17,6 +17,9 @@ export default async function HeroAdmin() {
           title={s.hero_title ?? heroDefaults.title}
           subtitle={s.hero_subtitle ?? heroDefaults.subtitle}
           image={s.hero_image || heroDefaults.image}
+          badge1={s.hero_badge_1 ?? heroDefaults.badges[0]}
+          badge2={s.hero_badge_2 ?? heroDefaults.badges[1]}
+          badge3={s.hero_badge_3 ?? heroDefaults.badges[2]}
         />
       </div>
     </>

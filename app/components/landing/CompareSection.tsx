@@ -1,39 +1,52 @@
 import { House, KeyRound } from "lucide-react";
+import { compareDefaults } from "../../content/landing";
+import { getSettings } from "../../lib/queries";
+import { renderAccent } from "../../lib/accent";
 
-export default function CompareSection() {
+// Список features хранится строкой (по пункту на строку); пусто = дефолт.
+function lines(value: string | undefined, fallback: string[]): string[] {
+  const parsed = (value ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return parsed.length ? parsed : fallback;
+}
+
+export default async function CompareSection() {
+  const s = await getSettings();
+  const d = compareDefaults;
+
+  const houseFeatures = lines(s.compare_house_features, d.houseFeatures);
+  const flatFeatures = lines(s.compare_flat_features, d.flatFeatures);
+
   return (
     <section className="section compare-section">
       <div className="container compare-layout">
         <div>
-          <span className="eyebrow">Дом или квартира</span>
-          <h2>
-            Сравните <span className="text-accent">дом в ипотеку</span> и квартиру в аренду
-          </h2>
-          <p>
-            Для семей, которые переезжают в Краснодар, показываем понятную разницу:
-            площадь, участок, платеж и уровень свободы.
-          </p>
+          <span className="eyebrow">{s.compare_eyebrow || d.eyebrow}</span>
+          <h2>{renderAccent(s.compare_title || d.title)}</h2>
+          <p>{s.compare_subtitle || d.subtitle}</p>
         </div>
         <div className="compare-card" aria-label="Сравнение дома и квартиры">
           <div>
             <House />
-            <h3>Дом</h3>
+            <h3>{s.compare_house_title || d.houseTitle}</h3>
             <ul>
-              <li>от 94 м²</li>
-              <li>участок от 5 соток</li>
-              <li>своя парковка и двор</li>
+              {houseFeatures.map((f, i) => (
+                <li key={i}>{f}</li>
+              ))}
             </ul>
-            <strong>от 40 000 ₽ / месяц</strong>
+            <strong>{s.compare_house_price || d.housePrice}</strong>
           </div>
           <div>
             <KeyRound />
-            <h3>Квартира</h3>
+            <h3>{s.compare_flat_title || d.flatTitle}</h3>
             <ul>
-              <li>60-80 м²</li>
-              <li>без участка</li>
-              <li>аренда без собственности</li>
+              {flatFeatures.map((f, i) => (
+                <li key={i}>{f}</li>
+              ))}
             </ul>
-            <strong>от 40 000 ₽ / месяц</strong>
+            <strong>{s.compare_flat_price || d.flatPrice}</strong>
           </div>
         </div>
       </div>

@@ -32,17 +32,23 @@ export default function Home() {
         <SiteHeader />
         <HeroSection />
         <ChoiceSection />
+        {/* Порядок секций — как в навигации шапки (правка заказчика ЛОГО100):
+            Проекты → Готовые дома → Объекты в строительстве → Участки →
+            Построенные объекты → Ипотека → Как мы работаем. «Комплектации и цены»
+            идут сразу после «Проектов». Расстановка вне-меню блоков
+            (Дом или квартира, Подбор и расчёт, Отзывы, FAQ, Контакты) — провизорная,
+            согласовать с заказчиком. */}
+        <ProjectsSection />
+        <PricesSection />
         <HomesSection />
         <BuildingSection />
-        <ProjectsSection />
         <PlotsSection />
         <BuiltSection />
         <CompareSection />
         <CalculatorSection />
-        <PricesSection />
-        <TrustSection />
-        <ProcessSection />
         <PaymentSection />
+        <ProcessSection />
+        <TrustSection />
         <FaqSection />
         <ContactsSection />
       </main>

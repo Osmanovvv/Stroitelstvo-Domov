@@ -21,6 +21,9 @@ export async function updateHero(
     hero_title: str(formData, "hero_title"),
     hero_subtitle: str(formData, "hero_subtitle"),
     hero_image: image,
+    hero_badge_1: str(formData, "hero_badge_1"),
+    hero_badge_2: str(formData, "hero_badge_2"),
+    hero_badge_3: str(formData, "hero_badge_3"),
   });
 
   // Старое фото удаляем только после успешной записи и только если оно заменено.

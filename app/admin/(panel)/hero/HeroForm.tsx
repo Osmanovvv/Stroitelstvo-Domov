@@ -10,9 +10,12 @@ type HeroFormProps = {
   title: string;
   subtitle: string;
   image: string;
+  badge1: string;
+  badge2: string;
+  badge3: string;
 };
 
-export default function HeroForm({ title, subtitle, image }: HeroFormProps) {
+export default function HeroForm({ title, subtitle, image, badge1, badge2, badge3 }: HeroFormProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,6 +60,16 @@ export default function HeroForm({ title, subtitle, image }: HeroFormProps) {
       <div className="admin-field">
         <label>Подзаголовок</label>
         <input name="hero_subtitle" defaultValue={subtitle} />
+      </div>
+      <div className="admin-field">
+        <label>Бейджи-преимущества (под подзаголовком)</label>
+        <input name="hero_badge_1" defaultValue={badge1} placeholder="Договор и смета" />
+        <input name="hero_badge_2" defaultValue={badge2} placeholder="Объекты можно посмотреть" style={{ marginTop: 8 }} />
+        <input name="hero_badge_3" defaultValue={badge3} placeholder="Ипотека Сбер, ВТБ, Альфа" style={{ marginTop: 8 }} />
+        <small style={{ color: "#8a93a6", fontSize: 12 }}>
+          Три коротких преимущества. Меняется только текст — иконки остаются на своих местах.
+          Пустое поле = текст по умолчанию.
+        </small>
       </div>
       <div className="admin-field">
         <label>Фото главного экрана</label>
