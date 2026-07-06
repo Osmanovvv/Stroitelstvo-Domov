@@ -2159,7 +2159,7 @@ select:focus {
 .review-card-media {
   display: block;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 2 / 3;
   background-color: var(--sand);
   background-size: cover;
   background-position: top center;
