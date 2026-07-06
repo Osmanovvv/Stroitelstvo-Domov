@@ -2,6 +2,7 @@ import { ArrowRight, CalendarCheck, Hammer, MapPin } from "lucide-react";
 import { getBuildingHomes } from "../../lib/queries";
 import LeadModalTrigger from "../LeadModalTrigger";
 import ProjectSlider from "../ProjectSlider";
+import SectionHead from "../SectionHead";
 
 const BUILDING_IMAGE_SIZES =
   "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
@@ -10,14 +11,7 @@ export default async function BuildingSection() {
   const buildingHomes = await getBuildingHomes();
   return (
     <section className="section split-section" id="building">
-      <div className="container section-head">
-        <span className="eyebrow">Дома в строительстве</span>
-        <h2>Объекты, которые можно забронировать до сдачи</h2>
-        <p>
-          Дома на разных этапах готовности: можно посмотреть ход строительства,
-          уточнить срок сдачи и условия бронирования.
-        </p>
-      </div>
+      <SectionHead id="building" />
       <div className="container media-card-grid">
         {buildingHomes.map((item) => {
           const gallery = [item.image, item.image2, item.image3, item.image4].filter(

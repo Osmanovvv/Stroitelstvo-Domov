@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import {
   ArrowRight,
   Calculator,
+  Check,
   CheckCircle2,
   ChevronLeft,
 } from "lucide-react";
@@ -15,7 +16,17 @@ import {
 } from "../content/quiz";
 import ConsentField from "./ConsentField";
 
-export default function HouseQuiz() {
+type Props = {
+  // "section" — полный блок «Подбор и расчёт» внизу; "hero" — компактный вариант
+  // на первом экране справа. Отличается только оформлением (класс is-hero в CSS).
+  variant?: "section" | "hero";
+  // Фото для Шага 1 (направление), ключ = option.value ("ready"/"build"/"plot").
+  // Приходят из настроек с фолбэком на quizTargetDefaults (см. серверные секции).
+  targetImages?: Record<string, string>;
+};
+
+export default function HouseQuiz({ variant = "section", targetImages }: Props) {
+  const isHero = variant === "hero";
   const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers);
   const [stepIndex, setStepIndex] = useState(0);
   const [isSent, setIsSent] = useState(false);
@@ -67,7 +78,7 @@ export default function HouseQuiz() {
 
   if (isSent) {
     return (
-      <div className="quiz-card quiz-success" aria-live="polite">
+      <div className={`quiz-card quiz-success${isHero ? " is-hero" : ""}`} aria-live="polite">
         <div className="quiz-success-icon">
           <CheckCircle2 />
         </div>
@@ -98,7 +109,7 @@ export default function HouseQuiz() {
   }
 
   return (
-    <form className="quiz-card" onSubmit={handleSubmit}>
+    <form className={`quiz-card${isHero ? " is-hero" : ""}`} onSubmit={handleSubmit}>
       <div className="quiz-top">
         <span>Шаг {stepIndex + 1} из {totalSteps}</span>
         <strong>{isContactStep ? "Куда отправить подбор?" : currentStep.title}</strong>
@@ -114,21 +125,41 @@ export default function HouseQuiz() {
       </div>
 
       {!isContactStep ? (
-        <div className="quiz-options">
+        <div className={`quiz-options ${currentStep.key === "target" ? "is-photo" : "is-icon"}`}>
           {currentStep.options.map((option) => {
             const Icon = option.icon;
             const isActive = answers[currentStep.key] === option.value;
+            // Фото-пиктограмма только на Шаге 1 (направление); остальные шаги —
+            // цветная иконка-чип. Пусто/нет ключа → иконка (безопасный фолбэк).
+            const image =
+              currentStep.key === "target" ? targetImages?.[option.value] : undefined;
 
             return (
               <button
                 className={`quiz-option${isActive ? " active" : ""}`}
                 key={option.value}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => updateAnswer(currentStep.key, option.value)}
               >
-                <Icon />
-                <span>{option.label}</span>
-                <small>{option.note}</small>
+                {image ? (
+                  <span
+                    className="quiz-option-media photo"
+                    style={{ backgroundImage: `url("${image}")` }}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <span className="quiz-option-media icon" aria-hidden="true">
+                    <Icon />
+                  </span>
+                )}
+                <span className="quiz-option-text">
+                  <span className="quiz-option-label">{option.label}</span>
+                  <small>{option.note}</small>
+                </span>
+                <span className="quiz-option-check" aria-hidden="true">
+                  <Check size={15} strokeWidth={3} />
+                </span>
               </button>
             );
           })}

@@ -116,6 +116,15 @@ export const initialAnswers: QuizAnswers = {
   phone: "",
 };
 
+// Фото-пиктограммы для Шага 1 («Какой вариант рассматриваете?»). Ключ = option.value.
+// Переопределяются в админке ключами quiz_target_<value>_image; пусто = эти дефолты.
+// Пока это фото проектов-заглушки — заказчик заменит на «готовый дом / стройку / участок».
+export const quizTargetDefaults: Record<string, string> = {
+  ready: "/projects/project-yuzhny-104.jpg",
+  build: "/projects/project-vidny-140.jpg",
+  plot: "/projects/project-prostor-136.jpg",
+};
+
 export function getOptionLabel(key: QuizKey, value: string) {
   return (
     optionSteps

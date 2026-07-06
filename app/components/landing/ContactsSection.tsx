@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
-import { buildContactLinks } from "../../content/landing";
+import { buildContactLinks, sectionIntros } from "../../content/landing";
 import { getSettings } from "../../lib/queries";
+import { renderAccent } from "../../lib/accent";
+import { sectionBgStyle } from "../../lib/sectionBg";
 import ConsentField from "../ConsentField";
 import ContactIcon from "../ContactIcon";
 import WorkStatus from "../WorkStatus";
@@ -8,14 +10,16 @@ import WorkStatus from "../WorkStatus";
 export default async function ContactsSection() {
   const settings = await getSettings();
   const contactLinks = buildContactLinks(settings);
+  const d = sectionIntros.contacts;
+  const bg = settings.contacts_bg_image;
 
   return (
-    <section className="section contacts-section" id="contacts">
+    <section className="section contacts-section" id="contacts" style={sectionBgStyle(bg)}>
       <div className="container contacts-layout">
         <div>
-          <span className="eyebrow">Контакты</span>
-          <h2>Подберем дом, проект или участок под ваш бюджет</h2>
-          <p>Оставьте телефон, и мы предложим ближайший вариант для просмотра или расчета.</p>
+          <span className="eyebrow">{settings.contacts_eyebrow || d.eyebrow}</span>
+          <h2>{renderAccent(settings.contacts_title || d.title)}</h2>
+          <p>{settings.contacts_subtitle || d.subtitle}</p>
           <div className="contact-status-card">
             <WorkStatus showHours workStart={settings.work_start} workEnd={settings.work_end} />
           </div>

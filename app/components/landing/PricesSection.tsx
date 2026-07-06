@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { buildPackages } from "../../content/landing";
 import { getSettings } from "../../lib/queries";
 import LeadModalTrigger from "../LeadModalTrigger";
+import SectionHead from "../SectionHead";
 
 export default async function PricesSection() {
   const settings = await getSettings();
@@ -9,13 +10,7 @@ export default async function PricesSection() {
 
   return (
     <section className="section" id="prices">
-      <div className="container section-head">
-        <span className="eyebrow">Комплектации и цены</span>
-        <h2>
-          Выберите <span className="text-accent">комплектацию</span>
-        </h2>
-        <p>Три формата строительства — от тёплого контура до дома под ключ.</p>
-      </div>
+      <SectionHead id="prices" />
       <div className="container package-grid">
         {packages.map((pkg) => (
           <article className="package-card" key={pkg.key}>

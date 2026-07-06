@@ -2,6 +2,7 @@ import { ArrowRight, Bath, BedDouble, MapPin, Ruler, Trees } from "lucide-react"
 import { getReadyHomes } from "../../lib/queries";
 import LeadModalTrigger from "../LeadModalTrigger";
 import ProjectSlider from "../ProjectSlider";
+import SectionHead from "../SectionHead";
 
 const HOME_IMAGE_SIZES =
   "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
@@ -10,11 +11,7 @@ export default async function HomesSection() {
   const readyHomes = await getReadyHomes();
   return (
     <section className="section" id="homes">
-      <div className="container section-head">
-        <span className="eyebrow">Готовые дома</span>
-        <h2>Объекты, которые можно посмотреть вживую</h2>
-        <p>Выберите готовый дом с участком, коммуникациями и понятными условиями покупки.</p>
-      </div>
+      <SectionHead id="homes" />
       <div className="container homes-grid">
         {readyHomes.map((home) => {
           const gallery = [home.image, home.image2, home.image3, home.image4].filter(

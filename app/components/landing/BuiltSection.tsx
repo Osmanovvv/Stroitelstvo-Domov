@@ -1,6 +1,7 @@
 import { CalendarCheck, MapPin, Ruler } from "lucide-react";
 import { getBuiltObjects } from "../../lib/queries";
 import ProjectSlider from "../ProjectSlider";
+import SectionHead from "../SectionHead";
 
 const BUILT_IMAGE_SIZES =
   "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
@@ -13,11 +14,7 @@ export default async function BuiltSection() {
 
   return (
     <section className="section tinted" id="built">
-      <div className="container section-head">
-        <span className="eyebrow">Построенные объекты</span>
-        <h2>Дома, которые мы уже сдали</h2>
-        <p>Реальные объекты нашей компании — от фундамента до сдачи под ключ.</p>
-      </div>
+      <SectionHead id="built" />
       <div className="container built-grid">
         {builtObjects.map((object) => {
           const gallery = [object.image, object.image2, object.image3, object.image4].filter(

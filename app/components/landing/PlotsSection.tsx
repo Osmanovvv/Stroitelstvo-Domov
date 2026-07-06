@@ -2,6 +2,7 @@ import { ArrowRight, MapPin, Plug, Ruler } from "lucide-react";
 import { getPlots } from "../../lib/queries";
 import LeadModalTrigger from "../LeadModalTrigger";
 import ProjectSlider from "../ProjectSlider";
+import SectionHead from "../SectionHead";
 
 const PLOT_IMAGE_SIZES =
   "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
@@ -10,16 +11,7 @@ export default async function PlotsSection() {
   const plots = await getPlots();
   return (
     <section className="section" id="plots">
-      <div className="container section-head">
-        <span className="eyebrow">Участки под строительство</span>
-        <h2>
-          Земля под дом <span className="text-accent">без отдельного поиска</span>
-        </h2>
-        <p>
-          Предложим участок и проект дома, который можно разместить с учетом площади,
-          подъезда и коммуникаций.
-        </p>
-      </div>
+      <SectionHead id="plots" />
       <div className="container media-card-grid">
         {plots.map((plot) => {
           const gallery = [plot.image, plot.image2, plot.image3, plot.image4].filter(

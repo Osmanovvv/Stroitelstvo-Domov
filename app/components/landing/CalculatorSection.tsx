@@ -1,5 +1,6 @@
 import HouseQuiz from "../HouseQuiz";
 import { calcDefaults } from "../../content/landing";
+import { quizTargetDefaults } from "../../content/quiz";
 import { getSettings } from "../../lib/queries";
 import { renderAccent } from "../../lib/accent";
 
@@ -7,6 +8,13 @@ export default async function CalculatorSection() {
   const s = await getSettings();
   const d = calcDefaults;
   const bg = s.calc_bg_image;
+
+  // Те же фото Шага 1, что и в hero-квизе (настройки с фолбэком на дефолты).
+  const quizTargetImages = {
+    ready: s.quiz_target_ready_image || quizTargetDefaults.ready,
+    build: s.quiz_target_build_image || quizTargetDefaults.build,
+    plot: s.quiz_target_plot_image || quizTargetDefaults.plot,
+  };
 
   // Если загружена фоновая картинка — кладём её под тёмным градиентом-оверлеем,
   // чтобы светлый текст и квиз оставались читаемыми. Пусто = фирменный градиент (CSS).
@@ -27,7 +35,7 @@ export default async function CalculatorSection() {
           <h2>{renderAccent(s.calc_title || d.title)}</h2>
           <p>{s.calc_subtitle || d.subtitle}</p>
         </div>
-        <HouseQuiz />
+        <HouseQuiz targetImages={quizTargetImages} />
       </div>
     </section>
   );

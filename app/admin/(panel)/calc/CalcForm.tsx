@@ -6,11 +6,19 @@ import { compressImage } from "@/app/admin/components/compressImage";
 import { toast } from "@/app/admin/components/Toast";
 import { updateCalc } from "./actions";
 
+type QuizImageField = {
+  label: string;
+  field: string;
+  existing: string;
+  preview: string;
+};
+
 type Props = {
   eyebrow: string;
   title: string;
   subtitle: string;
   bgImage: string;
+  quizImages: QuizImageField[];
 };
 
 export default function CalcForm(p: Props) {
@@ -24,10 +32,13 @@ export default function CalcForm(p: Props) {
     setError(null);
     try {
       const formData = new FormData(formEl);
-      const input = formEl.querySelector('input[name="calcBgFile"]') as HTMLInputElement | null;
-      const f = input?.files?.[0];
-      if (f && f.size > 0) {
-        formData.set("calcBgFile", await compressImage(f));
+      // Сжимаем каждый выбранный файл в браузере перед отправкой (фон + фото квиза).
+      for (const el of Array.from(formEl.querySelectorAll('input[type="file"]'))) {
+        const input = el as HTMLInputElement;
+        const f = input.files?.[0];
+        if (f && f.size > 0) {
+          formData.set(input.name, await compressImage(f));
+        }
       }
       const result = await updateCalc(formData);
       if ("error" in result) {
@@ -74,6 +85,29 @@ export default function CalcForm(p: Props) {
             <input type="checkbox" name="calcBgRemove" /> Убрать фон (вернуть градиент)
           </label>
         )}
+      </div>
+      <div className="admin-field">
+        <label>Фото вариантов квиза — Шаг 1 «Какой вариант рассматриваете?»</label>
+        <small style={{ color: "#8a93a6", fontSize: 12 }}>
+          Показываются на первом экране (квиз справа) и в блоке ниже. Пусто = фото-заглушки по умолчанию.
+        </small>
+        <div style={{ display: "grid", gap: 18, marginTop: 12 }}>
+          {p.quizImages.map((q) => (
+            <div key={q.field} style={{ display: "grid", gap: 6 }}>
+              <strong style={{ fontSize: 13 }}>{q.label}</strong>
+              <input type="hidden" name={`${q.field}Existing`} value={q.existing} />
+              {q.preview && (
+                <Image className="admin-hero-preview" src={q.preview} alt="" width={220} height={132} />
+              )}
+              <input name={`${q.field}File`} type="file" accept="image/*" />
+              {q.existing && (
+                <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 400 }}>
+                  <input type="checkbox" name={`${q.field}Remove`} /> Вернуть фото по умолчанию
+                </label>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
       {error && (
         <p className="admin-error" role="alert">

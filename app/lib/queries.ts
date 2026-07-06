@@ -32,6 +32,10 @@ export const getBuiltObjects = cache(() =>
   prisma.builtObject.findMany({ where: { isVisible: true }, orderBy: { sortOrder: "asc" } }),
 );
 
+export const getReviews = cache(() =>
+  prisma.review.findMany({ where: { isVisible: true }, orderBy: { sortOrder: "asc" } }),
+);
+
 export const getSettings = cache(async (): Promise<Record<string, string>> => {
   const rows = await prisma.siteSetting.findMany();
   return Object.fromEntries(rows.map((r) => [r.key, r.value]));

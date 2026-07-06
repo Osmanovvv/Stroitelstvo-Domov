@@ -9,7 +9,6 @@ import {
   ChoiceSection,
   CompareSection,
   ContactsSection,
-  FaqSection,
   HeroSection,
   HomesSection,
   PaymentSection,
@@ -17,6 +16,7 @@ import {
   PricesSection,
   ProcessSection,
   ProjectsSection,
+  ReviewsSection,
   TrustSection,
 } from "./components/landing";
 
@@ -36,7 +36,7 @@ export default function Home() {
             Проекты → Готовые дома → Объекты в строительстве → Участки →
             Построенные объекты → Ипотека → Как мы работаем. «Комплектации и цены»
             идут сразу после «Проектов». Расстановка вне-меню блоков
-            (Дом или квартира, Подбор и расчёт, Отзывы, FAQ, Контакты) — провизорная,
+            (Дом или квартира, Подбор и расчёт, Отзывы, Контакты) — провизорная,
             согласовать с заказчиком. */}
         <ProjectsSection />
         <PricesSection />
@@ -49,7 +49,7 @@ export default function Home() {
         <PaymentSection />
         <ProcessSection />
         <TrustSection />
-        <FaqSection />
+        <ReviewsSection />
         <ContactsSection />
       </main>
       <SiteFooter />

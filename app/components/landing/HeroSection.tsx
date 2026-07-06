@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { Fragment } from "react";
-import { ArrowRight, BadgeCheck, Camera, WalletCards } from "lucide-react";
+import { ArrowRight, BadgeCheck, Camera, Sparkles, WalletCards } from "lucide-react";
 import { heroDefaults } from "../../content/landing";
+import { quizTargetDefaults } from "../../content/quiz";
 import { getSettings } from "../../lib/queries";
+import HouseQuiz from "../HouseQuiz";
 import LeadModalTrigger from "../LeadModalTrigger";
 
 // Заголовок редактируется в админке. Переносы строк — \n, акцентный цвет —
@@ -42,6 +44,14 @@ export default async function HeroSection() {
     text: settings[`hero_badge_${i + 1}`] || def,
   }));
 
+  // Фото Шага 1 квиза: настройки админки с фолбэком на дефолты. Тот же квиз,
+  // что и в блоке «Подбор и расчёт» ниже, но в компактном варианте (variant="hero").
+  const quizTargetImages = {
+    ready: settings.quiz_target_ready_image || quizTargetDefaults.ready,
+    build: settings.quiz_target_build_image || quizTargetDefaults.build,
+    plot: settings.quiz_target_plot_image || quizTargetDefaults.plot,
+  };
+
   return (
     <section className="hero" id="top">
       <Image
@@ -79,6 +89,13 @@ export default async function HeroSection() {
             Расчет, подбор проекта и варианты ипотеки в одном запросе
           </span>
         </div>
+        <aside className="hero-quiz" aria-label="Быстрый подбор дома">
+          <span className="hero-quiz-kicker">
+            <Sparkles size={15} />
+            Подбор дома за 30 секунд
+          </span>
+          <HouseQuiz variant="hero" targetImages={quizTargetImages} />
+        </aside>
       </div>
     </section>
   );

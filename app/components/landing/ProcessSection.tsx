@@ -1,12 +1,18 @@
 import { processSteps } from "../../content/landing";
+import { getSettings } from "../../lib/queries";
+import { sectionBgStyle } from "../../lib/sectionBg";
+import SectionHead from "../SectionHead";
 
-export default function ProcessSection() {
+export default async function ProcessSection() {
+  const s = await getSettings();
+  const bg = s.process_bg_image;
   return (
-    <section className="section process-section" id="process">
-      <div className="container section-head">
-        <span className="eyebrow">Как мы работаем</span>
-        <h2>Этапы строительства — от проекта до сдачи</h2>
-      </div>
+    <section
+      className={`section process-section${bg ? " has-bg" : ""}`}
+      id="process"
+      style={sectionBgStyle(bg)}
+    >
+      <SectionHead id="process" />
       <div className="container steps">
         {processSteps.map((step) => {
           const Icon = step.icon;

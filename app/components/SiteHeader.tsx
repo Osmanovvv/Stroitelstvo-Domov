@@ -82,9 +82,14 @@ export default async function SiteHeader() {
 
         <details className="mobile-menu">
           <summary aria-label="Открыть меню">
-            <span />
-            <span />
-            <span />
+            {/* Полоски «гамбургера» — во внутренней обёртке, а НЕ на самом <summary>.
+                У <summary> нельзя менять display на flex/grid: в старом iOS Safari
+                это ломает нативное открытие <details> по тапу («кнопка не работает»). */}
+            <span className="mobile-menu-burger">
+              <span />
+              <span />
+              <span />
+            </span>
           </summary>
           <nav className="mobile-menu-panel" aria-label="Мобильная навигация">
             {mobileNavigationLinks.map((link) => (

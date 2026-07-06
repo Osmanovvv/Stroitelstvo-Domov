@@ -1,13 +1,17 @@
 import { trustItems } from "../../content/landing";
+import { getSettings } from "../../lib/queries";
+import { sectionBgStyle } from "../../lib/sectionBg";
+import SectionHead from "../SectionHead";
 
-export default function TrustSection() {
+export default async function TrustSection() {
+  const s = await getSettings();
+  const bg = s.trust_bg_image;
   return (
-    <section className="section trust-section">
-      <div className="container section-head">
-        <span className="eyebrow">Доверие</span>
-        <h2>Доверие строится на прозрачности</h2>
-        <p>До сделки вы видите объекты, смету, договор, этапы работ и условия оплаты.</p>
-      </div>
+    <section
+      className={`section trust-section${bg ? " has-bg" : ""}`}
+      style={sectionBgStyle(bg)}
+    >
+      <SectionHead id="trust" />
       <div className="container trust-grid">
         {trustItems.map((item) => {
           const Icon = item.icon;

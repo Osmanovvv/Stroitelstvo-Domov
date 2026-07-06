@@ -12,4 +12,5 @@ export { default as PlotsSection } from "./PlotsSection";
 export { default as PricesSection } from "./PricesSection";
 export { default as ProcessSection } from "./ProcessSection";
 export { default as ProjectsSection } from "./ProjectsSection";
+export { default as ReviewsSection } from "./ReviewsSection";
 export { default as TrustSection } from "./TrustSection";
