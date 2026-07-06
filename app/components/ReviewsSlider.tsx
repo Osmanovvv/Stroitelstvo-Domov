@@ -1,42 +1,48 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
-// Отзывы-скрины (правка заказчика): по 3 карточки в ряд (планшет 2, телефон 1),
-// листание страницами стрелками + точки, свайп. Клик по карточке → лайтбокс
-// (скрин крупно целиком, листание стрелками/свайпом/клавишами, закрытие ×/Esc/фон).
+// Отзывы-скрины: компактная горизонтальная лента (листается стрелками/свайпом),
+// клик по карточке → лайтбокс (скрин крупно, листание стрелками/свайпом/клавишами,
+// закрытие ×/Esc/тап по фону).
 type ReviewCard = {
   id: string;
   image: string;
   caption: string | null;
 };
 
-function perPageForWidth(w: number) {
-  if (w >= 1024) return 3;
-  if (w >= 640) return 2;
-  return 1;
-}
-
 export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
-  const [perPage, setPerPage] = useState(3);
-  const [page, setPage] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const touchX = useRef<number | null>(null);
 
-  useEffect(() => {
-    const onResize = () => setPerPage(perPageForWidth(window.innerWidth));
-    onResize();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+  const update = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    setAtStart(el.scrollLeft <= 4);
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
   }, []);
 
-  const pages = Math.max(1, Math.ceil(reviews.length / perPage));
   useEffect(() => {
-    setPage((p) => Math.min(p, pages - 1));
-  }, [pages]);
+    const el = trackRef.current;
+    if (!el) return;
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [update]);
 
-  const goPage = (dir: number) => setPage((p) => Math.min(Math.max(p + dir, 0), pages - 1));
+  function scrollByPage(dir: number) {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * Math.max(el.clientWidth * 0.8, 260), behavior: "smooth" });
+  }
 
   const lbNav = useCallback(
     (dir: number) =>
@@ -44,7 +50,6 @@ export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
     [reviews.length],
   );
 
-  // Клавиатура в лайтбоксе.
   useEffect(() => {
     if (lightbox === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -53,7 +58,6 @@ export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
       else if (e.key === "ArrowRight") lbNav(1);
     };
     window.addEventListener("keydown", onKey);
-    // Блокируем прокрутку фона, пока открыт лайтбокс.
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
@@ -76,41 +80,29 @@ export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
   const active = lightbox !== null ? reviews[lightbox] : null;
 
   return (
-    <div className="reviews-carousel">
-      <div
-        className="reviews-viewport"
-        onTouchStart={onTouchStart}
-        onTouchEnd={(e) => onTouchEnd(e, goPage)}
-      >
-        <div className="reviews-track" style={{ transform: `translateX(-${page * 100}%)` }}>
-          {reviews.map((r, i) => (
-            <div className="review-card-cell" key={r.id}>
-              <button
-                type="button"
-                className="review-card"
-                onClick={() => setLightbox(i)}
-                aria-label={`Открыть отзыв крупно${r.caption ? `: ${r.caption}` : ""}`}
-              >
-                <span
-                  className="review-card-media"
-                  style={{ backgroundImage: `url("${r.image}")` }}
-                />
-                <span className="review-card-zoom" aria-hidden="true">
-                  <ZoomIn size={18} />
-                </span>
-              </button>
-            </div>
-          ))}
-        </div>
+    <div className="reviews-slider">
+      <div className="reviews-track" ref={trackRef}>
+        {reviews.map((r, i) => (
+          <button
+            type="button"
+            className="review-card"
+            key={r.id}
+            onClick={() => setLightbox(i)}
+            aria-label={`Открыть отзыв крупно${r.caption ? `: ${r.caption}` : ""}`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={r.image} alt={r.caption || "Отзыв покупателя"} loading="lazy" />
+          </button>
+        ))}
       </div>
 
-      {pages > 1 && (
+      {reviews.length > 1 && (
         <>
           <button
             type="button"
             className="reviews-arrow prev"
-            onClick={() => goPage(-1)}
-            disabled={page === 0}
+            onClick={() => scrollByPage(-1)}
+            disabled={atStart}
             aria-label="Предыдущие отзывы"
           >
             <ChevronLeft size={22} />
@@ -118,24 +110,12 @@ export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
           <button
             type="button"
             className="reviews-arrow next"
-            onClick={() => goPage(1)}
-            disabled={page >= pages - 1}
+            onClick={() => scrollByPage(1)}
+            disabled={atEnd}
             aria-label="Следующие отзывы"
           >
             <ChevronRight size={22} />
           </button>
-          <div className="reviews-dots" role="tablist" aria-label="Страницы отзывов">
-            {Array.from({ length: pages }).map((_, i) => (
-              <button
-                type="button"
-                key={i}
-                className={`reviews-dot${i === page ? " is-active" : ""}`}
-                onClick={() => setPage(i)}
-                aria-label={`Страница ${i + 1} из ${pages}`}
-                aria-current={i === page ? "true" : undefined}
-              />
-            ))}
-          </div>
         </>
       )}
 
