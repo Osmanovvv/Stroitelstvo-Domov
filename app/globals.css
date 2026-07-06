@@ -2103,34 +2103,38 @@ select:focus {
   margin-top: 10px;
 }
 
-/* ── Отзывы покупателей: компактная лента скринов + лайтбокс (правка заказчика) ── */
+/* ── Отзывы покупателей: постранично по 4 (в центре) + лайтбокс (правка заказчика) ── */
 .reviews-section {
   background: var(--sand);
 }
 
-.reviews-slider {
+/* Карусель сжата по содержимому и центрирована; по бокам (в отступах) — стрелки. */
+.reviews-carousel {
   position: relative;
-  margin-top: 8px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 8px auto 0;
+  padding: 0 52px;
+}
+
+/* Видимая область = ровно N карточек (ширину задаёт JS), остальное скрыто. */
+.reviews-viewport {
+  overflow: hidden;
+  max-width: 100%;
+  padding: 8px 0 4px;
 }
 
 .reviews-track {
   display: flex;
   gap: 16px;
-  overflow-x: auto;
-  padding: 8px 2px 16px;
-  scrollbar-width: none; /* Firefox */
-  -webkit-overflow-scrolling: touch;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
-.reviews-track::-webkit-scrollbar {
-  display: none; /* Chrome / Safari — листаем стрелками/свайпом */
-}
-
-/* Небольшие компактные карточки (скрин целиком, натуральная высота). Крупно —
-   по клику (лайтбокс). */
+/* Компактные карточки фиксированного размера (скрин целиком). Крупно — по клику. */
 .review-card {
   flex: 0 0 auto;
-  width: clamp(216px, 20vw, 256px);
+  width: 256px;
   margin: 0;
   padding: 0;
   border: 1px solid var(--line);
@@ -2154,6 +2158,7 @@ select:focus {
   background: var(--sand);
 }
 
+/* Стрелки по бокам — листают по странице (следующие 4 в том же месте). */
 .reviews-arrow {
   position: absolute;
   top: 46%;
@@ -2174,11 +2179,11 @@ select:focus {
 }
 
 .reviews-arrow.prev {
-  left: -12px;
+  left: 2px;
 }
 
 .reviews-arrow.next {
-  right: -12px;
+  right: 2px;
 }
 
 .reviews-arrow:hover:not(:disabled) {
@@ -2191,9 +2196,32 @@ select:focus {
   pointer-events: none;
 }
 
+.reviews-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.reviews-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(17, 24, 47, 0.18);
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.reviews-dot.is-active {
+  background: var(--blue);
+  transform: scale(1.3);
+}
+
 @media (max-width: 639px) {
-  .review-card {
-    width: clamp(200px, 62vw, 244px);
+  .reviews-carousel {
+    padding: 0;
   }
   .reviews-arrow {
     display: none; /* телефон — свайп */

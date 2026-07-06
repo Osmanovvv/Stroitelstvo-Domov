@@ -3,46 +3,47 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
-// Отзывы-скрины: компактная горизонтальная лента (листается стрелками/свайпом),
-// клик по карточке → лайтбокс (скрин крупно, листание стрелками/свайпом/клавишами,
-// закрытие ×/Esc/тап по фону).
+// Отзывы-скрины: постранично по 4 карточки по центру (планшет 3/2, телефон 1).
+// Карточки фиксированного компактного размера. Стрелки по бокам листают страницами
+// (следующие 4 в том же месте). Клик по карточке → лайтбокс (скрин крупно).
 type ReviewCard = {
   id: string;
   image: string;
   caption: string | null;
 };
 
+const CARD = 256; // ширина карточки, px (совпадает с CSS)
+const GAP = 16;
+const STEP = CARD + GAP; // шаг одной карточки
+const ARROWS = 104; // суммарные боковые зоны под стрелки (2×52)
+
 export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [perPage, setPerPage] = useState(4);
+  const [page, setPage] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const touchX = useRef<number | null>(null);
 
-  const update = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    setAtStart(el.scrollLeft <= 4);
-    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
+  useEffect(() => {
+    function calc() {
+      // Доступная ширина = ширина контейнера минус зоны под стрелки.
+      const container = wrapRef.current?.parentElement;
+      const w = container?.clientWidth ?? 1000;
+      const avail = w - ARROWS;
+      const fit = Math.floor((avail + GAP) / STEP);
+      setPerPage(Math.max(1, Math.min(4, fit)));
+    }
+    calc();
+    window.addEventListener("resize", calc);
+    return () => window.removeEventListener("resize", calc);
   }, []);
 
+  const pages = Math.max(1, Math.ceil(reviews.length / perPage));
   useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      el.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [update]);
+    setPage((p) => Math.min(p, pages - 1));
+  }, [pages]);
 
-  function scrollByPage(dir: number) {
-    const el = trackRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * Math.max(el.clientWidth * 0.8, 260), behavior: "smooth" });
-  }
+  const goPage = (dir: number) => setPage((p) => Math.min(Math.max(p + dir, 0), pages - 1));
 
   const lbNav = useCallback(
     (dir: number) =>
@@ -78,31 +79,44 @@ export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
   if (reviews.length === 0) return null;
 
   const active = lightbox !== null ? reviews[lightbox] : null;
+  const viewportW = perPage * CARD + (perPage - 1) * GAP;
+  // Сдвиг ограничиваем концом ленты — последняя страница прижимается вправо
+  // (показываем последние N карточек без пустого места, если их не кратно N).
+  const trackW = reviews.length * CARD + (reviews.length - 1) * GAP;
+  const maxOffset = Math.max(0, trackW - viewportW);
+  const offset = Math.min(page * perPage * STEP, maxOffset);
 
   return (
-    <div className="reviews-slider">
-      <div className="reviews-track" ref={trackRef}>
-        {reviews.map((r, i) => (
-          <button
-            type="button"
-            className="review-card"
-            key={r.id}
-            onClick={() => setLightbox(i)}
-            aria-label={`Открыть отзыв крупно${r.caption ? `: ${r.caption}` : ""}`}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={r.image} alt={r.caption || "Отзыв покупателя"} loading="lazy" />
-          </button>
-        ))}
+    <div className="reviews-carousel" ref={wrapRef}>
+      <div className="reviews-viewport" style={{ width: viewportW }}>
+        <div
+          className="reviews-track"
+          style={{ transform: `translateX(-${offset}px)` }}
+          onTouchStart={onTouchStart}
+          onTouchEnd={(e) => onTouchEnd(e, goPage)}
+        >
+          {reviews.map((r, i) => (
+            <button
+              type="button"
+              className="review-card"
+              key={r.id}
+              onClick={() => setLightbox(i)}
+              aria-label={`Открыть отзыв крупно${r.caption ? `: ${r.caption}` : ""}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={r.image} alt={r.caption || "Отзыв покупателя"} loading="lazy" />
+            </button>
+          ))}
+        </div>
       </div>
 
-      {reviews.length > 1 && (
+      {pages > 1 && (
         <>
           <button
             type="button"
             className="reviews-arrow prev"
-            onClick={() => scrollByPage(-1)}
-            disabled={atStart}
+            onClick={() => goPage(-1)}
+            disabled={page === 0}
             aria-label="Предыдущие отзывы"
           >
             <ChevronLeft size={22} />
@@ -110,12 +124,24 @@ export default function ReviewsSlider({ reviews }: { reviews: ReviewCard[] }) {
           <button
             type="button"
             className="reviews-arrow next"
-            onClick={() => scrollByPage(1)}
-            disabled={atEnd}
+            onClick={() => goPage(1)}
+            disabled={page >= pages - 1}
             aria-label="Следующие отзывы"
           >
             <ChevronRight size={22} />
           </button>
+          <div className="reviews-dots" role="tablist" aria-label="Страницы отзывов">
+            {Array.from({ length: pages }).map((_, i) => (
+              <button
+                type="button"
+                key={i}
+                className={`reviews-dot${i === page ? " is-active" : ""}`}
+                onClick={() => setPage(i)}
+                aria-label={`Страница ${i + 1} из ${pages}`}
+                aria-current={i === page ? "true" : undefined}
+              />
+            ))}
+          </div>
         </>
       )}
 
