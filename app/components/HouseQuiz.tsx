@@ -15,6 +15,7 @@ import {
   type QuizAnswers,
 } from "../content/quiz";
 import ConsentField from "./ConsentField";
+import { submitLead } from "../lib/leadActions";
 
 type Props = {
   // "section" — полный блок «Подбор и расчёт» внизу; "hero" — компактный вариант
@@ -30,6 +31,8 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
   const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers);
   const [stepIndex, setStepIndex] = useState(0);
   const [isSent, setIsSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const totalSteps = optionSteps.length + 1;
   const isContactStep = stepIndex === optionSteps.length;
@@ -57,7 +60,7 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
     setStepIndex((current) => Math.max(current - 1, 0));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!isContactStep) {
@@ -65,8 +68,30 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
       return;
     }
 
-    if (canContinue) {
+    if (!canContinue || submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const data = new FormData(event.currentTarget);
+      data.set("source", "Квиз подбора");
+      data.set(
+        "message",
+        [
+          `Направление: ${getOptionLabel("target", answers.target)}`,
+          `Площадь: ${getOptionLabel("area", answers.area)}`,
+          `Покупка: ${getOptionLabel("payment", answers.payment)}`,
+        ].join("; "),
+      );
+      const result = await submitLead(data);
+      if ("error" in result) {
+        setError(result.error);
+        return;
+      }
       setIsSent(true);
+    } catch {
+      setError("Не удалось отправить. Попробуйте ещё раз.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -74,6 +99,8 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
     setAnswers(initialAnswers);
     setStepIndex(0);
     setIsSent(false);
+    setSubmitting(false);
+    setError(null);
   }
 
   if (isSent) {
@@ -207,6 +234,11 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
             </span>
           </div>
           <ConsentField />
+          {error && (
+            <p role="alert" style={{ margin: "2px 0 0", color: "#dc2626", fontSize: 13 }}>
+              {error}
+            </p>
+          )}
         </>
       )}
 
@@ -217,11 +249,11 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
             Назад
           </button>
         )}
-        <button className="button primary" type={isContactStep ? "submit" : "button"} onClick={isContactStep ? undefined : goNext} disabled={!canContinue}>
+        <button className="button primary" type={isContactStep ? "submit" : "button"} onClick={isContactStep ? undefined : goNext} disabled={!canContinue || submitting}>
           {isContactStep ? (
             <>
               <Calculator size={18} />
-              Получить расчет
+              {submitting ? "Отправляем…" : "Получить расчет"}
             </>
           ) : (
             <>

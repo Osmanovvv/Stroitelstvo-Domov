@@ -28,6 +28,10 @@ export const getFaqItems = cache(() =>
   prisma.faqItem.findMany({ orderBy: { sortOrder: "asc" } }),
 );
 
+// Заявки для админки — новые сверху. Без cache(): всегда актуальный список.
+export const getLeads = () =>
+  prisma.lead.findMany({ orderBy: { createdAt: "desc" } });
+
 export const getBuiltObjects = cache(() =>
   prisma.builtObject.findMany({ where: { isVisible: true }, orderBy: { sortOrder: "asc" } }),
 );

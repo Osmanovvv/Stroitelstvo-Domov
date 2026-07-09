@@ -12,6 +12,14 @@ export default function MobileMenu({ settings }: { settings: Record<string, stri
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const contactLinks = buildContactLinks(settings);
+  // Порядок контактов в меню: заказчик попросил поменять местами WhatsApp и MAX
+  // (только в мобильном меню — иконки в шапке и блок «Контакты» не трогаем).
+  const menuContacts = [...contactLinks];
+  const wi = menuContacts.findIndex((l) => l.label === "WhatsApp");
+  const mi = menuContacts.findIndex((l) => l.label === "MAX");
+  if (wi !== -1 && mi !== -1) {
+    [menuContacts[wi], menuContacts[mi]] = [menuContacts[mi], menuContacts[wi]];
+  }
 
   // Закрытие по Esc и по клику вне меню.
   useEffect(() => {
@@ -56,7 +64,7 @@ export default function MobileMenu({ settings }: { settings: Record<string, stri
           <span className="mobile-work-status">
             <WorkStatus showHours workStart={settings.work_start} workEnd={settings.work_end} />
           </span>
-          {contactLinks.map((link) => (
+          {menuContacts.map((link) => (
             <a
               className="mobile-menu-phone"
               href={link.href}

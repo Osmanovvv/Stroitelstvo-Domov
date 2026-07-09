@@ -3,6 +3,7 @@
 import { type ChangeEvent, type FormEvent, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Paperclip, X } from "lucide-react";
 import ConsentField from "./ConsentField";
+import { submitLead } from "../lib/leadActions";
 
 // Всплывающая форма заявки. Открывается из любой кнопки на странице через
 // глобальное событие "open-lead-modal" (см. LeadModalTrigger) — посетитель
@@ -28,6 +29,8 @@ export default function LeadModal() {
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -39,6 +42,8 @@ export default function LeadModal() {
       setFile(null);
       setFileError(null);
       setSent(false);
+      setSubmitting(false);
+      setError(null);
       setOpen(true);
     }
     window.addEventListener("open-lead-modal", onOpen as EventListener);
@@ -83,9 +88,27 @@ export default function LeadModal() {
     if (fileRef.current) fileRef.current.value = "";
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSent(true);
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const data = new FormData(event.currentTarget);
+      data.set("source", title);
+      // Файл держим в состоянии (инпут скрывается, когда файл выбран) — добавим явно.
+      if (file) data.set("projectFile", file);
+      const result = await submitLead(data);
+      if ("error" in result) {
+        setError(result.error);
+        return;
+      }
+      setSent(true);
+    } catch {
+      setError("Не удалось отправить. Проверьте связь и попробуйте ещё раз.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -184,8 +207,13 @@ export default function LeadModal() {
             )}
 
             <ConsentField />
-            <button className="button primary" type="submit">
-              Отправить заявку
+            {error && (
+              <p role="alert" style={{ margin: "2px 0 0", color: "#dc2626", fontSize: 13 }}>
+                {error}
+              </p>
+            )}
+            <button className="button primary" type="submit" disabled={submitting}>
+              {submitting ? "Отправляем…" : "Отправить заявку"}
             </button>
           </form>
         )}

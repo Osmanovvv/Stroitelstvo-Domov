@@ -131,3 +131,23 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Заявки с сайта (лид-формы + квиз). Пишутся в БД ПЕРВЫМИ (гарантия сохранности),
+// затем уходят в Telegram с повторными попытками. notified/notifyError — статус
+// доставки: заявку всегда видно в админке, даже если Telegram не ответил, и можно
+// переслать повторно. Так уходит «один раз дошло, второй — нет».
+model Lead {
+  id          String    @id @default(cuid())
+  name        String?
+  phone       String
+  source      String? // откуда: заголовок формы / «Квиз подбора»
+  message     String? // сводка квиза или доп. текст
+  fileUrl     String? // /uploads/... прикреплённый файл (проект/планировка)
+  fileName    String? // исходное имя файла
+  consent     Boolean   @default(false)
+  consentAt   DateTime?
+  notified    Boolean   @default(false)
+  notifyError String?
+  processed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
