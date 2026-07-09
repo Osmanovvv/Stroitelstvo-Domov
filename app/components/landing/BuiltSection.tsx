@@ -4,7 +4,7 @@ import ProjectSlider from "../ProjectSlider";
 import SectionHead from "../SectionHead";
 
 const BUILT_IMAGE_SIZES =
-  "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
+  "(max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
 
 export default async function BuiltSection() {
   const builtObjects = await getBuiltObjects();

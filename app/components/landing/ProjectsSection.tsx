@@ -5,7 +5,7 @@ import ProjectSlider from "../ProjectSlider";
 import SectionHead from "../SectionHead";
 
 const PROJECT_IMAGE_SIZES =
-  "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), (max-width: 1180px) calc((100vw - 108px) / 2), 325px";
+  "(max-width: 1040px) calc((100vw - 90px) / 2), (max-width: 1180px) calc((100vw - 108px) / 2), 325px";
 
 export default async function ProjectsSection() {
   const projects = await getProjects();

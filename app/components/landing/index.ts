@@ -1,6 +1,5 @@
 export { default as BuildingSection } from "./BuildingSection";
 export { default as BuiltSection } from "./BuiltSection";
-export { default as CalculatorSection } from "./CalculatorSection";
 export { default as ChoiceSection } from "./ChoiceSection";
 export { default as CompareSection } from "./CompareSection";
 export { default as ContactsSection } from "./ContactsSection";
@@ -13,4 +12,3 @@ export { default as PricesSection } from "./PricesSection";
 export { default as ProcessSection } from "./ProcessSection";
 export { default as ProjectsSection } from "./ProjectsSection";
 export { default as ReviewsSection } from "./ReviewsSection";
-export { default as TrustSection } from "./TrustSection";

@@ -5,7 +5,6 @@ import { useEffect } from "react";
 const SECTION_SELECTOR = [
   ".hero",
   ".section-head",
-  ".calc-layout > div:first-child",
   ".compare-layout > div:first-child",
   ".payment-card > div:first-child",
   ".contacts-layout > div:first-child",

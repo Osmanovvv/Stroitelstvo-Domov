@@ -10,7 +10,6 @@ export const SECTION_FIELDS = [
   { id: "built", label: "Построенные объекты", bg: false },
   { id: "payment", label: "Ипотека и рассрочка", bg: true },
   { id: "process", label: "Как мы работаем", bg: true },
-  { id: "trust", label: "Доверие", bg: true },
   { id: "reviews", label: "Отзывы покупателей", bg: true },
   { id: "contacts", label: "Контакты", bg: true },
 ] as const;

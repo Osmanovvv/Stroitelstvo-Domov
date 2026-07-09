@@ -5,7 +5,6 @@ import ScrollReveal from "./components/ScrollReveal";
 import {
   BuildingSection,
   BuiltSection,
-  CalculatorSection,
   ChoiceSection,
   CompareSection,
   ContactsSection,
@@ -17,7 +16,6 @@ import {
   ProcessSection,
   ProjectsSection,
   ReviewsSection,
-  TrustSection,
 } from "./components/landing";
 
 // Контент обновляется по запросу через revalidatePath('/') из админки;
@@ -36,8 +34,9 @@ export default function Home() {
             Проекты → Готовые дома → Объекты в строительстве → Участки →
             Построенные объекты → Ипотека → Как мы работаем. «Комплектации и цены»
             идут сразу после «Проектов». Расстановка вне-меню блоков
-            (Дом или квартира, Подбор и расчёт, Отзывы, Контакты) — провизорная,
-            согласовать с заказчиком. */}
+            (Дом или квартира, Отзывы, Контакты) — провизорная,
+            согласовать с заказчиком. Квиз подбора — на первом экране (в hero);
+            отдельный блок «Подбор и расчёт» убран как дубль (правка заказчика A). */}
         <ProjectsSection />
         <PricesSection />
         <HomesSection />
@@ -45,10 +44,8 @@ export default function Home() {
         <PlotsSection />
         <BuiltSection />
         <CompareSection />
-        <CalculatorSection />
         <PaymentSection />
         <ProcessSection />
-        <TrustSection />
         <ReviewsSection />
         <ContactsSection />
       </main>

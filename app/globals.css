@@ -1977,6 +1977,26 @@ select:focus {
   font-size: 15px;
 }
 
+/* Гарантии внутри «Как мы работаем» (перенесены из блока «Доверие») */
+.process-guarantees {
+  margin-top: 46px;
+}
+
+.process-guarantees-head {
+  max-width: 640px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.process-guarantees-head h3 {
+  font-size: 24px;
+}
+
+.process-guarantees-head p {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
 /* Ипотека — тёмный блок с фоном-картинкой */
 .payment-section {
   position: relative;
@@ -2373,6 +2393,12 @@ select:focus {
 }
 .section.has-bg .step .step-num {
   color: rgba(255, 255, 255, 0.12);
+}
+.section.has-bg .process-guarantees-head h3 {
+  color: #fff;
+}
+.section.has-bg .process-guarantees-head p {
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .contacts-section {
@@ -3042,8 +3068,6 @@ select:focus {
   }
 
   .choice-grid,
-  .homes-grid,
-  .project-grid,
   .package-grid,
   .trust-grid,
   .steps,
@@ -3831,13 +3855,6 @@ select:focus {
   }
 }
 
-@media (max-width: 680px) {
-  .built-grid,
-  .media-card-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* Всплывающая форма заявки (LeadModal) — открывается поверх экрана, фон не скроллится */
 .modal-overlay {
   position: fixed;
@@ -4095,5 +4112,200 @@ select:focus {
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* =========================================================================
+   Мобилка ≤680px — листинги горизонтальной лентой со свайпом (пять секций:
+   Проекты / Готовые дома / Стройка / Участки / Построенные объекты).
+   Короткие секции + крупные карточки (виден край следующей), единое фото 4:3,
+   вся мета видна. Десктоп/планшет >680px не затрагивается. Блок в конце файла —
+   намеренно перекрывает более ранние мобильные правила карточек.
+   ========================================================================= */
+@media (max-width: 680px) {
+  /* 1. Сетки → горизонтальная лента со свайпом: секции короткие, карточки крупные.
+     Листается пальцем, виден «краешек» следующей карточки; полоса прокрутки скрыта. */
+  .project-grid,
+  .homes-grid,
+  .built-grid,
+  .media-card-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+  }
+  .project-grid::-webkit-scrollbar,
+  .homes-grid::-webkit-scrollbar,
+  .built-grid::-webkit-scrollbar,
+  .media-card-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 2. Карточка: фикс. ширина ~80% экрана (виден край следующей), снап, тень */
+  .project-card,
+  .home-card,
+  .built-card,
+  .media-card {
+    flex: 0 0 80%;
+    max-width: 320px;
+    scroll-snap-align: start;
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(17, 24, 47, 0.09);
+  }
+
+  /* На тач-устройствах убираем hover-«прыжок» вверх */
+  .project-card:hover,
+  .home-card:hover,
+  .built-card:hover,
+  .media-card:hover {
+    transform: none;
+    box-shadow: 0 8px 22px rgba(17, 24, 47, 0.07);
+  }
+  .project-card:hover .project-media img {
+    transform: none;
+    filter: none;
+  }
+
+  /* 3. Фото: единое соотношение 4:3, cover */
+  .project-media,
+  .home-image-wrap,
+  .built-image-wrap,
+  .media-card-image {
+    aspect-ratio: 4 / 3;
+    border-radius: 0;
+  }
+  .project-media img,
+  .home-image-wrap img,
+  .built-image-wrap img,
+  .media-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 4. Слайдер: прячем стрелки (главный шум), оставляем точки и свайп */
+  .project-slider-arrow {
+    display: none;
+  }
+  .project-slider-dots {
+    bottom: 8px;
+    gap: 5px;
+  }
+  .project-dot {
+    width: 6px;
+    height: 6px;
+  }
+  .project-dot.is-active {
+    transform: scale(1.25);
+  }
+
+  /* 5. Бейджи поверх фото: компактнее */
+  .project-area,
+  .home-image-wrap span,
+  .built-year,
+  .media-card-badge {
+    left: 10px;
+    top: 10px;
+    padding: 5px 9px;
+    font-size: 11.5px;
+    border-radius: 8px;
+  }
+
+  /* 6. Тело карточки: единый воздух, колонка до низа */
+  .project-body,
+  .home-card-body,
+  .built-card-body,
+  .media-card-body {
+    padding: 16px 16px 18px;
+    gap: 0;
+  }
+
+  /* 7. Заголовки: плавный масштаб, максимум 2 строки, без рваных переносов */
+  .project-card h3,
+  .home-card-title h3,
+  .built-card-body h3,
+  .media-card-body h3 {
+    margin-bottom: 6px;
+    font-size: clamp(15px, 4.1vw, 16.5px);
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    hyphens: manual;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* 8. Проекты: карточка крупная — показываем всё (тег/описание/спеки), крупная цена */
+  .project-card strong {
+    margin-top: 8px;
+    font-size: clamp(18px, 5vw, 20px);
+  }
+
+  /* 9. Готовые дома: заголовок над ценой, из спеков — только площадь */
+  .home-card-title {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+  .home-card-title h3 {
+    max-width: none;
+  }
+  .home-card-title strong {
+    font-size: clamp(16px, 4.6vw, 18px);
+    color: var(--clay);
+    white-space: nowrap;
+  }
+  .location {
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .location svg {
+    width: 14px;
+    height: 14px;
+  }
+  .spec-grid {
+    margin-top: 12px;
+  }
+
+  /* 10. Стройка / участки / построенные: показываем всю мету */
+  .media-card-meta,
+  .built-meta {
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  /* 11. CTA: компактная, прижата к низу карточки */
+  .text-link,
+  .project-body a,
+  .project-body button {
+    min-height: 0;
+    margin-top: auto;
+    padding-top: 12px;
+    font-size: 13.5px;
+    font-weight: 720;
+  }
+  .text-link svg,
+  .project-body a svg,
+  .project-body button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* 12. Очень узкие экраны ≤360px — карточка чуть шире (виден край следующей) */
+@media (max-width: 360px) {
+  .project-card,
+  .home-card,
+  .built-card,
+  .media-card {
+    flex-basis: 84%;
   }
 }

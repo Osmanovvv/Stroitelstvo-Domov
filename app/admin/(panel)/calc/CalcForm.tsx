@@ -14,10 +14,6 @@ type QuizImageField = {
 };
 
 type Props = {
-  eyebrow: string;
-  title: string;
-  subtitle: string;
-  bgImage: string;
   quizImages: QuizImageField[];
 };
 
@@ -32,7 +28,7 @@ export default function CalcForm(p: Props) {
     setError(null);
     try {
       const formData = new FormData(formEl);
-      // Сжимаем каждый выбранный файл в браузере перед отправкой (фон + фото квиза).
+      // Сжимаем каждый выбранный файл в браузере перед отправкой.
       for (const el of Array.from(formEl.querySelectorAll('input[type="file"]'))) {
         const input = el as HTMLInputElement;
         const f = input.files?.[0];
@@ -55,41 +51,10 @@ export default function CalcForm(p: Props) {
 
   return (
     <form className="admin-form" onSubmit={onSubmit}>
-      <input type="hidden" name="calcBgExisting" value={p.bgImage} />
-      <div className="admin-field">
-        <label>Надзаголовок</label>
-        <input name="calc_eyebrow" defaultValue={p.eyebrow} />
-      </div>
-      <div className="admin-field">
-        <label>Заголовок</label>
-        <input name="calc_title" defaultValue={p.title} />
-        <small style={{ color: "#8a93a6", fontSize: 12 }}>
-          Текст между **двумя звёздочками** выделяется цветом.
-        </small>
-      </div>
-      <div className="admin-field">
-        <label>Подпись</label>
-        <textarea name="calc_subtitle" rows={2} defaultValue={p.subtitle} />
-      </div>
-      <div className="admin-field">
-        <label>Фон блока (картинка)</label>
-        {p.bgImage && (
-          <Image className="admin-hero-preview" src={p.bgImage} alt="" width={320} height={170} />
-        )}
-        <input name="calcBgFile" type="file" accept="image/*" />
-        <small style={{ color: "#8a93a6", fontSize: 12 }}>
-          Поверх фото — затемнение, чтобы текст и квиз читались. Пусто = фирменный градиент.
-        </small>
-        {p.bgImage && (
-          <label style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8, fontWeight: 400 }}>
-            <input type="checkbox" name="calcBgRemove" /> Убрать фон (вернуть градиент)
-          </label>
-        )}
-      </div>
       <div className="admin-field">
         <label>Фото вариантов квиза — Шаг 1 «Какой вариант рассматриваете?»</label>
         <small style={{ color: "#8a93a6", fontSize: 12 }}>
-          Показываются на первом экране (квиз справа) и в блоке ниже. Пусто = фото-заглушки по умолчанию.
+          Показываются в квизе на первом экране. Пусто = фото-заглушки по умолчанию.
         </small>
         <div style={{ display: "grid", gap: 18, marginTop: 12 }}>
           {p.quizImages.map((q) => (

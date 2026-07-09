@@ -13,7 +13,7 @@ const sections = [
   { href: "/admin/built", label: "Построенные объекты" },
   { href: "/admin/prices", label: "Цены и комплектации" },
   { href: "/admin/compare", label: "Дом или квартира" },
-  { href: "/admin/calc", label: "Подбор и расчёт" },
+  { href: "/admin/calc", label: "Фото квиза" },
   { href: "/admin/sections", label: "Заголовки секций" },
   { href: "/admin/reviews", label: "Отзывы покупателей" },
   { href: "/admin/seo", label: "SEO" },

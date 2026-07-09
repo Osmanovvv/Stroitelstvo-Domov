@@ -1,5 +1,4 @@
 import { getSettings } from "@/app/lib/queries";
-import { calcDefaults } from "@/app/content/landing";
 import { quizTargetDefaults } from "@/app/content/quiz";
 import CalcForm from "./CalcForm";
 
@@ -7,7 +6,6 @@ export const dynamic = "force-dynamic";
 
 export default async function CalcAdmin() {
   const s = await getSettings();
-  const d = calcDefaults;
 
   // existing = сохранённое переопределение (пусто, если дефолт); preview = что реально
   // покажется на сайте (переопределение или фолбэк).
@@ -20,16 +18,10 @@ export default async function CalcAdmin() {
   return (
     <>
       <div className="admin-topbar">
-        <h2>Подбор и расчёт</h2>
+        <h2>Фото квиза</h2>
       </div>
       <div className="admin-card">
-        <CalcForm
-          eyebrow={s.calc_eyebrow ?? d.eyebrow}
-          title={s.calc_title ?? d.title}
-          subtitle={s.calc_subtitle ?? d.subtitle}
-          bgImage={s.calc_bg_image ?? ""}
-          quizImages={quizImages}
-        />
+        <CalcForm quizImages={quizImages} />
       </div>
     </>
   );

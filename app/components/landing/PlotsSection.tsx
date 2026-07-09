@@ -5,7 +5,7 @@ import ProjectSlider from "../ProjectSlider";
 import SectionHead from "../SectionHead";
 
 const PLOT_IMAGE_SIZES =
-  "(max-width: 760px) calc(100vw - 44px), (max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
+  "(max-width: 1040px) calc((100vw - 90px) / 2), 33vw";
 
 export default async function PlotsSection() {
   const plots = await getPlots();
