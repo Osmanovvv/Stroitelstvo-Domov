@@ -33,16 +33,19 @@ export default async function PaymentSection() {
             Рассчитать стоимость
           </LeadModalTrigger>
           <div className="bank-row" aria-label="Банки-партнёры">
-            {bankItems.map((bank) => (
-              <span className="bank-chip" key={bank.name}>
-                <Image
-                  src={bank.logo}
-                  alt={bank.name}
-                  width={bank.logoWidth}
-                  height={bank.logoHeight}
-                />
-              </span>
-            ))}
+            {bankItems.map((bank) => {
+              const slug = bank.logo.split("/").pop()?.replace(/\.\w+$/, "") ?? "";
+              return (
+                <span className={`bank-chip bank-chip-${slug}`} key={bank.name}>
+                  <Image
+                    src={bank.logo}
+                    alt={bank.name}
+                    width={bank.logoWidth}
+                    height={bank.logoHeight}
+                  />
+                </span>
+              );
+            })}
           </div>
         </div>
       </div>

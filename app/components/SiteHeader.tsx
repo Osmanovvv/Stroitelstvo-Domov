@@ -2,13 +2,12 @@ import Image from "next/image";
 import { ArrowRight, Phone, PhoneCall } from "lucide-react";
 import {
   buildContactLinks,
-  mobileNavigationLinks,
   navigationLinks,
 } from "../content/landing";
 import { getSettings } from "../lib/queries";
 import ContactIcon from "./ContactIcon";
 import LeadModalTrigger from "./LeadModalTrigger";
-import WorkStatus from "./WorkStatus";
+import MobileMenu from "./MobileMenu";
 
 export default async function SiteHeader() {
   const settings = await getSettings();
@@ -80,40 +79,7 @@ export default async function SiteHeader() {
           </a>
         </div>
 
-        <details className="mobile-menu">
-          <summary aria-label="Открыть меню">
-            {/* Полоски «гамбургера» — во внутренней обёртке, а НЕ на самом <summary>.
-                У <summary> нельзя менять display на flex/grid: в старом iOS Safari
-                это ломает нативное открытие <details> по тапу («кнопка не работает»). */}
-            <span className="mobile-menu-burger">
-              <span />
-              <span />
-              <span />
-            </span>
-          </summary>
-          <nav className="mobile-menu-panel" aria-label="Мобильная навигация">
-            {mobileNavigationLinks.map((link) => (
-              <a href={link.href} key={link.href}>
-                {link.label}
-              </a>
-            ))}
-            <span className="mobile-work-status">
-              <WorkStatus showHours workStart={settings.work_start} workEnd={settings.work_end} />
-            </span>
-            {contactLinks.map((link) => (
-              <a
-                className="mobile-menu-phone"
-                href={link.href}
-                key={link.label}
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noreferrer" : undefined}
-              >
-                <ContactIcon link={link} size={16} />
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </details>
+        <MobileMenu settings={settings} />
       </div>
 
       <nav className="header-nav" aria-label="Основная навигация">
