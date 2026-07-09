@@ -1868,6 +1868,63 @@ select:focus {
   font-weight: 600;
 }
 
+/* Комплектации-аккордеон. База (десктоп): заголовок — как обычный, список всегда
+   раскрыт, шеврон скрыт. Сворачивание включается только на мобиле (≤680px). */
+.package-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: default;
+}
+
+.package-head-text {
+  min-width: 0;
+}
+
+.package-chevron {
+  display: none;
+  flex: 0 0 auto;
+  margin-top: 14px;
+  color: var(--muted);
+  transition: transform 0.22s ease;
+}
+
+.package-body {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+@media (max-width: 680px) {
+  .package-head {
+    cursor: pointer;
+  }
+  .package-chevron {
+    display: block;
+  }
+  .package-card.is-open .package-chevron {
+    transform: rotate(180deg);
+  }
+  /* Плавное сворачивание: строка грида 0fr ↔ 1fr (grid-template-rows анимируется) */
+  .package-body {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.28s ease;
+  }
+  .package-card.is-open .package-body {
+    grid-template-rows: 1fr;
+  }
+  .package-body-inner {
+    overflow: hidden;
+  }
+}
+
 .package-cta {
   width: 100%;
   margin-top: auto;
