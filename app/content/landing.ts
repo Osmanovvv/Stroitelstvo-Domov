@@ -399,7 +399,7 @@ export const legalDefaults: Record<string, string> = {
   legal_ogrn: "уточняется",
   legal_address: "г. Краснодар (адрес уточняется)",
   legal_email: "адрес электронной почты уточняется",
-  legal_updated: "11.06.2026",
+  legal_updated: "10.07.2026",
 };
 
 export type LegalInfo = {
