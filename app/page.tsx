@@ -2,6 +2,7 @@ import LeadModal from "./components/LeadModal";
 import SiteFooter from "./components/SiteFooter";
 import SiteHeader from "./components/SiteHeader";
 import ScrollReveal from "./components/ScrollReveal";
+import JsonLd from "./components/JsonLd";
 import {
   BuildingSection,
   BuiltSection,
@@ -51,6 +52,7 @@ export default function Home() {
       </main>
       <SiteFooter />
       <LeadModal />
+      <JsonLd />
     </>
   );
 }

@@ -2,17 +2,40 @@ import type { Metadata } from "next";
 import "./globals.css";
 import CookieNotice from "./components/CookieNotice";
 import { getSettings } from "./lib/queries";
+import { getSeoData } from "./lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
+  const seo = getSeoData(s);
   return {
-    title: s.seo_title || "Кирпичные дома в Краснодаре | Готовые дома и строительство",
-    description:
-      s.seo_description ||
-      "Готовые кирпичные дома, дома в строительстве и строительство под заказ в Краснодаре и радиусе 70 км.",
-    icons: {
-      icon: "/logo/svm-logo-mark-cutout.png",
-      apple: "/logo/svm-logo-mark-cutout.png",
+    metadataBase: new URL(seo.siteUrl),
+    title: { default: seo.title, template: `%s | ${seo.siteName}` },
+    description: seo.description,
+    applicationName: seo.siteName,
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      locale: "ru_RU",
+      url: "/",
+      siteName: seo.siteName,
+      title: seo.title,
+      description: seo.description,
+      images: [{ url: seo.ogImage, width: 1200, height: 630, alt: seo.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      images: [seo.ogImage],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+    },
+    verification: {
+      yandex: s.yandex_verification?.trim() || undefined,
+      google: s.google_verification?.trim() || undefined,
     },
   };
 }
