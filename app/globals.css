@@ -1931,6 +1931,21 @@ select:focus {
   justify-content: center;
 }
 
+/* Десктоп/планшет: тело карточки заполняет её по высоте, а внутренности —
+   флекс-колонка, чтобы margin-top:auto у кнопки прижимал её к низу. Так у всех
+   комплектаций (списки разной длины) кнопки «Рассчитать» выстроены в один ряд.
+   На мобиле (≤680) — аккордеон, там выравнивание не нужно, правило не применяем. */
+@media (min-width: 681px) {
+  .package-body {
+    flex: 1;
+  }
+  .package-body-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
 .trust-section {
   padding-top: 8px;
 }
