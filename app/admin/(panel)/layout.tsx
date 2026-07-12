@@ -1,8 +1,17 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { logout } from "../logout/actions";
 import AdminNav from "./AdminNav";
 import ToastViewport from "@/app/admin/components/Toast";
+import { SESSION_COOKIE, verifySessionToken } from "@/app/lib/session";
 
-export default function PanelLayout({ children }: { children: React.ReactNode }) {
+export default async function PanelLayout({ children }: { children: React.ReactNode }) {
+  // Второй слой авторизации помимо middleware (defense-in-depth): при любом
+  // обходе middleware страница админки всё равно не отрендерится без сессии.
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
+  const session = token ? await verifySessionToken(token) : null;
+  if (!session) redirect("/admin/login");
+
   return (
     <div className="admin-shell">
       <ToastViewport />

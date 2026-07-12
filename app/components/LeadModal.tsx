@@ -137,6 +137,15 @@ export default function LeadModal() {
           </div>
         ) : (
           <form className="modal-form" onSubmit={handleSubmit}>
+            {/* honeypot — скрытое поле, видит только бот; на людей не влияет */}
+            <input
+              type="text"
+              name="company_extra"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+            />
             <h3>{title}</h3>
             <p>
               {withFile

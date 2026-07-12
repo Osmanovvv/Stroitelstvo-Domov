@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { str, file } from "@/app/lib/form";
 import { saveUploadedImage, deleteUploadedImage } from "@/app/lib/upload";
 import { upsertSettings } from "@/app/lib/settings";
+import { requireAdmin } from "@/app/lib/adminAuth";
 import { SECTION_FIELDS } from "./config";
 
 // Заголовки всех секций (надзаголовок/заголовок/подпись) + фоны «полос».
@@ -12,6 +13,7 @@ import { SECTION_FIELDS } from "./config";
 export async function updateSections(
   formData: FormData,
 ): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin();
   const values: Record<string, string> = {};
 
   for (const s of SECTION_FIELDS) {

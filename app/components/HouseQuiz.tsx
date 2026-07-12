@@ -137,6 +137,15 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
 
   return (
     <form className={`quiz-card${isHero ? " is-hero" : ""}`} onSubmit={handleSubmit}>
+      {/* honeypot — скрытое поле, видит только бот; на людей не влияет */}
+      <input
+        type="text"
+        name="company_extra"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+      />
       <div className="quiz-top">
         <span>Шаг {stepIndex + 1} из {totalSteps}</span>
         <strong>{isContactStep ? "Куда отправить подбор?" : currentStep.title}</strong>

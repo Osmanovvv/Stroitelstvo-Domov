@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { str, file } from "@/app/lib/form";
 import { saveUploadedImage, deleteUploadedImage } from "@/app/lib/upload";
 import { upsertSettings } from "@/app/lib/settings";
+import { requireAdmin } from "@/app/lib/adminAuth";
 
 // Поля-картинки Шага 1 квиза (направление). base — общий префикс имён полей формы.
 const QUIZ_IMAGE_FIELDS = [
@@ -17,6 +18,7 @@ const QUIZ_IMAGE_FIELDS = [
 export async function updateCalc(
   formData: FormData,
 ): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin();
   const quizImages: Record<string, string> = {};
   const quizOld: Record<string, string> = {};
   for (const f of QUIZ_IMAGE_FIELDS) {

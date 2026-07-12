@@ -9,5 +9,6 @@ tsconfig.tsbuildinfo
 .env.production
 *.log
 /public/uploads
+/private-uploads
 big-test.jpg
 .playwright-mcp/

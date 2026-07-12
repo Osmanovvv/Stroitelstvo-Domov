@@ -39,9 +39,17 @@ export default function ToastForm({ action, message, className, children }: Toas
     pendingRef.current = true;
     setIsPending(true);
     try {
-      await action(formData);
+      const result = await action(formData);
+      // Конвенция проекта: экшены ВОЗВРАЩАЮТ {error}, а не бросают. Проверяем,
+      // иначе показали бы ложное «Сохранено» при неуспехе.
+      if (result && typeof result === "object" && "error" in result) {
+        toast(`Ошибка: ${String((result as { error: unknown }).error)}`);
+        return;
+      }
       setIsDirty(false);
       toast(message);
+    } catch {
+      toast("Не удалось сохранить. Попробуйте ещё раз.");
     } finally {
       pendingRef.current = false;
       setIsPending(false);

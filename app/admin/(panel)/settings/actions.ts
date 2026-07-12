@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { str } from "@/app/lib/form";
 import { upsertSettings } from "@/app/lib/settings";
+import { requireAdmin } from "@/app/lib/adminAuth";
 
 const KEYS = [
   "phone",
@@ -20,6 +21,7 @@ const KEYS = [
 ];
 
 export async function updateSettings(formData: FormData) {
+  await requireAdmin();
   await upsertSettings(Object.fromEntries(KEYS.map((key) => [key, str(formData, key)])));
   revalidatePath("/");
   // Реквизиты оператора показываются на юридических страницах и в футере.

@@ -48,12 +48,14 @@ cd svm-landing
 
 ```bash
 cp .env.production.example .env.production
-nano .env.production   # заполнить DATABASE_URL, AUTH_SECRET, ADMIN_PASSWORD_HASH
+nano .env.production   # DATABASE_URL, AUTH_SECRET, ADMIN_PASSWORD_HASH, TELEGRAM_*
 ```
 - `AUTH_SECRET`: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 - `ADMIN_PASSWORD_HASH`: `node -e "console.log(require('bcryptjs').hashSync('ВАШ_ПАРОЛЬ',10))"`
   (в `.env.production` символы `$` экранируйте как `\$`)
+- `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`: боевой бот от @BotFather + chat_id получателя заявок (инструкция в `.env.production.example`). Без них заявки не уйдут в Telegram.
 - Пока без HTTPS оставьте `ALLOW_INSECURE_COOKIES="1"` (иначе не зайти в админку по HTTP).
+- ⚠️ Деплойте ТОЛЬКО `.env.production` — файл `.env` (dev-секреты) на прод не копируйте.
 
 ## 5. Установка, миграции, сборка
 
@@ -108,8 +110,15 @@ pm2 reload svm-landing
 # db:seed НЕ запускать — сотрёт контент админки!
 ```
 
+## После первого деплоя (обязательно)
+- **SEO → домен**: в админке → «SEO» впишите реальный **адрес сайта (домен)** — от него строятся canonical, sitemap и OpenGraph (по умолчанию стоит тестовый IP). Там же — коды подтверждения Яндекс.Вебмастер / Google Search Console.
+- **Настройки**: заполните телефон, ссылки мессенджеров и реквизиты оператора ПДн («Настройки»).
+- **Проверьте заявки**: отправьте тестовую заявку с сайта → должна прийти в Telegram и появиться в разделе «Заявки».
+
 ## Заметки
+- Порядок при деплое строгий: сначала доступная БД + `prisma migrate deploy`, **потом** `npm run build` (главная пре-рендерится с данными из БД — без неё сборка упадёт).
 - **Фото из админки** хранятся в `public/uploads/` (на постоянном диске) — при обновлениях
   не трогаются (папка вне git). nginx отдаёт их напрямую с кэшем.
+- **Файлы из заявок** — в `private-uploads/` (вне `public/`, git-ignore): это ПДн, публично НЕ раздаются, скачиваются только из админки. Папка постоянная, при обновлениях не трогается.
 - Часовой пояс статуса работы — Europe/Moscow (в коде), от сервера не зависит.
 - Реквизиты оператора ПДн и контакты заполняются в админке («Настройки»).

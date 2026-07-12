@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { str } from "@/app/lib/form";
 import { upsertSettings } from "@/app/lib/settings";
+import { requireAdmin } from "@/app/lib/adminAuth";
 
 export async function updateSeo(formData: FormData) {
+  await requireAdmin();
   await upsertSettings({
     seo_title: str(formData, "seo_title"),
     seo_description: str(formData, "seo_description"),

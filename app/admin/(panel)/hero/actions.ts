@@ -4,10 +4,12 @@ import { revalidatePath } from "next/cache";
 import { str, file } from "@/app/lib/form";
 import { saveUploadedImage, deleteUploadedImage } from "@/app/lib/upload";
 import { upsertSettings } from "@/app/lib/settings";
+import { requireAdmin } from "@/app/lib/adminAuth";
 
 export async function updateHero(
   formData: FormData,
 ): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin();
   const oldImage = str(formData, "heroImageExisting");
   let image: string;
   try {

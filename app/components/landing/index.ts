@@ -3,7 +3,6 @@ export { default as BuiltSection } from "./BuiltSection";
 export { default as ChoiceSection } from "./ChoiceSection";
 export { default as CompareSection } from "./CompareSection";
 export { default as ContactsSection } from "./ContactsSection";
-export { default as FaqSection } from "./FaqSection";
 export { default as HeroSection } from "./HeroSection";
 export { default as HomesSection } from "./HomesSection";
 export { default as PaymentSection } from "./PaymentSection";

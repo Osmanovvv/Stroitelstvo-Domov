@@ -3,12 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { str } from "@/app/lib/form";
 import { upsertSettings } from "@/app/lib/settings";
+import { requireAdmin } from "@/app/lib/adminAuth";
 
 // Тексты блока «Дом или квартира» (CompareSection). Списки пунктов хранятся
 // строкой — по одному пункту на строку.
 export async function updateCompare(
   formData: FormData,
 ): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin();
   await upsertSettings({
     compare_eyebrow: str(formData, "compare_eyebrow"),
     compare_title: str(formData, "compare_title"),

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { str } from "@/app/lib/form";
 import { upsertSettings } from "@/app/lib/settings";
+import { requireAdmin } from "@/app/lib/adminAuth";
 
 // Запас ~10x от реального размера документов. Защита от случайной вставки
 // гигантского текста: bodySizeLimit экшенов поднят до 25mb ради загрузки фото,
@@ -10,6 +11,7 @@ import { upsertSettings } from "@/app/lib/settings";
 const MAX_DOC_LENGTH = 100_000;
 
 async function saveDoc(key: "legal_privacy_body" | "legal_consent_body", formData: FormData) {
+  await requireAdmin();
   const value = str(formData, key);
   if (value.length > MAX_DOC_LENGTH) {
     throw new Error(

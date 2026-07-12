@@ -3,24 +3,34 @@
 import { readFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { prisma } from "./db";
+import { rateLimit } from "./rateLimit";
 import { str, file } from "./form";
-import { saveLeadFile } from "./leadFile";
+import { saveLeadFile, LEAD_UPLOAD_DIR } from "./leadFile";
 import { sendTelegramMessage, sendTelegramDocument, telegramConfigured } from "./telegram";
-
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
+import { requireAdmin } from "./adminAuth";
 
 function esc(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+// IP клиента из заголовков, проставленных nginx (x-forwarded-for / x-real-ip).
+async function clientIp(): Promise<string> {
+  const h = await headers();
+  return (h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "unknown").trim();
+}
+
 type LeadForTelegram = {
+  id: string;
   name: string | null;
   phone: string;
   source: string | null;
   message: string | null;
   fileUrl: string | null;
   fileName: string | null;
+  notifiedText: boolean;
+  notifiedFile: boolean;
   createdAt: Date;
 };
 
@@ -44,12 +54,21 @@ function composeText(lead: LeadForTelegram): string {
     .join("\n");
 }
 
-// Доставка: текст + (если есть) прикреплённый файл. Кидает при неудаче после ретраев.
-async function deliver(lead: LeadForTelegram, buffer?: Buffer): Promise<void> {
-  await sendTelegramMessage(composeText(lead));
-  if (lead.fileUrl && lead.fileName) {
-    const buf = buffer ?? (await readFile(path.join(UPLOAD_DIR, path.basename(lead.fileUrl))));
+// Доставка в Telegram ИДЕМПОТЕНТНО по частям: сначала текст, затем файл; каждая
+// успешно доставленная часть сразу помечается в БД (notifiedText/notifiedFile).
+// При повторной отправке (resend) уже доставленная часть не дублируется — уходит
+// только недоставленное. Кидает, если нужная часть не прошла после ретраев.
+async function deliver(lead: LeadForTelegram, fileBuffer?: Buffer): Promise<void> {
+  if (!lead.notifiedText) {
+    await sendTelegramMessage(composeText(lead));
+    await prisma.lead.update({ where: { id: lead.id }, data: { notifiedText: true } });
+    lead.notifiedText = true;
+  }
+  if (lead.fileUrl && lead.fileName && !lead.notifiedFile) {
+    const buf = fileBuffer ?? (await readFile(path.join(LEAD_UPLOAD_DIR, path.basename(lead.fileUrl))));
     await sendTelegramDocument(buf, lead.fileName, `Файл к заявке${lead.name ? ` от ${lead.name}` : ""}`);
+    await prisma.lead.update({ where: { id: lead.id }, data: { notifiedFile: true } });
+    lead.notifiedFile = true;
   }
 }
 
@@ -62,6 +81,16 @@ export async function submitLead(formData: FormData): Promise<{ ok: true } | { e
   const source = str(formData, "source");
   const message = str(formData, "message");
   const consent = str(formData, "consent") === "on";
+
+  // Honeypot: скрытое поле видит только бот. Заполнено → «успех» без сохранения
+  // (не сохраняем и не подсказываем боту, что он отсеян).
+  if (str(formData, "company_extra")) return { ok: true };
+
+  // Анти-флуд по IP: не больше 5 заявок за 10 минут с одного адреса.
+  const ip = await clientIp();
+  if (!rateLimit(`lead:${ip}`, 5, 10 * 60_000)) {
+    return { error: "Слишком много заявок за короткое время. Попробуйте через несколько минут." };
+  }
 
   if (phone.replace(/\D/g, "").length < 6) return { error: "Укажите телефон." };
   if (!consent) return { error: "Нужно согласие на обработку персональных данных." };
@@ -88,6 +117,10 @@ export async function submitLead(formData: FormData): Promise<{ ok: true } | { e
       },
     });
   } catch {
+    // БД упала — удаляем осиротевший файл (ссылки на него в БД нет).
+    if (saved?.url) {
+      await unlink(path.join(LEAD_UPLOAD_DIR, path.basename(saved.url))).catch(() => {});
+    }
     return { error: "Не удалось сохранить заявку. Попробуйте ещё раз." };
   }
 
@@ -110,6 +143,7 @@ export async function submitLead(formData: FormData): Promise<{ ok: true } | { e
 
 // Повторная отправка из админки (для заявок, не доставленных в Telegram).
 export async function resendLead(id: string): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin();
   const lead = await prisma.lead.findUnique({ where: { id } });
   if (!lead) return { error: "Заявка не найдена." };
   try {
@@ -131,15 +165,17 @@ export async function resendLead(id: string): Promise<{ ok: true } | { error: st
 }
 
 export async function setLeadProcessed(id: string, processed: boolean): Promise<void> {
+  await requireAdmin();
   await prisma.lead.update({ where: { id }, data: { processed } });
   revalidatePath("/admin/leads");
 }
 
 export async function deleteLead(id: string): Promise<void> {
+  await requireAdmin();
   const lead = await prisma.lead.findUnique({ where: { id } });
   await prisma.lead.delete({ where: { id } });
   if (lead?.fileUrl) {
-    await unlink(path.join(UPLOAD_DIR, path.basename(lead.fileUrl))).catch(() => {});
+    await unlink(path.join(LEAD_UPLOAD_DIR, path.basename(lead.fileUrl))).catch(() => {});
   }
   revalidatePath("/admin/leads");
 }

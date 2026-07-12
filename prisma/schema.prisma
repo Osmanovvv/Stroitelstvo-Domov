@@ -147,7 +147,11 @@ model Lead {
   consent     Boolean   @default(false)
   consentAt   DateTime?
   notified    Boolean   @default(false)
+  notifiedText Boolean  @default(false)
+  notifiedFile Boolean  @default(false)
   notifyError String?
   processed   Boolean   @default(false)
   createdAt   DateTime  @default(now())
+
+  @@index([createdAt])
 }

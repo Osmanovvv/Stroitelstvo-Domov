@@ -33,8 +33,12 @@ export default function WorkStatus({
   workStart = "08:00",
   workEnd = "19:00",
 }: WorkStatusProps) {
-  const startMinutes = toMinutes(workStart, 8 * 60);
-  const endMinutes = toMinutes(workEnd, 19 * 60);
+  // Пустая строка из настроек (str() пишет "", а не undefined) не активирует
+  // дефолт параметра — нормализуем, иначе часы отрендерятся как «- МСК».
+  const start = workStart?.trim() || "08:00";
+  const end = workEnd?.trim() || "19:00";
+  const startMinutes = toMinutes(start, 8 * 60);
+  const endMinutes = toMinutes(end, 19 * 60);
 
   // Начальное значение детерминировано (null) и одинаково на сервере и клиенте —
   // это исключает hydration mismatch. Реальный статус (зависит от времени)
@@ -60,7 +64,7 @@ export default function WorkStatus({
       <span className="work-status-dot" aria-hidden="true" />
       <span className="work-status-copy">
         <strong>{label}</strong>
-        {showHours && <small>{workStart}-{workEnd} МСК</small>}
+        {showHours && <small>{start}-{end} МСК</small>}
       </span>
     </span>
   );

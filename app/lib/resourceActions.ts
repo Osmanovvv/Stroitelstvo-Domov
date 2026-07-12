@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "./db";
 import { str } from "./form";
 import { deleteUploadedImage } from "./upload";
+import { requireAdmin } from "./adminAuth";
 
 // Минимально необходимый «срез» Prisma-делегата: операции опираются только на
 // общие поля (id, sortOrder, isVisible, image). Конкретный делегат передаётся
@@ -65,6 +66,7 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
   const extraImageFields = config.extraImageFields ?? [];
 
   async function create(formData: FormData): Promise<ActionResult<TRecord>> {
+    await requireAdmin();
     let data: Record<string, unknown>;
     try {
       data = await readData(formData); // тут может бросить проверка фото (размер/тип)
@@ -90,6 +92,7 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
   }
 
   async function update(formData: FormData): Promise<ActionResult<TRecord>> {
+    await requireAdmin();
     const id = str(formData, "id");
     let data: Record<string, unknown>;
     try {
@@ -125,6 +128,7 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
   }
 
   async function remove(id: string): Promise<void> {
+    await requireAdmin();
     const needsRow = hasImage || extraImageFields.length > 0;
     const row = needsRow ? await model.findUnique({ where: { id } }) : null;
     await model.delete({ where: { id } });
@@ -139,6 +143,7 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
   }
 
   async function toggle(id: string): Promise<void> {
+    await requireAdmin();
     const current = await model.findUnique({ where: { id } });
     if (!current) return;
     await model.update({ where: { id }, data: { isVisible: !current.isVisible } });
@@ -146,6 +151,7 @@ export function createResourceActions<TRaw extends SortableRow, TRecord>(
   }
 
   async function move(id: string, direction: "up" | "down"): Promise<void> {
+    await requireAdmin();
     const up = direction === "up";
     const current = await model.findUnique({ where: { id } });
     if (!current) return;
