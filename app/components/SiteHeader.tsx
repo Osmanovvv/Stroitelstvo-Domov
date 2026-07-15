@@ -36,8 +36,8 @@ export default async function SiteHeader() {
             />
           </span>
           <span className="brand-text">
-            <strong>Строим вашу мечту</strong>
-            <small>Нами построено более 100+ домов под ключ с 2016 г.</small>
+            <strong>Строим Вашу Мечту</strong>
+            <small>Нами построено более 100 домов под ключ с 2016 г.</small>
           </span>
         </a>
 
