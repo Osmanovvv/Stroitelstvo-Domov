@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
       process.env.NODE_ENV === "production"
         ? "script-src 'self' 'unsafe-inline'"
         : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
-    const csp = [
+    const cspDirectives = [
       "default-src 'self'",
       "base-uri 'self'",
       "object-src 'none'",
@@ -51,7 +51,13 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline'",
       scriptSrc,
       "connect-src 'self'",
-    ].join("; ");
+    ];
+    // Сайт на HTTPS (боевой домен): просим браузер апгрейдить любые http-подресурсы
+    // до https. Только в проде — в DEV сервер по http, апгрейд мешал бы локалке.
+    if (process.env.NODE_ENV === "production") {
+      cspDirectives.push("upgrade-insecure-requests");
+    }
+    const csp = cspDirectives.join("; ");
     const securityHeaders = [
       { key: "Content-Security-Policy", value: csp },
       { key: "X-Frame-Options", value: "SAMEORIGIN" },
