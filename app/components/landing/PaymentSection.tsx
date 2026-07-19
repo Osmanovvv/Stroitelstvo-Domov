@@ -9,6 +9,12 @@ export default async function PaymentSection() {
   const s = await getSettings();
   const d = sectionIntros.payment;
   const bg = s.payment_bg_image;
+  // Тексты 4 карточек: переопределение из админки (ключи payment_f{1..4}_*) или
+  // дефолт из mortgageFeatures. Пустое поле в админке → дефолт.
+  const features = mortgageFeatures.map((f, i) => ({
+    title: s[`payment_f${i + 1}_title`] || f.title,
+    text: s[`payment_f${i + 1}_text`] || f.text,
+  }));
   return (
     <section className="section payment-section" id="mortgage" style={sectionBgStyle(bg)}>
       <div className="container payment-inner">
@@ -19,8 +25,8 @@ export default async function PaymentSection() {
         </div>
 
         <div className="payment-points">
-          {mortgageFeatures.map((feature) => (
-            <div className="payment-point" key={feature.title}>
+          {features.map((feature, i) => (
+            <div className="payment-point" key={i}>
               <span className="payment-dot" aria-hidden="true" />
               <strong>{feature.title}</strong>
               <p>{feature.text}</p>

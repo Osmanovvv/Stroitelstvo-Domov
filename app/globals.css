@@ -885,7 +885,7 @@ p {
 }
 
 section[id] {
-  scroll-margin-top: 108px;
+  scroll-margin-top: 190px;
 }
 
 .choice-section {
@@ -1106,12 +1106,16 @@ section[id] {
   position: absolute;
   left: 14px;
   top: 14px;
-  padding: 8px 11px;
-  border-radius: 4px;
-  background: rgba(29, 33, 31, 0.82);
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: rgba(17, 22, 27, 0.9);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   color: #fff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: 0.005em;
   text-transform: lowercase;
 }
 
@@ -3195,7 +3199,7 @@ select:focus {
   }
 
   section[id] {
-    scroll-margin-top: 92px;
+    scroll-margin-top: 104px;
   }
 
   .choice-section {
