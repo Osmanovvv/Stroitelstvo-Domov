@@ -885,7 +885,14 @@ p {
 }
 
 section[id] {
-  scroll-margin-top: 108px;
+  scroll-margin-top: 185px;
+}
+
+/* Компактная шапка на ≤1040px ниже — якорю нужен меньший отступ. */
+@media (max-width: 1040px) {
+  section[id] {
+    scroll-margin-top: 104px;
+  }
 }
 
 .choice-section {
@@ -1094,25 +1101,32 @@ section[id] {
   position: relative;
   aspect-ratio: 1.38;
   overflow: hidden;
+  /* Фон-подложка под letterbox: фото загруженное заказчиком может быть любого
+     формата (в т.ч. широкое панорамное) — contain показывает его целиком, как
+     оригинал, без обрезки, а поля закрываются нейтральным фоном. */
+  background: #e9edf2;
 }
 
 .home-image-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .home-image-wrap span {
   position: absolute;
   left: 14px;
   top: 14px;
-  padding: 8px 11px;
-  border-radius: 4px;
-  background: rgba(29, 33, 31, 0.82);
+  max-width: calc(100% - 28px);
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: rgba(15, 18, 22, 0.9);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   color: #fff;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: lowercase;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .home-card-body {
@@ -4269,6 +4283,13 @@ select:focus {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  /* Готовые дома: фото заказчика показываем целиком (contain), не обрезаем. */
+  .home-image-wrap {
+    background: #e9edf2;
+  }
+  .home-image-wrap img {
+    object-fit: contain;
   }
 
   /* 4. Слайдер: прячем стрелки (главный шум), оставляем точки и свайп */
