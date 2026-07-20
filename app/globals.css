@@ -1092,7 +1092,9 @@ section[id] {
 
 .home-image-wrap {
   position: relative;
-  aspect-ratio: 1.38;
+  /* 16:9 — как в «Проектах». Фото заказчика в основном 1.78–2.17, поэтому
+     широкий кадр режет их вдвое меньше, чем прежний 1.38 (36% → 18%). */
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
@@ -1352,6 +1354,25 @@ section[id] {
   border-radius: 8px;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
   cursor: default;
+}
+
+/* Фото именно «всплывает»: проявляется, слегка поднимается и увеличивается —
+   в той же манере, что попап заявки (modal-pop). Для тех, кто просил в системе
+   меньше анимаций, движение не включается. */
+@media (prefers-reduced-motion: no-preference) {
+  .ps-lb-img {
+    animation: psPhotoIn 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+@keyframes psPhotoIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 .ps-lb-close,
 .ps-lb-arrow {
@@ -4382,6 +4403,11 @@ select:focus {
   .media-card-image {
     aspect-ratio: 4 / 3;
     border-radius: 0;
+  }
+  /* Готовые дома: широкий кадр и на мобильном — снимки заказчика 1.78–2.17
+     обрезаются вдвое меньше (38% → 18%), дом видно целиком по ширине. */
+  .home-image-wrap {
+    aspect-ratio: 16 / 9;
   }
   .project-media img,
   .home-image-wrap img,
