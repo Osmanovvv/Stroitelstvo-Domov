@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -23,6 +23,23 @@ export default function ProjectSlider({ images, alt, sizes }: ProjectSliderProps
   const count = images.length;
   const current = Math.min(index, Math.max(count - 1, 0));
   const go = (direction: number) => setIndex((i) => (i + direction + count) % count);
+
+  // Автоподгон кадра под конкретное фото. Вертикальные снимки и планировки в
+  // широком кадре карточки обрезало бы до неузнаваемости (у планировки видно
+  // только полоску середины) — такие показываем ЦЕЛИКОМ. Горизонтальные фото
+  // заполняют кадр как обычно, сетка карточек остаётся ровной. Порог 0.8:
+  // срабатывает, только когда обрезка съела бы больше ~20% высоты.
+  const frameRef = useRef<HTMLButtonElement>(null);
+  const [fitContain, setFitContain] = useState(false);
+
+  const handleFrameLoad = (e: { currentTarget: HTMLImageElement }) => {
+    const img = e.currentTarget;
+    const frame = frameRef.current;
+    if (!frame || !img.naturalWidth || !img.naturalHeight) return;
+    const rect = frame.getBoundingClientRect();
+    if (!rect.height) return;
+    setFitContain(img.naturalWidth / img.naturalHeight < (rect.width / rect.height) * 0.8);
+  };
 
   // Пока лайтбокс открыт: Esc закрывает, стрелки листают, фон не прокручивается.
   useEffect(() => {
@@ -47,11 +64,19 @@ export default function ProjectSlider({ images, alt, sizes }: ProjectSliderProps
     <>
       <button
         type="button"
-        className="ps-open"
+        ref={frameRef}
+        className={`ps-open${fitContain ? " is-contain" : ""}`}
         aria-label="Открыть фото на весь экран"
         onClick={() => setOpen(true)}
       >
-        <Image src={images[current]} alt={alt} fill sizes={sizes} />
+        <Image
+          key={images[current]}
+          src={images[current]}
+          alt={alt}
+          fill
+          sizes={sizes}
+          onLoad={handleFrameLoad}
+        />
       </button>
 
       {count > 1 && (
