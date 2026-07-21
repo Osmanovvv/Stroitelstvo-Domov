@@ -13,7 +13,7 @@ export default async function ProjectsSection() {
     <section className="section tinted" id="projects">
       <SectionHead id="projects" />
       <div className="container project-grid">
-        {projects.map((project) => {
+        {projects.map((project, i) => {
           const gallery = [project.image, project.image2, project.image3, project.plan].filter(
             (src): src is string => Boolean(src),
           );
@@ -23,6 +23,7 @@ export default async function ProjectsSection() {
             <div className="project-media">
               <ProjectSlider images={gallery} alt={project.name} sizes={PROJECT_IMAGE_SIZES} />
               <span className="project-area">{project.area}</span>
+              {i < 2 && <span className="project-hit">Хит продаж&nbsp;!!!</span>}
             </div>
             <div className="project-body">
               <span className="project-tag">{project.tag}</span>

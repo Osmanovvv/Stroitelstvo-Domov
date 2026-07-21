@@ -1474,6 +1474,52 @@ section[id] {
   text-transform: uppercase;
 }
 
+/* «Хит продаж !!!» — красный бейдж в правом верхнем углу фото (площадь слева,
+   не пересекаются). pointer-events:none — клик проходит сквозь него и открывает
+   фото. Пульсация привлекает внимание; при prefers-reduced-motion — статичный. */
+.project-hit {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: #e11d2a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(225, 29, 42, 0.45);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .project-hit {
+    animation: projectHitWobble 2s ease-in-out infinite;
+  }
+}
+/* Покачивание: бейдж стоит ровно, раз в пару секунд коротко «машет». */
+@keyframes projectHitWobble {
+  0%,
+  72%,
+  100% {
+    transform: rotate(0);
+  }
+  78% {
+    transform: rotate(-5deg);
+  }
+  84% {
+    transform: rotate(4deg);
+  }
+  90% {
+    transform: rotate(-2deg);
+  }
+  96% {
+    transform: rotate(1deg);
+  }
+}
+
 .project-card h3 {
   margin-bottom: 10px;
 }
