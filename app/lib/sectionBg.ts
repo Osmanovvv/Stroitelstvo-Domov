@@ -5,7 +5,7 @@
 export function sectionBgStyle(image?: string | null): React.CSSProperties | undefined {
   if (!image) return undefined;
   return {
-    backgroundImage: `linear-gradient(180deg, rgba(10,14,32,0.82), rgba(16,26,48,0.72)), url("${image}")`,
+    backgroundImage: `linear-gradient(180deg, rgba(10,14,32,0.74), rgba(16,26,48,0.62)), url("${image}")`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
