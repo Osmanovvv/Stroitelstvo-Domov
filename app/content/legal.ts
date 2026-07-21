@@ -34,7 +34,7 @@ export const privacyBodyDefault = `## 1. Общие положения
 
 - Наименование: {operator_name}
 - ИНН: {inn}
-- ОГРН/ОГРНИП: {ogrn}
+- ОГРНИП: {ogrn}
 - Адрес: {address}
 - Электронная почта: {email}
 - Телефон: {phone}
@@ -125,7 +125,7 @@ export const consentBodyDefault = `Я, субъект персональных �
 
 - Наименование: {operator_name}
 - ИНН: {inn}
-- ОГРН/ОГРНИП: {ogrn}
+- ОГРНИП: {ogrn}
 - Адрес: {address}
 - Электронная почта: {email}
 

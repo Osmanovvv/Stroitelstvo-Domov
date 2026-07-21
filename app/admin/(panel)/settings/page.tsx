@@ -29,7 +29,7 @@ export default async function SettingsAdmin() {
           <p className="admin-form-hint">Показываются в футере сайта, политике обработки персональных данных и согласии на обработку ПДн.</p>
           <div className="admin-field"><label>Наименование (ИП / ООО)</label><input name="legal_operator_name" defaultValue={s.legal_operator_name ?? ""} placeholder="ИП Иванов Иван Иванович" /></div>
           <div className="admin-field"><label>ИНН</label><input name="legal_inn" defaultValue={s.legal_inn ?? ""} /></div>
-          <div className="admin-field"><label>ОГРН / ОГРНИП</label><input name="legal_ogrn" defaultValue={s.legal_ogrn ?? ""} /></div>
+          <div className="admin-field"><label>ОГРНИП</label><input name="legal_ogrn" defaultValue={s.legal_ogrn ?? ""} /></div>
           <div className="admin-field"><label>Юридический адрес</label><input name="legal_address" defaultValue={s.legal_address ?? ""} placeholder="г. Краснодар, ул. ..." /></div>
           <div className="admin-field"><label>Email для обращений по ПДн</label><input type="email" name="legal_email" defaultValue={s.legal_email ?? ""} placeholder="info@example.ru" /></div>
           <div className="admin-field"><label>Дата редакции политики</label><input type="date" name="legal_updated" defaultValue={toDateInputValue(s.legal_updated ?? "")} /></div>

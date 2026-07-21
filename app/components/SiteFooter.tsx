@@ -15,7 +15,7 @@ export default async function SiteFooter() {
             © {year} {legal.operatorName}
           </span>
           <small>
-            ИНН: {legal.inn} · ОГРН/ОГРНИП: {legal.ogrn}
+            ИНН: {legal.inn} · ОГРНИП: {legal.ogrn}
           </small>
         </div>
         <nav className="site-footer-links" aria-label="Юридическая информация">
