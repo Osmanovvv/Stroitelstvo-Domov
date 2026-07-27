@@ -4,6 +4,19 @@ import CookieNotice from "./components/CookieNotice";
 import { getSettings } from "./lib/queries";
 import { getSeoData } from "./lib/seo";
 
+// Коды подтверждения прав (Яндекс.Вебмастер / Google Search Console).
+// Их может быть НЕСКОЛЬКО: у владельца сайта и у подрядчика — свои коды, а в
+// Вебмастере ещё и разные записи (svm93.ru и https://svm93.ru) требуют разных.
+// Поэтому в поле админки можно перечислить коды через запятую/пробел/с новой
+// строки — на каждый выведется свой мета-тег, и все подтверждения живут разом.
+function verificationCodes(raw?: string | null): string[] | undefined {
+  const list = (raw ?? "")
+    .split(/[\s,;]+/)
+    .map((code) => code.trim())
+    .filter(Boolean);
+  return list.length ? list : undefined;
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
   const seo = getSeoData(s);
@@ -34,8 +47,8 @@ export async function generateMetadata(): Promise<Metadata> {
       googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
     },
     verification: {
-      yandex: s.yandex_verification?.trim() || undefined,
-      google: s.google_verification?.trim() || undefined,
+      yandex: verificationCodes(s.yandex_verification),
+      google: verificationCodes(s.google_verification),
     },
   };
 }

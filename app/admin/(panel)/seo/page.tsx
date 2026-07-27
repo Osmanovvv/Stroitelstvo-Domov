@@ -44,16 +44,21 @@ export default async function SeoAdmin() {
 
           <div className="admin-field">
             <label>Код подтверждения Яндекс.Вебмастер</label>
-            <input name="yandex_verification" defaultValue={s.yandex_verification ?? ""} placeholder="напр. a1b2c3d4e5f6" />
+            <input name="yandex_verification" defaultValue={s.yandex_verification ?? ""} placeholder="напр. a1b2c3d4e5f6, f45b6caf26a904ea" />
             <small style={hint}>
-              Значение из мета-тега проверки прав в Яндекс.Вебмастере (только код, без всего тега). Пусто — тег не выводится.
+              Значение из мета-тега проверки прав в Яндекс.Вебмастере (только код, без всего тега). Пусто — тег не
+              выводится. Можно указать <b>несколько кодов через запятую</b> — если сайт подтверждают разные аккаунты
+              (владелец и подрядчик) или разные записи в Вебмастере (svm93.ru и https://svm93.ru).
             </small>
           </div>
 
           <div className="admin-field">
             <label>Код подтверждения Google Search Console</label>
             <input name="google_verification" defaultValue={s.google_verification ?? ""} placeholder="напр. A1B2C3..." />
-            <small style={hint}>Значение из мета-тега google-site-verification (только код). Пусто — тег не выводится.</small>
+            <small style={hint}>
+              Значение из мета-тега google-site-verification (только код). Пусто — тег не выводится. Можно указать{" "}
+              <b>несколько кодов через запятую</b> — если сайт подтверждают разные аккаунты.
+            </small>
           </div>
 
           <button className="admin-btn primary" type="submit">Сохранить SEO</button>
