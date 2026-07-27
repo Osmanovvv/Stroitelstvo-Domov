@@ -33,13 +33,18 @@ const nextConfig: NextConfig = {
     // 'unsafe-inline' для script/style ОБЯЗАТЕЛЕН: сайт использует инлайн-стили
     // (style={{}}), инлайн JSON-LD и инлайн-скрипты гидратации Next. Без
     // upgrade-insecure-requests — сервер сейчас по HTTP, апгрейд сломал бы ресурсы.
-    // NB: при подключении Яндекс.Метрики добавить mc.yandex.ru в script/img/connect.
     // В DEV Next использует eval() для HMR/Fast Refresh — там нужен 'unsafe-eval'.
     // В ПРОДЕ eval нет, поэтому политика строже (без 'unsafe-eval').
+    // METRIKA: счётчик грузится с mc.yandex.ru и туда же шлёт данные, Вебвизор
+    // дополнительно поднимает iframe и worker из blob — отсюда домены Яндекса в
+    // script/connect/frame и worker-src с blob. Картинки покрыты `https:` в img-src.
+    const METRIKA = "https://mc.yandex.ru https://mc.yandex.com https://yastatic.net";
+    // Вебвизор держит WebSocket — без wss он ругается в консоли и теряет записи.
+    const METRIKA_CONNECT = `${METRIKA} wss://mc.yandex.ru wss://mc.yandex.com`;
     const scriptSrc =
       process.env.NODE_ENV === "production"
-        ? "script-src 'self' 'unsafe-inline'"
-        : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+        ? `script-src 'self' 'unsafe-inline' ${METRIKA}`
+        : `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${METRIKA}`;
     const cspDirectives = [
       "default-src 'self'",
       "base-uri 'self'",
@@ -50,7 +55,9 @@ const nextConfig: NextConfig = {
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
       scriptSrc,
-      "connect-src 'self'",
+      `connect-src 'self' ${METRIKA_CONNECT}`,
+      `frame-src 'self' ${METRIKA}`,
+      "worker-src 'self' blob:",
     ];
     // Сайт на HTTPS (боевой домен): просим браузер апгрейдить любые http-подресурсы
     // до https. Только в проде — в DEV сервер по http, апгрейд мешал бы локалке.

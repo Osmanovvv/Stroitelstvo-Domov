@@ -61,6 +61,15 @@ export default async function SeoAdmin() {
             </small>
           </div>
 
+          <div className="admin-field">
+            <label>Номер счётчика Яндекс.Метрики</label>
+            <input name="metrika_id" defaultValue={s.metrika_id ?? ""} placeholder="напр. 111079076" inputMode="numeric" />
+            <small style={hint}>
+              Только цифры из адреса счётчика в Метрике. Пусто — аналитика не подключается. Счётчик загружается{" "}
+              <b>только после согласия посетителя на cookie</b> (как обещает Политика) и не работает в админке.
+            </small>
+          </div>
+
           <button className="admin-btn primary" type="submit">Сохранить SEO</button>
         </ToastForm>
       </div>

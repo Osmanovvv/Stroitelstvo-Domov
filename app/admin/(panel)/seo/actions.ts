@@ -14,6 +14,7 @@ export async function updateSeo(formData: FormData) {
     site_url: str(formData, "site_url"),
     yandex_verification: str(formData, "yandex_verification"),
     google_verification: str(formData, "google_verification"),
+    metrika_id: str(formData, "metrika_id"),
   });
   revalidatePath("/");
   revalidatePath("/robots.txt");

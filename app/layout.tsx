@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CookieNotice from "./components/CookieNotice";
+import YandexMetrika from "./components/YandexMetrika";
 import { getSettings } from "./lib/queries";
 import { getSeoData } from "./lib/seo";
 
@@ -53,11 +54,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // getSettings закэширован на запрос — generateMetadata уже его вызвал,
+  // повторного обращения к БД здесь не будет.
+  const settings = await getSettings();
+
   return (
     // data-scroll-behavior: globals.css задает scroll-behavior: smooth, Next 15.5+
     // требует пометить это явно, чтобы корректно отключать плавность при роутинге.
@@ -65,6 +70,7 @@ export default function RootLayout({
       <body>
         {children}
         <CookieNotice />
+        <YandexMetrika counterId={settings.metrika_id} />
       </body>
     </html>
   );

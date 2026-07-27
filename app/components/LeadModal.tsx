@@ -4,6 +4,7 @@ import { type ChangeEvent, type FormEvent, useEffect, useRef, useState } from "r
 import { CheckCircle2, Paperclip, X } from "lucide-react";
 import ConsentField from "./ConsentField";
 import { submitLead } from "../lib/leadActions";
+import { reachGoal } from "../lib/metrika";
 
 // Всплывающая форма заявки. Открывается из любой кнопки на странице через
 // глобальное событие "open-lead-modal" (см. LeadModalTrigger) — посетитель
@@ -103,6 +104,7 @@ export default function LeadModal() {
         setError(result.error);
         return;
       }
+      reachGoal("lead");
       setSent(true);
     } catch {
       setError("Не удалось отправить. Проверьте связь и попробуйте ещё раз.");

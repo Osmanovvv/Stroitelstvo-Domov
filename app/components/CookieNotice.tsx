@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { CONSENT_EVENT } from "./YandexMetrika";
 
 const STORAGE_KEY = "cookie-notice-accepted";
 
@@ -30,6 +31,13 @@ export default function CookieNotice() {
       localStorage.setItem(STORAGE_KEY, "1");
     } catch {
       // Хранилище недоступно (приватный режим) — скрываем хотя бы до перезагрузки.
+    }
+    // Сообщаем Метрике, что согласие получено, — счётчик включится сразу,
+    // не дожидаясь следующей загрузки страницы.
+    try {
+      window.dispatchEvent(new Event(CONSENT_EVENT));
+    } catch {
+      // Событие не критично: при следующем заходе счётчик прочитает localStorage.
     }
     setIsVisible(false);
   }

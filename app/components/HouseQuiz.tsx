@@ -16,6 +16,7 @@ import {
 } from "../content/quiz";
 import ConsentField from "./ConsentField";
 import { submitLead } from "../lib/leadActions";
+import { reachGoal } from "../lib/metrika";
 
 type Props = {
   // "section" — полный блок «Подбор и расчёт» внизу; "hero" — компактный вариант
@@ -87,6 +88,7 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
         setError(result.error);
         return;
       }
+      reachGoal("lead");
       setIsSent(true);
     } catch {
       setError("Не удалось отправить. Попробуйте ещё раз.");
