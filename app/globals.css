@@ -1300,21 +1300,6 @@ section[id] {
   transition: background 0.18s ease, transform 0.18s ease;
 }
 
-/* На тач-устройствах точка 7px — слишком мелкая цель (норма 24px). Растягиваем
-   саму кнопку до 24px, а видимую точку рисуем в её content-box: внешний вид
-   точки не меняется, увеличивается только область нажатия. На мыши (десктоп)
-   правило не применяется — там всё как было. */
-@media (pointer: coarse) {
-  .project-dot {
-    width: 24px;
-    height: 24px;
-    padding: 8px;
-    background-clip: content-box;
-  }
-  .project-slider-dots {
-    gap: 0;
-  }
-}
 
 .project-dot.is-active {
   background: #fff;
@@ -4602,5 +4587,24 @@ select:focus {
   .built-card,
   .media-card {
     flex-basis: 84%;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Тач-цели точек слайдера (правило доступности: минимум 24×24px).
+   Блок намеренно стоит ПОСЛЕДНИМ в файле: выше есть мобильное правило
+   .project-dot { width: 6px }, и без этого оно перебивало бы размер, оставляя
+   кнопку 16px. Видимый кружок задаётся padding'ом (background-clip:content-box),
+   поэтому внешне точка та же — растёт только область нажатия.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (pointer: coarse) {
+  .project-slider-dots {
+    gap: 2px;
+  }
+  .project-dot {
+    width: 24px;
+    height: 24px;
+    padding: 9px;
+    background-clip: content-box;
   }
 }

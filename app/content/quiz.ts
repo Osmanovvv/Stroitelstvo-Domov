@@ -120,9 +120,9 @@ export const initialAnswers: QuizAnswers = {
 // Переопределяются в админке ключами quiz_target_<value>_image; пусто = эти дефолты.
 // Пока это фото проектов-заглушки — заказчик заменит на «готовый дом / стройку / участок».
 export const quizTargetDefaults: Record<string, string> = {
-  ready: "/projects/project-yuzhny-104.jpg",
-  build: "/projects/project-vidny-140.jpg",
-  plot: "/projects/project-prostor-136.jpg",
+  ready: "/projects/project-yuzhny-104.webp",
+  build: "/projects/project-vidny-140.webp",
+  plot: "/projects/project-prostor-136.webp",
 };
 
 export function getOptionLabel(key: QuizKey, value: string) {
