@@ -858,9 +858,19 @@ p {
   padding: 42px 0;
 }
 
+/* Появление блоков при прокрутке. Классы `reveal-*` навешивает ScrollReveal.tsx,
+   без JS их нет и весь контент виден — поэтому дополнительный «замок»
+   `html.scroll-reveal-ready` не нужен. Убран намеренно (2026-08-06): класс на
+   <html> обнулял стили всего документа разом, и пересчёт 1300 элементов съедал
+   ~1 с главного потока на телефоне, задерживая отрисовку первого экрана.
+   ВАЖНО: класс намеренно продублирован (`.reveal-child.reveal-child`). Это не
+   опечатка — так правило сохраняет ровно тот же «вес», что было у связки
+   `.scroll-reveal-ready .reveal-child`. Без дубля вес падает, и одноклассовые
+   правила ниже по файлу (например `.section-head`) перебивают прозрачность —
+   часть блоков перестаёт прятаться и появляется без анимации. */
 @media (prefers-reduced-motion: no-preference) {
-  .scroll-reveal-ready .reveal-target,
-  .scroll-reveal-ready .reveal-child {
+  .reveal-target.reveal-target,
+  .reveal-child.reveal-child {
     opacity: 0;
     transform: translate3d(0, 42px, 0);
     transition:
@@ -869,18 +879,23 @@ p {
     transition-delay: var(--reveal-delay, 0ms);
   }
 
-  .scroll-reveal-ready .hero.reveal-target {
-    transform: translate3d(0, 24px, 0);
-  }
-
-  .scroll-reveal-ready .reveal-child {
+  .reveal-child.reveal-child {
     transform: translate3d(0, 34px, 0);
   }
 
-  .scroll-reveal-ready .reveal-target.is-visible,
-  .scroll-reveal-ready .reveal-child.is-visible {
+  .reveal-target.reveal-target.is-visible,
+  .reveal-child.reveal-child.is-visible {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Фото-фон секции (sectionBg.ts): инлайн-стиль ставит узкую версию картинки для
+   телефона, здесь подменяем её на широкую для больших экранов. !important —
+   потому что инлайн-стиль иначе сильнее любого правила из таблицы. */
+@media (min-width: 900px) {
+  [style*="--sbg-lg"] {
+    background-image: var(--sbg-lg) !important;
   }
 }
 

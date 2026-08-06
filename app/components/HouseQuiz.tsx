@@ -17,6 +17,7 @@ import {
 import ConsentField from "./ConsentField";
 import { submitLead } from "../lib/leadActions";
 import { reachGoal } from "../lib/metrika";
+import { optimizedUrl } from "../lib/sectionBg";
 
 type Props = {
   // "section" — полный блок «Подбор и расчёт» внизу; "hero" — компактный вариант
@@ -183,7 +184,7 @@ export default function HouseQuiz({ variant = "section", targetImages }: Props) 
                 {image ? (
                   <span
                     className="quiz-option-media photo"
-                    style={{ backgroundImage: `url("${image}")` }}
+                    style={{ backgroundImage: `url("${optimizedUrl(image, 640)}")` }}
                     aria-hidden="true"
                   />
                 ) : (

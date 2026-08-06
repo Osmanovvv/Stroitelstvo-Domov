@@ -2,15 +2,18 @@
 
 import { useEffect } from "react";
 
+// Первый экран (.hero и его текст) намеренно НЕ участвует в появлении: он и так
+// всегда в зоне видимости, то есть показывался мгновенно, без анимации. Зато
+// именно его абзац Chrome считает главным элементом страницы (LCP), и любая
+// возня с его стилями после гидратации откладывала отрисовку. Убрали — вид
+// не изменился, скорость выросла.
 const SECTION_SELECTOR = [
-  ".hero",
   ".section-head",
   ".compare-layout > div:first-child",
   ".payment-card > div:first-child",
   ".contacts-layout > div:first-child",
 ].join(",");
 const CHILD_SELECTOR = [
-  ".hero-copy > *",
   ".choice-item",
   ".home-card",
   ".media-card",
@@ -55,9 +58,22 @@ export default function ScrollReveal() {
       return;
     }
 
-    const root = document.documentElement;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+    // ШАГ 1 — только чтение. Раньше измерение шло вперемешку с навешиванием
+    // классов, и каждый getBoundingClientRect заставлял браузер заново считать
+    // стили и раскладку всей страницы (layout thrashing, ~1 с на телефоне).
+    // Сначала снимаем все размеры одним проходом, потом одним проходом пишем.
+    const viewportEdge = window.innerHeight * VISIBLE_OFFSET;
+    const initiallyVisible = new Set<HTMLElement>();
+
+    targets.forEach((target) => {
+      if (target.getBoundingClientRect().top < viewportEdge) {
+        initiallyVisible.add(target);
+      }
+    });
+
+    // ШАГ 2 — только запись.
     sections.forEach((target, index) => {
       target.classList.add("reveal-target");
       target.style.setProperty("--reveal-delay", `${Math.min(index % 3, 2) * SECTION_DELAY_STEP}ms`);
@@ -95,17 +111,22 @@ export default function ScrollReveal() {
       observer?.unobserve(target);
     };
 
+    const cleanup = () => {
+      observer?.disconnect();
+      targets.forEach((target) => {
+        target.classList.remove("reveal-target", "reveal-child", "is-visible");
+        target.style.removeProperty("--reveal-delay");
+      });
+      children.forEach((target) => {
+        target.classList.remove("reveal-child", "is-visible");
+        target.style.removeProperty("--reveal-delay");
+      });
+    };
+
     if (prefersReducedMotion.matches) {
       targets.forEach(reveal);
-      root.classList.add("scroll-reveal-ready");
 
-      return () => {
-        root.classList.remove("scroll-reveal-ready");
-        targets.forEach((target) => {
-          target.classList.remove("reveal-target", "reveal-child", "is-visible");
-          target.style.removeProperty("--reveal-delay");
-        });
-      };
+      return cleanup;
     }
 
     observer = new IntersectionObserver(
@@ -125,9 +146,7 @@ export default function ScrollReveal() {
     );
 
     targets.forEach((target) => {
-      const isAlreadyVisible = target.getBoundingClientRect().top < window.innerHeight * VISIBLE_OFFSET;
-
-      if (isAlreadyVisible) {
+      if (initiallyVisible.has(target)) {
         reveal(target);
         return;
       }
@@ -135,16 +154,7 @@ export default function ScrollReveal() {
       observer.observe(target);
     });
 
-    root.classList.add("scroll-reveal-ready");
-
-    return () => {
-      observer?.disconnect();
-      root.classList.remove("scroll-reveal-ready");
-      targets.forEach((target) => {
-        target.classList.remove("reveal-target", "reveal-child", "is-visible");
-        target.style.removeProperty("--reveal-delay");
-      });
-    };
+    return cleanup;
   }, []);
 
   return null;
