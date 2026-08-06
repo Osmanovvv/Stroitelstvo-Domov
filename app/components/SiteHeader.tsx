@@ -24,7 +24,9 @@ export default async function SiteHeader() {
   return (
     <header className="site-header">
       <div className="header-top">
-        <a className="brand" href="#top" aria-label="На главный экран">
+        {/* Без aria-label: он подменял бы видимый текст «Строим Вашу Мечту»,
+            а по WCAG 2.5.3 доступное имя должно содержать видимую надпись. */}
+        <a className="brand" href="#top">
           <span className="brand-logo-shell" aria-hidden="true">
             <Image
               className="brand-logo"
