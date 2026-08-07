@@ -1,5 +1,6 @@
 import { getSettings } from "../lib/queries";
 import { getSeoData } from "../lib/seo";
+import { SHOW_TELEGRAM } from "../content/landing";
 
 // Микроразметка организации/локального бизнеса (schema.org) для поисковиков —
 // помогает показывать компанию в выдаче/картах с телефоном, адресом, часами.
@@ -12,7 +13,14 @@ export default async function JsonLd() {
   const s = await getSettings();
   const seo = getSeoData(s);
 
-  const sameAs = [s.telegram_url, s.whatsapp_url, s.max_url].filter(isHttp);
+  // Telegram исключён и отсюда: sameAs — это публичные ссылки на аккаунты компании,
+  // которые видят поисковики. Скрывать ссылку в интерфейсе, но отдавать её роботам
+  // было бы половинчато. Вернуть = SHOW_TELEGRAM в landing.ts.
+  const sameAs = [
+    ...(SHOW_TELEGRAM ? [s.telegram_url] : []),
+    s.whatsapp_url,
+    s.max_url,
+  ].filter(isHttp);
   const hours =
     s.work_start && s.work_end
       ? [

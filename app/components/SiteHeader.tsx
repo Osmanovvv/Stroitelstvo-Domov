@@ -3,6 +3,7 @@ import { ArrowRight, Phone, PhoneCall } from "lucide-react";
 import {
   buildContactLinks,
   navigationLinks,
+  SHOW_TELEGRAM,
 } from "../content/landing";
 import { getSettings } from "../lib/queries";
 import ContactIcon from "./ContactIcon";
@@ -12,9 +13,17 @@ import MobileMenu from "./MobileMenu";
 export default async function SiteHeader() {
   const settings = await getSettings();
   const contactLinks = buildContactLinks(settings);
+  // В шапке помещаются две иконки. Было Telegram + MAX, стало WhatsApp + MAX
+  // (2026-08-07: Telegram скрыт по всему сайту, см. SHOW_TELEGRAM в landing.ts).
   const messengers = contactLinks.filter(
-    (link) => link.label === "MAX" || link.label === "Telegram",
+    (link) => link.label === "MAX" || link.label === "WhatsApp",
   );
+  // MobileMenu — клиентский компонент, поэтому весь объект настроек уезжает в
+  // исходник страницы. Пока Telegram скрыт, вырезаем ссылку и оттуда: сама по
+  // себе она безобидна (публичный аккаунт), но следов в коде страницы быть не должно.
+  const menuSettings = SHOW_TELEGRAM
+    ? settings
+    : Object.fromEntries(Object.entries(settings).filter(([key]) => key !== "telegram_url"));
   const phone = settings.phone ?? "";
   const hours =
     settings.work_start && settings.work_end
@@ -81,7 +90,7 @@ export default async function SiteHeader() {
           </a>
         </div>
 
-        <MobileMenu settings={settings} />
+        <MobileMenu settings={menuSettings} />
       </div>
 
       <nav className="header-nav" aria-label="Основная навигация">

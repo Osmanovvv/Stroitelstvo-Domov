@@ -429,7 +429,25 @@ export function buildLegalInfo(settings: Record<string, string>): LegalInfo {
   };
 }
 
+// Ссылки на Telegram временно скрыты ПО ВСЕМУ САЙТУ (2026-08-07, просьба
+// заказчика): уведомление в Роскомнадзор о трансграничной передаче пока не подано.
+// Один флаг — одна точка возврата: поставить true, и Telegram снова появится в
+// шапке, мобильном меню, блоке «Контакты» и в микроразметке для поисковиков.
+// Значение telegram_url в админке НЕ трогаем — оно сохраняется и подхватится само.
+export const SHOW_TELEGRAM = false;
+
 export function buildContactLinks(settings: Record<string, string>): ContactLink[] {
+  const telegram: ContactLink[] = SHOW_TELEGRAM
+    ? [
+        {
+          label: "Telegram",
+          href: safeHref(settings.telegram_url),
+          logo: "/social-icons/telegram.svg",
+          external: true,
+        },
+      ]
+    : [];
+
   return [
     { label: "Позвонить", href: settings.phone ? `tel:${settings.phone}` : "#", icon: Phone },
     {
@@ -438,12 +456,7 @@ export function buildContactLinks(settings: Record<string, string>): ContactLink
       logo: "/social-icons/whatsapp.svg",
       external: true,
     },
-    {
-      label: "Telegram",
-      href: safeHref(settings.telegram_url),
-      logo: "/social-icons/telegram.svg",
-      external: true,
-    },
+    ...telegram,
     { label: "MAX", href: safeHref(settings.max_url), logo: "/social-icons/max.svg", external: true },
   ];
 }
