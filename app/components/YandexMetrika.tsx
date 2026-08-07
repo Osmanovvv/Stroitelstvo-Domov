@@ -1,39 +1,24 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { reachGoal } from "../lib/metrika";
 
-// Событие, которым CookieNotice сообщает о согласии, — чтобы счётчик включился
-// сразу после нажатия «Принимаю», без перезагрузки страницы.
-export const CONSENT_EVENT = "cookie-consent-accepted";
-const STORAGE_KEY = "cookie-notice-accepted";
-
-// Яндекс.Метрика. Подключается ТОЛЬКО после согласия на cookie: политика сайта
-// обещает загружать веб-аналитику после согласия, и это же требование практики
-// РКН. В админке счётчик не нужен — там нет посетителей, только сотрудники.
+// Яндекс.Метрика подключается СРАЗУ, не дожидаясь нажатия «Принимаю»
+// (изменено 2026-08-07 под запуск рекламы). Раньше счётчик ждал согласия, и
+// посетители, проигнорировавшие баннер, не попадали в статистику вообще — вместе
+// с их заявками. Для Яндекс.Директа это критично: его автостратегии учатся на
+// конверсиях, и терять часть данных значит оптимизировать вслепую.
+// Уведомление о cookie осталось информационным, формулировки в нём и в п. 7
+// Политики приведены к модели «продолжая пользоваться Сайтом — соглашаетесь».
+// В админке счётчик не нужен — там нет посетителей, только сотрудники.
 export default function YandexMetrika({ counterId }: { counterId?: string | null }) {
   const pathname = usePathname();
-  const [accepted, setAccepted] = useState(false);
-
-  useEffect(() => {
-    const read = () => {
-      try {
-        setAccepted(localStorage.getItem(STORAGE_KEY) === "1");
-      } catch {
-        setAccepted(false);
-      }
-    };
-    read();
-    window.addEventListener(CONSENT_EVENT, read);
-    return () => window.removeEventListener(CONSENT_EVENT, read);
-  }, []);
 
   // Цели «звонок» и «мессенджер» ловим одним делегированным слушателем: такие
   // ссылки разбросаны по шапке, контактам, футеру и мобильному меню, и вешать
   // обработчик на каждую — источник пропущенных кликов при будущих правках.
   useEffect(() => {
-    if (!accepted) return;
     function onClick(event: MouseEvent) {
       const target = event.target as HTMLElement | null;
       const link = target?.closest?.("a[href]") as HTMLAnchorElement | null;
@@ -44,17 +29,16 @@ export default function YandexMetrika({ counterId }: { counterId?: string | null
     }
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
-  }, [accepted]);
+  }, []);
 
   const rawId = counterId?.trim();
   // Номер счётчика уходит в вызов Метрики — пускаем только цифры.
   const id = rawId && /^\d+$/.test(rawId) ? Number(rawId) : null;
-  const enabled = Boolean(id) && accepted && !pathname.startsWith("/admin");
+  const enabled = Boolean(id) && !pathname.startsWith("/admin");
 
-  // Подключаем счётчик вручную, а не через next/script: посетитель нажимает
-  // «Принимаю» уже после гидратации, и скрипт со стратегией afterInteractive
-  // в этот момент уже не внедряется. Обычный <script> работает в обоих случаях —
-  // и когда согласие уже было, и когда его дали только что.
+  // Подключаем счётчик вручную, а не через next/script: компонент монтируется
+  // уже после гидратации, а скрипт со стратегией afterInteractive в этот момент
+  // не внедряется. Обычный <script async> работает надёжно и рендер не блокирует.
   useEffect(() => {
     if (!enabled || !id) return;
     if (window.__ymCounterId) return; // уже подключён — второй раз не нужно
