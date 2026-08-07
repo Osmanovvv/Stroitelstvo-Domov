@@ -252,6 +252,20 @@ form[data-pending] button { opacity: 0.6; pointer-events: none; }
 .admin-row-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
 .admin-move-btn { min-width: 40px; justify-content: center; padding: 8px 10px; font-size: 19px; line-height: 1; }
 .admin-preview { width: 160px; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e7f0; }
+/* Галочка «удалить фото» под слотом доп. фото. Красная, чтобы не спутать
+   с обычным полем, но без пугающей рамки — удаление происходит по «Сохранить». */
+/* Селектор с .admin-field — иначе цвет перебивает более весомое `.admin-field label`. */
+.admin-field label.admin-remove-photo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b3261e;
+  cursor: pointer;
+}
+.admin-field label.admin-remove-photo input { width: 16px; height: 16px; margin: 0; accent-color: #b3261e; cursor: pointer; }
 .admin-hero-preview { width: 320px; max-width: 100%; height: 170px; object-fit: cover; border-radius: 10px; border: 1px solid #e2e7f0; }
 
 /* Модалка добавления/редактирования */

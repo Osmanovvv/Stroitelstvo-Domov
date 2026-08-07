@@ -1,6 +1,7 @@
 import { mkdir, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { file, str } from "./form";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const MAX_BYTES = 20 * 1024 * 1024; // 20 МБ на исходник (обычно фото жмётся в браузере до отправки)
@@ -32,6 +33,23 @@ export async function deleteUploadedImage(imagePath: string | null | undefined):
   } catch {
     // файла уже нет — это нормально
   }
+}
+
+// Чтение ДОПОЛНИТЕЛЬНОГО поля-картинки формы админки (Фото 2/3/4, Планировка).
+// Приоритет: новый файл → галочка «удалить» → оставить как было.
+// Файл важнее галочки: если человек и выбрал новое фото, и отметил удаление,
+// очевиднее сохранить выбранное, чем молча всё стереть.
+// Возврат пустой строки = слот очищен; вызывающий код превращает её в null,
+// а сайт такие слоты просто пропускает (галерея становится короче).
+// Основное фото (обложка) через эту функцию НЕ проходит: карточка без обложки
+// не имеет смысла, и экшены её обязательность уже проверяют («Добавьте фото»).
+export async function readExtraImage(formData: FormData, name: string): Promise<string> {
+  const existing = str(formData, `${name}Existing`);
+  const uploaded = file(formData, `${name}File`);
+  if (uploaded && uploaded.size > 0) {
+    return saveUploadedImage(uploaded, existing);
+  }
+  return str(formData, `${name}Remove`) === "1" ? "" : existing;
 }
 
 export async function saveUploadedImage(

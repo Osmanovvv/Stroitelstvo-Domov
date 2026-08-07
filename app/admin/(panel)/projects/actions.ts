@@ -3,15 +3,16 @@
 import type { Project } from "@prisma/client";
 import { prisma } from "@/app/lib/db";
 import { str, file } from "@/app/lib/form";
-import { saveUploadedImage } from "@/app/lib/upload";
+import { saveUploadedImage, readExtraImage } from "@/app/lib/upload";
 import { createResourceActions, type CollectionDelegate } from "@/app/lib/resourceActions";
 import { hasImage, extraImageFields, toRecord } from "./config";
 
 async function readData(formData: FormData) {
   const image = await saveUploadedImage(file(formData, "imageFile"), str(formData, "imageExisting"));
-  const image2 = await saveUploadedImage(file(formData, "image2File"), str(formData, "image2Existing"));
-  const image3 = await saveUploadedImage(file(formData, "image3File"), str(formData, "image3Existing"));
-  const plan = await saveUploadedImage(file(formData, "planFile"), str(formData, "planExisting"));
+  // readExtraImage — учитывает галочку «Удалить это фото» в админке.
+  const image2 = await readExtraImage(formData, "image2");
+  const image3 = await readExtraImage(formData, "image3");
+  const plan = await readExtraImage(formData, "plan");
   return {
     name: str(formData, "name"),
     area: str(formData, "area"),

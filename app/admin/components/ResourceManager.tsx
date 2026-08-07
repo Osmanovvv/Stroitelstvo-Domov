@@ -330,6 +330,15 @@ export default function ResourceManager({
                     <Image className="admin-preview" src={existing} alt="" width={160} height={110} />
                   )}
                   <input name={`${ef.name}File`} type="file" accept="image/*" />
+                  {/* Галочка есть только у заполненных слотов и только у ДОПОЛНИТЕЛЬНЫХ
+                      фото: без обложки карточка не имеет смысла. Пустой слот на сайте
+                      не показывается — галерея просто становится короче. */}
+                  {existing && (
+                    <label className="admin-remove-photo">
+                      <input type="checkbox" name={`${ef.name}Remove`} value="1" />
+                      Удалить это фото при сохранении
+                    </label>
+                  )}
                 </div>
               );
             })}
