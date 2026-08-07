@@ -32,7 +32,7 @@ export default function LeadsTable({ items }: { items: LeadItem[] }) {
   if (items.length === 0) {
     return (
       <p style={{ color: "#8a93a6" }}>
-        Заявок пока нет. Как только с сайта придёт первая — она появится здесь и в Telegram.
+        Заявок пока нет. Как только с сайта придёт первая — она появится здесь и придёт в уведомлениях.
       </p>
     );
   }
@@ -42,7 +42,7 @@ export default function LeadsTable({ items }: { items: LeadItem[] }) {
     setNote(null);
     const res = await resendLead(id);
     setBusyId(null);
-    setNote("error" in res ? `Не отправилось: ${res.error}` : "Отправлено в Telegram ✓");
+    setNote("error" in res ? `Не отправилось: ${res.error}` : "Отправлено ✓");
     router.refresh();
   }
 
@@ -93,7 +93,7 @@ export default function LeadsTable({ items }: { items: LeadItem[] }) {
                   <span style={badge("#e7edff", "#2f56c8")}>в работе</span>
                 )}
                 {lead.notified ? (
-                  <span style={badge("#e4f7ec", "#1f7a4d")}>✓ в Telegram</span>
+                  <span style={badge("#e4f7ec", "#1f7a4d")}>✓ отправлено</span>
                 ) : (
                   <span style={badge("#fdeaea", "#c0392b")}>не доставлено</span>
                 )}
@@ -117,7 +117,7 @@ export default function LeadsTable({ items }: { items: LeadItem[] }) {
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
               {!lead.notified && (
                 <button className="admin-btn" type="button" disabled={busy} onClick={() => onResend(lead.id)}>
-                  Переслать в Telegram
+                  Отправить повторно
                 </button>
               )}
               <button className="admin-btn" type="button" disabled={busy} onClick={() => onToggle(lead.id, !lead.processed)}>
